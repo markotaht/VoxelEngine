@@ -13,7 +13,6 @@ GameObject::GameObject(Texture* texture, ShaderProgram* program, Mesh* mesh)
 	transform.setRotation(0, glm::vec3(0,1,0));
 	transform.translate(glm::vec3(0, -1, 0));
 	transform.setScale(glm::vec3(1, 1, 1));
-	transform.setPosition(glm::vec3(0, 0, 5));
 }
 
 GameObject::GameObject(Texture* texture, ShaderProgram* program, Mesh* mesh, glm::vec3 position)
@@ -42,10 +41,10 @@ GameObject::~GameObject()
 	delete meshRenderer;
 }
 
-void GameObject::draw(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, glm::mat4x4 parentTransform)
+void GameObject::render(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, glm::mat4x4 parentTransform)
 {
 	glm::mat4x4 worldTransform = transform.M() * parentTransform;
-	SceneNode::draw(projectionMatrix, viewMatrix, worldTransform);
+	SceneNode::render(projectionMatrix, viewMatrix, worldTransform);
 
 	if (texture != nullptr) {
 		glBindTexture(GL_TEXTURE_2D, texture->getGLindx());

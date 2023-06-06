@@ -17,9 +17,6 @@
 class GameObject : public SceneNode
 {
 protected:
-	Transformation transform;
-	Texture* texture;
-	MeshRenderer* meshRenderer;
 	glm::vec3 dir;
 public:
 
@@ -30,11 +27,15 @@ public:
 	~GameObject();
 
 	void update(float deltaTime);
-	void draw(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, glm::mat4x4 parentTransform);
+	void render(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, glm::mat4x4 parentTransform);
 	void position(glm::vec3 position);
 
 	static GameObject* createCube();
 	static GameObject* createPlane();
 	static GameObject* createCustom(Mesh* mesh, ShaderProgram* shader);
+
+	Transformation transform;
+	Texture* texture;
+	MeshRenderer* meshRenderer;
 };
 

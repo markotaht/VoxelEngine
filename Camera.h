@@ -38,6 +38,6 @@ public:
 	glm::mat4x4 getProjectionViewMatrix() { return projectionMatrix * viewMatrix; }
 
 	void update(float deltaTime);
-	void draw(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, glm::mat4x4 parentTransform);
+	void render(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, glm::mat4x4 parentTransform);
 };
 

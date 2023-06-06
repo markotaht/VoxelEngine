@@ -10,7 +10,7 @@
 #include "GameObject.h"
 #include <iostream>
 #include "Camera.h"
-#include "Chunk.h"
+#include "ChunkManager.h"
 #include "StandardMaterial.h"
 #include <gl/glew.h>
 
@@ -30,8 +30,6 @@ TextRenderer* textRenderer;
 ResourceManager resourceManager;
 KeyboardHandler* keyboardHandler;
 
-Chunk* chunk;
-
 bool loadMedia() {
 	bool success = true;
 
@@ -47,25 +45,16 @@ bool loadMedia() {
 	mainCamera = new Camera();
 	scene = new SceneNode();
 
-	chunk = new Chunk(resourceManager.getResource<GenericShaderProgram>(shaderId), resourceManager.getResource<Material>(materialId));
-	chunk->CreateMesh();
+	ChunkManager* chunk = new ChunkManager(resourceManager.getResource<GenericShaderProgram>(shaderId), resourceManager.getResource<Material>(materialId));
 	scene->addChild(chunk);
-/*
-	chunk = new Chunk(resourceManager.getResource<GenericShaderProgram>(shaderId), resourceManager.getResource<Material>(materialId), glm::vec3(1, 0, 0));
-	chunk->CreateMesh();
-	scene->addChild(chunk);*/
 
-	/*for (int i = 0; i < 32; i++) {
-		for (int j = 0; j < 32; j++) {
-			for (int k = 0; k < 32; k++) {
-				scene->addChild(
-					new GameObject(
-						resourceManager.getResource<Texture>(textureId),
-						resourceManager.getResource<GenericShaderProgram>(shaderId),
-						resourceManager.getResource<Mesh>(meshId),
-						glm::vec3(i/10.f, j/10.f, k/10.f)
-						)
-				);
+/*	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++) {
+			for (int k = 0; k < 5; k++) {
+				Chunk* chunk = new Chunk(resourceManager.getResource<GenericShaderProgram>(shaderId), resourceManager.getResource<Material>(materialId));
+				chunk->CreateMesh();
+				chunk->position(glm::vec3(i * Chunk::CHUNK_SIZE, j * Chunk::CHUNK_SIZE, k * Chunk::CHUNK_SIZE));
+				scene->addChild(chunk);
 			}
 		}
 	}*/
@@ -123,7 +112,7 @@ int main(int argc, char* args[])
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 				glEnable(GL_DEPTH_TEST);
-				scene->draw(mainCamera->getProjectionMatrix(), mainCamera->getViewMatrix());
+				scene->render(mainCamera->getProjectionMatrix(), mainCamera->getViewMatrix());
 				glDisable(GL_DEPTH_TEST);
 				textRenderer->render(std::to_string(1000.f / (NOW_TICK - LAST_TICK)) + "FPS", 100, 100, 0.5f, glm::vec3(0.5f, 0.8f, 0.2f));
 				textRenderer->render(std::to_string(deltaTime) + "s" , 100, 150, 0.5f, glm::vec3(0.5f, 0.8f, 0.2f));

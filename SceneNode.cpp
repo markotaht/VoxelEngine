@@ -32,10 +32,10 @@ void SceneNode::update(float deltaTime)
 	}
 }
 
-void SceneNode::draw(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, glm::mat4x4 parentTransform)
+void SceneNode::render(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, glm::mat4x4 parentTransform)
 {
 	glm::mat4x4 worldTransform = transform.M() * parentTransform;
 	for (std::vector<SceneNode*>::iterator i = children.begin(); i != children.end(); i++) {
-		(*i)->draw(projectionMatrix, viewMatrix, worldTransform);
+		(*i)->render(projectionMatrix, viewMatrix, worldTransform);
 	}
 }

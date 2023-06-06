@@ -86,7 +86,7 @@ void Camera::update(float deltaTime)
 	//std::cout << transform.getRotation()[0] << transform.getRotation()[1] << transform.getRotation()[2] << std::endl;
 }
 
-void Camera::draw(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, glm::mat4x4 parentTransform)
+void Camera::render(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, glm::mat4x4 parentTransform)
 {
 	//SceneNode::draw(projectionMatrix, viewMatrix, transform.M()*parentTransform);
 }

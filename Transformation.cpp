@@ -1,4 +1,5 @@
 #include "Transformation.h"
+#include <iostream>
 
 void Transformation::defaultPosition()
 {
@@ -40,6 +41,7 @@ void Transformation::setPosition(glm::vec3 newPos)
 	positionMatrix[3][0] = newPos[0];
 	positionMatrix[3][1] = newPos[1];
 	positionMatrix[3][2] = newPos[2];
+	recalculateModelMatrix();
 }
 
 glm::vec3 Transformation::getScale()

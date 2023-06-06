@@ -15,7 +15,7 @@ public:
 
 	void CreateMesh();
 
-	static const int CHUNK_SIZE = 32;
+	static const int CHUNK_SIZE = 16;
 private:
 	std::vector<Block> blocks;
 	ShaderProgram* shaderProgram;

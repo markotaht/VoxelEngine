@@ -23,14 +23,23 @@ void Chunk::CreateMesh() {
 					continue;
 				}*/
 
-				glm::vec3 p1(x - Block::BLOCK_SIZE, y - Block::BLOCK_SIZE, z + Block::BLOCK_SIZE);
-				glm::vec3 p2(x + Block::BLOCK_SIZE, y - Block::BLOCK_SIZE, z + Block::BLOCK_SIZE);
-				glm::vec3 p3(x + Block::BLOCK_SIZE, y + Block::BLOCK_SIZE, z + Block::BLOCK_SIZE);
-				glm::vec3 p4(x - Block::BLOCK_SIZE, y + Block::BLOCK_SIZE, z + Block::BLOCK_SIZE);
-				glm::vec3 p5(x + Block::BLOCK_SIZE, y - Block::BLOCK_SIZE, z - Block::BLOCK_SIZE);
-				glm::vec3 p6(x - Block::BLOCK_SIZE, y - Block::BLOCK_SIZE, z - Block::BLOCK_SIZE);
-				glm::vec3 p7(x - Block::BLOCK_SIZE, y + Block::BLOCK_SIZE, z - Block::BLOCK_SIZE);
-				glm::vec3 p8(x + Block::BLOCK_SIZE, y + Block::BLOCK_SIZE, z - Block::BLOCK_SIZE);
+				float xNeg = (2 * x - 1) * Block::BLOCK_SIZE;
+				float xPos = (2 * x + 1) * Block::BLOCK_SIZE;
+
+				float yNeg = (2 * y - 1) * Block::BLOCK_SIZE;
+				float yPos = (2 * y + 1) * Block::BLOCK_SIZE;
+
+				float zNeg = (2 * z - 1) * Block::BLOCK_SIZE;
+				float zPos = (2 * z + 1) * Block::BLOCK_SIZE;
+
+				glm::vec3 p1(xNeg, yNeg, zPos);
+				glm::vec3 p2(xPos, yNeg, zPos);
+				glm::vec3 p3(xPos, yPos, zPos);
+				glm::vec3 p4(xNeg, yPos, zPos);
+				glm::vec3 p5(xPos, yNeg, zNeg);
+				glm::vec3 p6(xNeg, yNeg, zNeg);
+				glm::vec3 p7(xNeg, yPos, zNeg);
+				glm::vec3 p8(xPos, yPos, zNeg);
 
 				glm::vec3 n;
 				GLuint v1;
@@ -118,7 +127,6 @@ void Chunk::CreateMesh() {
 			}
 		}
 	}
-	std::cout << triangleCount << std::endl;
 	Mesh* mesh = builder.buildMesh();
 	meshRenderer = new MeshRenderer(mesh, shaderProgram, material);
 }
