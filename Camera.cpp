@@ -1,7 +1,5 @@
 #include "Camera.h"
 #include "KeyboardHandler.h"
-
-#include <stdio.h>
 Camera::Camera()
 {
 	forward[2] = 1;

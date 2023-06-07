@@ -12,6 +12,26 @@ Mesh::Mesh()
 	uvCount = 0;
 }
 
+Mesh::Mesh(GLfloat* vertices, GLfloat* colors, GLuint* indices, int vertexCount, int colorCount, int indicesCount)
+{
+	verticesCount = vertexCount;
+	this->vertices = new GLfloat[verticesCount];
+	std::copy(vertices, vertices + verticesCount, this->vertices);
+
+	this->colorCount = colorCount;
+	this->colors = new GLfloat[colorCount];
+	std::copy(colors, colors + colorCount, this->colors);
+
+	this->indicesCount = indicesCount;
+	this->indices = new GLuint[indicesCount];
+	std::copy(indices, indices + indicesCount, this->indices);
+
+	normals = nullptr;
+	UVs = nullptr;
+
+	init();
+}
+
 Mesh::Mesh(GLfloat* vertices, GLfloat* normals, GLfloat* uvs, GLuint* indices, int vertexCount, int normalCount, int uvcount, int indicesCount)
 {
 	verticesCount = vertexCount;
@@ -58,13 +78,20 @@ inline void Mesh::bind()
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
 
+	if (normals != nullptr) {
+		glBindBuffer(GL_ARRAY_BUFFER, nbo);
+		glBufferData(GL_ARRAY_BUFFER, normalCount * sizeof(GLfloat), normals, GL_STATIC_DRAW);
+	}
 
-	glBindBuffer(GL_ARRAY_BUFFER, nbo);
-	glBufferData(GL_ARRAY_BUFFER, normalCount * sizeof(GLfloat), normals, GL_STATIC_DRAW);
+	if (colors != nullptr) {
+		glBindBuffer(GL_ARRAY_BUFFER, cbo);
+		glBufferData(GL_ARRAY_BUFFER, colorCount * sizeof(GLfloat), colors, GL_STATIC_DRAW);
+	}
 
-
-	glBindBuffer(GL_ARRAY_BUFFER, uvbo);
-	glBufferData(GL_ARRAY_BUFFER, uvCount * sizeof(GLfloat), UVs, GL_STATIC_DRAW);
+	if (UVs != nullptr) {
+		glBindBuffer(GL_ARRAY_BUFFER, uvbo);
+		glBufferData(GL_ARRAY_BUFFER, uvCount * sizeof(GLfloat), UVs, GL_STATIC_DRAW);
+	}
 
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
@@ -76,6 +103,10 @@ void Mesh::freeArrays()
 	if (vertices != NULL) {
 		delete[] vertices;
 		vertices = NULL;
+	}
+	if (colors != NULL) {
+		delete[] colors;
+		colors = NULL;
 	}
 	if (indices != NULL) {
 		delete[] indices;
@@ -94,6 +125,7 @@ void Mesh::freeArrays()
 void Mesh::init()
 {
 	glGenBuffers(1, &vbo);
+	glGenBuffers(1, &cbo);
 	glGenBuffers(1, &ibo);
 	glGenBuffers(1, &nbo);
 	glGenBuffers(1, &uvbo);
@@ -101,9 +133,9 @@ void Mesh::init()
 	freeArrays();
 }
 
-void Mesh::render()
+void Mesh::render(GLenum renderMode)
 {
-	glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
+	glDrawElements(renderMode, indicesCount, GL_UNSIGNED_INT, 0);
 }
 
 Mesh* Mesh::cubePrimitive()

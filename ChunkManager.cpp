@@ -19,9 +19,14 @@ void ChunkManager::render(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, 
 	}
 }
 
+void ChunkManager::update(float deltaTime)
+{
+}
+
 void ChunkManager::init()
 {
 	float offset = Chunk::CHUNK_SIZE * 2 * Block::BLOCK_SIZE;
+
 	for (int x = 0; x < visibleRange; x++) {
 		for (int z = 0; z < visibleRange; z++) {
 			Chunk* chunk = new Chunk(shaderProgram, material);

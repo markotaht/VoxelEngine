@@ -90,11 +90,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Axis.cpp" />
     <ClCompile Include="BasicShaderProgram2D.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkManager.cpp" />
+    <ClCompile Include="DebugLog.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GenericShaderProgram.cpp" />
     <ClCompile Include="GeometricPrimitives.cpp" />
@@ -117,12 +119,14 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Axis.h" />
     <ClInclude Include="BasicShaderProgram2D.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkManager.h" />
     <ClInclude Include="cmp_str.h" />
+    <ClInclude Include="DebugLog.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GenericShaderProgram.h" />
     <ClInclude Include="GeometricPrimitives.h" />
@@ -148,6 +152,8 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="axis.fs" />
+    <None Include="axis.vs" />
     <None Include="basic.fs" />
     <None Include="basic.vs" />
     <None Include="textShader.fs" />

@@ -108,6 +108,12 @@
     <ClCompile Include="ChunkManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Axis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugLog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -197,6 +203,12 @@
     <ClInclude Include="ChunkManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Axis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugLog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="basic.fs">
@@ -209,6 +221,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="textShader.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="axis.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="axis.vs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

@@ -11,7 +11,7 @@ public:
 
 	bool IsActive() { return active; }
 
-	static constexpr float BLOCK_SIZE = 0.1f;
+	static constexpr float BLOCK_SIZE = 0.01f;
 private:
 	bool active;
 	BlockType blockType;

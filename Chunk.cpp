@@ -13,8 +13,13 @@ void Chunk::CreateMesh() {
 	int triangleCount = 0;
 	bool debug = false;
 	MeshBuilder builder;
+
 	for (int x = 0; x < CHUNK_SIZE; x++) {
+		float xNeg = (2 * x - 1) * Block::BLOCK_SIZE + Block::BLOCK_SIZE;
+		float xPos = (2 * x + 1) * Block::BLOCK_SIZE + Block::BLOCK_SIZE;
 		for (int y = 0; y < CHUNK_SIZE; y++) {
+			float yNeg = (2 * y - 1) * Block::BLOCK_SIZE + Block::BLOCK_SIZE;
+			float yPos = (2 * y + 1) * Block::BLOCK_SIZE + Block::BLOCK_SIZE;
 			for (int z = 0; z < CHUNK_SIZE; z++) {
 
 				/*if (z > 0 && blocks[x][y][z - 1].IsActive() && z < CHUNK_SIZE - 1 && blocks[x][y][z + 1].IsActive() &&
@@ -23,14 +28,8 @@ void Chunk::CreateMesh() {
 					continue;
 				}*/
 
-				float xNeg = (2 * x - 1) * Block::BLOCK_SIZE;
-				float xPos = (2 * x + 1) * Block::BLOCK_SIZE;
-
-				float yNeg = (2 * y - 1) * Block::BLOCK_SIZE;
-				float yPos = (2 * y + 1) * Block::BLOCK_SIZE;
-
-				float zNeg = (2 * z - 1) * Block::BLOCK_SIZE;
-				float zPos = (2 * z + 1) * Block::BLOCK_SIZE;
+				float zNeg = (2 * z - 1) * Block::BLOCK_SIZE + Block::BLOCK_SIZE;
+				float zPos = (2 * z + 1) * Block::BLOCK_SIZE + Block::BLOCK_SIZE;
 
 				glm::vec3 p1(xNeg, yNeg, zPos);
 				glm::vec3 p2(xPos, yNeg, zPos);

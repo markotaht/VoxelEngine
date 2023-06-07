@@ -18,6 +18,8 @@
 #include "KeyboardHandler.h"
 
 #include "TextRenderer.h"
+#include "DebugLog.h"
+#include "Axis.h"
 //Texture texture;
 Window window;
 bool quit = false;
@@ -25,7 +27,7 @@ SDL_Event e;
 SceneNode* scene;
 Camera* mainCamera;
 
-TextRenderer* textRenderer;
+DebugLog* debugLog;
 
 ResourceManager resourceManager;
 KeyboardHandler* keyboardHandler;
@@ -37,14 +39,17 @@ bool loadMedia() {
 	uint32_t textureId = resourceManager.AddResource<Texture>("D:/Visual studio/GameEngine/Debug/UV.png");
 	uint32_t shaderId = resourceManager.AddResource<GenericShaderProgram>("basic.vs", "basic.fs");
 	uint32_t textShaderId = resourceManager.AddResource<GenericShaderProgram>("textShader.vs", "textShader.fs");
-	textRenderer = new TextRenderer("ProggyClean.ttf", resourceManager.getResource<GenericShaderProgram>(textShaderId));
+	uint32_t axisShaderId = resourceManager.AddResource<GenericShaderProgram>("axis.vs", "axis.fs");
+	TextRenderer* textRenderer = new TextRenderer("ProggyClean.ttf", resourceManager.getResource<GenericShaderProgram>(textShaderId));
 	uint32_t materialId = resourceManager.AddResource<StandardMaterial>("Standard", new StandardMaterial(resourceManager.getResource<Texture>(textureId), resourceManager.getResource<GenericShaderProgram>(shaderId)));
 	uint32_t meshId = resourceManager.getCubeMesh();
 
-
+	debugLog = DebugLog::getInstance(textRenderer);
 	mainCamera = new Camera();
 	scene = new SceneNode();
 
+	Axis* axis = new Axis(resourceManager.getResource<GenericShaderProgram>(axisShaderId));
+	scene->addChild(axis);
 	ChunkManager* chunk = new ChunkManager(resourceManager.getResource<GenericShaderProgram>(shaderId), resourceManager.getResource<Material>(materialId));
 	scene->addChild(chunk);
 
@@ -70,6 +75,7 @@ void close() {
 	//delete mainCamera;
 	delete keyboardHandler;
 	//texture.free();
+	delete debugLog;
 
 	window.~Window();
 
@@ -98,6 +104,11 @@ int main(int argc, char* args[])
 				LAST = NOW;
 				NOW = SDL_GetPerformanceCounter();
 				deltaTime = (NOW - LAST) / (double)SDL_GetPerformanceFrequency();
+				debugLog->addMessage(std::to_string(1000.f / (NOW_TICK - LAST_TICK)) + "FPS");
+				debugLog->addMessage(std::to_string(deltaTime) + "s");
+				float chunkSize = Chunk::CHUNK_SIZE * Block::BLOCK_SIZE * 2;
+				DebugLog::getInstance(NULL)->addMessage("XYZ:" + std::to_string(mainCamera->transform.getPosition().x) + " " + std::to_string(mainCamera->transform.getPosition().y) + " " + std::to_string(mainCamera->transform.getPosition().x));
+				DebugLog::getInstance(NULL)->addMessage("CHUNK: [" + std::to_string(mainCamera->transform.getPosition().x / chunkSize) + " " + std::to_string(mainCamera->transform.getPosition().y /  chunkSize)+ " " + std::to_string(mainCamera->transform.getPosition().z / chunkSize) + "]");
 
 				keyboardHandler->handleKeyboardEvent();
 				while (SDL_PollEvent(&e) != 0) {
@@ -114,8 +125,7 @@ int main(int argc, char* args[])
 				glEnable(GL_DEPTH_TEST);
 				scene->render(mainCamera->getProjectionMatrix(), mainCamera->getViewMatrix());
 				glDisable(GL_DEPTH_TEST);
-				textRenderer->render(std::to_string(1000.f / (NOW_TICK - LAST_TICK)) + "FPS", 100, 100, 0.5f, glm::vec3(0.5f, 0.8f, 0.2f));
-				textRenderer->render(std::to_string(deltaTime) + "s" , 100, 150, 0.5f, glm::vec3(0.5f, 0.8f, 0.2f));
+				debugLog->render();
 				window.update();
 			}
 		}

@@ -14,6 +14,8 @@ class MeshRenderer
 	GLuint vao;
 
 	void init();
+
+	GLenum renderMode = GL_TRIANGLES;
 public:
 	MeshRenderer(Mesh* mesh, ShaderProgram* shaderProgram);
 	MeshRenderer(Mesh* mesh, ShaderProgram* shaderProgram, Material* material);
@@ -31,6 +33,8 @@ public:
 		}
 	}
 	void unbind() { shaderProgram->unbind(); }
+
+	inline void setRenderMode(GLenum) { this->renderMode = renderMode; }
 
 	ShaderProgram* getShader() { return shaderProgram; }
 };

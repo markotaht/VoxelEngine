@@ -29,15 +29,26 @@ void MeshRenderer::init()
 	glVertexAttribPointer(posId, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), NULL);
 	glEnableVertexAttribArray(posId);
 
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->getNormalBufferId());
-	GLuint normId = shaderProgram->getAttribute("VertexNormal");
-	glVertexAttribPointer(normId, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), NULL);
-	glEnableVertexAttribArray(normId);
+	if (mesh->hasNormals()) {
+		glBindBuffer(GL_ARRAY_BUFFER, mesh->getNormalBufferId());
+		GLuint normId = shaderProgram->getAttribute("VertexNormal");
+		glVertexAttribPointer(normId, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), NULL);
+		glEnableVertexAttribArray(normId);
+	}
 
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->getUVBufferId());
-	GLuint uvId = shaderProgram->getAttribute("VertexUV");
-	glVertexAttribPointer(uvId, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), NULL);
-	glEnableVertexAttribArray(uvId);
+	if (mesh->hasColors()) {
+		glBindBuffer(GL_ARRAY_BUFFER, mesh->getColorBufferId());
+		GLuint colorId = shaderProgram->getAttribute("VertexColor");
+		glVertexAttribPointer(colorId, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), NULL);
+		glEnableVertexAttribArray(colorId);
+	}
+
+	if (mesh->hasUVs()) {
+		glBindBuffer(GL_ARRAY_BUFFER, mesh->getUVBufferId());
+		GLuint uvId = shaderProgram->getAttribute("VertexUV");
+		glVertexAttribPointer(uvId, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), NULL);
+		glEnableVertexAttribArray(uvId);
+	}
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->getIndexBufferId());
 
@@ -47,6 +58,6 @@ void MeshRenderer::init()
 void MeshRenderer::render()
 {
 	glBindVertexArray(vao);
-	mesh->render();
+	mesh->render(renderMode);
 	glBindVertexArray(0);
 }
