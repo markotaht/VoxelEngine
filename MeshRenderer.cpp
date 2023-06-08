@@ -12,6 +12,7 @@ MeshRenderer::MeshRenderer(Mesh* mesh, ShaderProgram* shaderProgram, Material* m
 
 MeshRenderer::~MeshRenderer()
 {
+	delete mesh;
 	glDeleteVertexArrays(1, &vao);
 }
 

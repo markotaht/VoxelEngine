@@ -6,13 +6,12 @@ Chunk::Chunk(ShaderProgram* shaderProgram, Material* material) : blocks(CHUNK_SI
 }
 
 Chunk::~Chunk() {
-	GameObject::~GameObject();
 }
 
 void Chunk::CreateMesh() {
 	int triangleCount = 0;
 	bool debug = false;
-	MeshBuilder builder;
+	builder = MeshBuilder();
 
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		float xNeg = (2 * x - 1) * Block::BLOCK_SIZE + Block::BLOCK_SIZE;
@@ -126,6 +125,10 @@ void Chunk::CreateMesh() {
 			}
 		}
 	}
+}
+
+void Chunk::FinalizeMesh()
+{
 	Mesh* mesh = builder.buildMesh();
 	meshRenderer = new MeshRenderer(mesh, shaderProgram, material);
 }

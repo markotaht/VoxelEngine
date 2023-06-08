@@ -14,6 +14,7 @@ public:
 	~Chunk();
 
 	void CreateMesh();
+	void FinalizeMesh();
 
 	static const int CHUNK_SIZE = 16;
 	static const int CHUNK_SIZE_SQR = CHUNK_SIZE * CHUNK_SIZE;
@@ -21,6 +22,7 @@ private:
 	std::vector<Block> blocks;
 	ShaderProgram* shaderProgram;
 	Material* material;
+	MeshBuilder builder;
 
 	inline Block getBlock(uint32_t x, uint32_t y, uint32_t z) {
 		return blocks[x + y * CHUNK_SIZE + z * CHUNK_SIZE_SQR];

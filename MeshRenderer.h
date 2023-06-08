@@ -34,7 +34,7 @@ public:
 	}
 	void unbind() { shaderProgram->unbind(); }
 
-	inline void setRenderMode(GLenum) { this->renderMode = renderMode; }
+	inline void setRenderMode(GLenum newRendermode) { this->renderMode = newRendermode; }
 
 	ShaderProgram* getShader() { return shaderProgram; }
 };

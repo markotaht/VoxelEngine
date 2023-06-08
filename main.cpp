@@ -47,10 +47,11 @@ bool loadMedia() {
 	debugLog = DebugLog::getInstance(textRenderer);
 	mainCamera = new Camera();
 	scene = new SceneNode();
+	scene->addChild(mainCamera);
 
 	Axis* axis = new Axis(resourceManager.getResource<GenericShaderProgram>(axisShaderId));
 	scene->addChild(axis);
-	ChunkManager* chunk = new ChunkManager(resourceManager.getResource<GenericShaderProgram>(shaderId), resourceManager.getResource<Material>(materialId));
+	ChunkManager* chunk = new ChunkManager(resourceManager.getResource<GenericShaderProgram>(shaderId), resourceManager.getResource<Material>(materialId), mainCamera);
 	scene->addChild(chunk);
 
 /*	for (int i = 0; i < 5; i++) {
@@ -65,7 +66,6 @@ bool loadMedia() {
 	}*/
 
 	//scene->addChild(new GameObject(resourceManager.getResource<Texture>(textureId), resourceManager.getResource<GenericShaderProgram>(shaderId), resourceManager.getResource<Mesh>(meshId)));
-	scene->addChild(mainCamera);
 
 	return success;
 }

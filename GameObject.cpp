@@ -3,6 +3,8 @@
 GameObject::GameObject()
 {
 	dir = glm::vec3(1, 0, 0);
+	meshRenderer = nullptr;
+	texture = nullptr;
 }
 
 GameObject::GameObject(Texture* texture, ShaderProgram* program, Mesh* mesh)
@@ -37,8 +39,9 @@ GameObject::GameObject(Texture* texture, ShaderProgram* program, Mesh* mesh, Mat
 
 GameObject::~GameObject()
 {
-	SceneNode::~SceneNode();
-	delete meshRenderer;
+	if (meshRenderer != nullptr) {
+		delete meshRenderer;
+	}
 }
 
 void GameObject::render(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, glm::mat4x4 parentTransform)
