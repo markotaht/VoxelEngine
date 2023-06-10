@@ -6,10 +6,10 @@
 #include <SDL_opengl.h>
 #include <gl/GLU.h>
 #include "Material.h"
+#include <iostream>
 class MeshRenderer
 {
 	Mesh* mesh;
-	ShaderProgram* shaderProgram;
 	Material* material;
 	GLuint vao;
 
@@ -17,25 +17,23 @@ class MeshRenderer
 
 	GLenum renderMode = GL_TRIANGLES;
 public:
-	MeshRenderer(Mesh* mesh, ShaderProgram* shaderProgram);
-	MeshRenderer(Mesh* mesh, ShaderProgram* shaderProgram, Material* material);
+	MeshRenderer(Mesh* mesh, Material* material);
 	~MeshRenderer();
 
 	void render();
 
 	void bind() {
-		if (material != nullptr) {
-			material->setTextures();
+		if (material == nullptr) {
+			std::cout << "Object material is missing. Cannot render object." << std::endl;
 		}
-		shaderProgram->bind();
-		if (material != nullptr) {
-			material->setUniforms();
-		}
+		material->setTextures();
+		material->getShaderProgram()->bind();
+		material->setUniforms();
 	}
-	void unbind() { shaderProgram->unbind(); }
+	void unbind() { material->getShaderProgram()->unbind(); }
 
 	inline void setRenderMode(GLenum newRendermode) { this->renderMode = newRendermode; }
 
-	ShaderProgram* getShader() { return shaderProgram; }
+	inline ShaderProgram* getShader() { return material->getShaderProgram(); }
 };
 

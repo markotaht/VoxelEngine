@@ -4,35 +4,22 @@ GameObject::GameObject()
 {
 	dir = glm::vec3(1, 0, 0);
 	meshRenderer = nullptr;
-	texture = nullptr;
 }
 
-GameObject::GameObject(Texture* texture, ShaderProgram* program, Mesh* mesh)
+GameObject::GameObject(Mesh* mesh, Material* material, glm::vec3 position)
 {
-	this->texture = texture;
 	dir = glm::vec3(1, 0, 0);
-	meshRenderer = new MeshRenderer(mesh, program);
-	transform.setRotation(0, glm::vec3(0,1,0));
-	transform.translate(glm::vec3(0, -1, 0));
-	transform.setScale(glm::vec3(1, 1, 1));
-}
-
-GameObject::GameObject(Texture* texture, ShaderProgram* program, Mesh* mesh, glm::vec3 position)
-{
-	this->texture = texture;
-	dir = glm::vec3(1, 0, 0);
-	meshRenderer = new MeshRenderer(mesh, program);
+	meshRenderer = new MeshRenderer(mesh, material);
 	transform.setRotation(0, glm::vec3(0, 1, 0));
 	transform.translate(glm::vec3(0, -1, 0));
 	transform.setScale(glm::vec3(1, 1, 1));
 	transform.setPosition(position);
 }
 
-GameObject::GameObject(Texture* texture, ShaderProgram* program, Mesh* mesh, Material* material)
+GameObject::GameObject(Mesh* mesh, Material* material)
 {
-	this->texture = texture;
 	dir = glm::vec3(1, 0, 0);
-	meshRenderer = new MeshRenderer(mesh, program, material);
+	meshRenderer = new MeshRenderer(mesh, material);
 	transform.setRotation(1, 0, 0, 0);
 	transform.translate(glm::vec3(0, -1, 0));
 }
@@ -49,9 +36,6 @@ void GameObject::render(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, gl
 	glm::mat4x4 worldTransform = transform.M() * parentTransform;
 	SceneNode::render(projectionMatrix, viewMatrix, worldTransform);
 
-	if (texture != nullptr) {
-		glBindTexture(GL_TEXTURE_2D, texture->getGLindx());
-	}
 	meshRenderer->bind();
 
 	glUniformMatrix4fv(meshRenderer->getShader()->getUniform("modelMatrix"), 1, GL_FALSE, glm::value_ptr(worldTransform));
@@ -76,10 +60,11 @@ GameObject* GameObject::createCube()
 	texture->loadFromFile("D:/Visual studio/GameEngine/Debug/UV.png", NULL);
 	GenericShaderProgram* shader = new GenericShaderProgram("basic.vs", "basic.fs");
 	shader->loadProgram();
+	Material* material = new StandardMaterial(texture, shader);
 	Mesh* mesh = new Mesh();
 	mesh->init();
 	mesh->cubePrimitive();
-	return new GameObject(texture, shader, mesh);
+	return new GameObject(mesh, material);
 }
 
 GameObject* GameObject::createPlane()
@@ -88,17 +73,11 @@ GameObject* GameObject::createPlane()
 	texture->loadFromFile("D:/Visual studio/GameEngine/Debug/UV.png", NULL);
 	GenericShaderProgram* shader = new GenericShaderProgram("basic.vs", "basic.fs");
 	shader->loadProgram();
+	Material* material = new StandardMaterial(texture, shader);
 	Mesh* mesh = new Mesh();
 	mesh->init();
 	mesh->planePrimitive();
-	return new GameObject(texture, shader, mesh);
-}
-
-GameObject* GameObject::createCustom(Mesh* mesh, ShaderProgram* shader)
-{
-	Texture* texture = new Texture();
-	texture->loadFromFile("D:/Visual studio/GameEngine/Debug/UV.png", NULL);
-	return new GameObject(texture, shader, mesh);
+	return new GameObject(mesh, material);
 }
 
 void GameObject::update(float deltaTime)

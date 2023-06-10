@@ -11,7 +11,7 @@ Chunk::~Chunk() {
 void Chunk::CreateMesh() {
 	int triangleCount = 0;
 	bool debug = false;
-	builder = MeshBuilder();
+	builder = MeshBuilder(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 4 * 6 * 3, CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 12);
 
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		float xNeg = (2 * x - 1) * Block::BLOCK_SIZE + Block::BLOCK_SIZE;
@@ -130,5 +130,5 @@ void Chunk::CreateMesh() {
 void Chunk::FinalizeMesh()
 {
 	Mesh* mesh = builder.buildMesh();
-	meshRenderer = new MeshRenderer(mesh, shaderProgram, material);
+	meshRenderer = new MeshRenderer(mesh, material);
 }

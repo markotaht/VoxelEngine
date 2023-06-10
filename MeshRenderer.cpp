@@ -1,12 +1,10 @@
 #include "MeshRenderer.h"
 
-MeshRenderer::MeshRenderer(Mesh* mesh, ShaderProgram* shaderProgram) :mesh(mesh), shaderProgram(shaderProgram), material(nullptr)
+MeshRenderer::MeshRenderer(Mesh* mesh, Material* material): mesh(mesh), material{material}
 {
-	init();
-}
-
-MeshRenderer::MeshRenderer(Mesh* mesh, ShaderProgram* shaderProgram, Material* material) : mesh(mesh), shaderProgram(shaderProgram), material(material)
-{
+	if(material == nullptr){
+		throw std::invalid_argument("Material cannot be NULL");
+	}
 	init();
 }
 
@@ -18,10 +16,7 @@ MeshRenderer::~MeshRenderer()
 
 void MeshRenderer::init()
 {
-
-	if (material != nullptr) {
-		shaderProgram = material->getShaderProgram();
-	}
+	ShaderProgram* shaderProgram = material->getShaderProgram();
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 

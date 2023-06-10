@@ -8,6 +8,6 @@ public:
 	virtual void setTextures() = 0;
 	bool loadFromFile(const char* path) { return false; }
 	bool loadFromFile(const char* path, const char* path2) { return false; }
-	void setShaderProgram(ShaderProgram* shaderProgram) { this->shaderProgram = shaderProgram; }
-	ShaderProgram* getShaderProgram() { return shaderProgram; }
+	inline void setShaderProgram(ShaderProgram* shaderProgram) { this->shaderProgram = shaderProgram; }
+	inline ShaderProgram* getShaderProgram() { return shaderProgram; }
 };

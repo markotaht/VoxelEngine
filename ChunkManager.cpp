@@ -32,8 +32,6 @@ void ChunkManager::update(float deltaTime)
 		loadChunks();
 	}
 
-	std::cout << loading << std::endl;
-	std::cout << chunks.size() << std::endl;
 	if (loading) {
 		handleLoadingChunks();
 	}

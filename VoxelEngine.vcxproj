@@ -113,6 +113,7 @@
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="StandardMaterial.cpp" />
+    <ClCompile Include="TextMaterial.cpp" />
     <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Transformation.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="SceneNode.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="StandardMaterial.h" />
+    <ClInclude Include="TextMaterial.h" />
     <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transformation.h" />

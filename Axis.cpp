@@ -1,6 +1,6 @@
 #include "Axis.h"
 
-Axis::Axis(ShaderProgram* shaderProgram):shaderProgram{shaderProgram}
+Axis::Axis(Material* material):material{ material }
 {
 	init();
 }
@@ -51,6 +51,6 @@ void Axis::init()
 	};
 
 	Mesh* mesh = new Mesh(axisVerts, axisColors, axisIndices, 18, 18, 6);
-	meshRenderer = new MeshRenderer(mesh, shaderProgram);
+	meshRenderer = new MeshRenderer(mesh, material);
 	meshRenderer->setRenderMode(GL_LINES);
 }

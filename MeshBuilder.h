@@ -4,6 +4,7 @@
 
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <gl/glew.h>
 #include "Mesh.h"
 
@@ -11,6 +12,7 @@ class MeshBuilder
 {
 public:
     MeshBuilder();
+    MeshBuilder(int vertexCount, int indexCount);
     ~MeshBuilder();
 
     GLuint addVertex(glm::vec3 vertex, glm::vec3 normal, glm::vec2 uv);

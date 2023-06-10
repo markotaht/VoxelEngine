@@ -114,6 +114,9 @@
     <ClCompile Include="DebugLog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TextMaterial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -207,6 +210,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DebugLog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

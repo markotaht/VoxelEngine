@@ -12,6 +12,7 @@
 #include "Camera.h"
 #include "ChunkManager.h"
 #include "StandardMaterial.h"
+#include "TextMaterial.h"
 #include <gl/glew.h>
 
 #include "ResourceManager.h"
@@ -42,6 +43,7 @@ bool loadMedia() {
 	uint32_t axisShaderId = resourceManager.AddResource<GenericShaderProgram>("axis.vs", "axis.fs");
 	TextRenderer* textRenderer = new TextRenderer("ProggyClean.ttf", resourceManager.getResource<GenericShaderProgram>(textShaderId));
 	uint32_t materialId = resourceManager.AddResource<StandardMaterial>("Standard", new StandardMaterial(resourceManager.getResource<Texture>(textureId), resourceManager.getResource<GenericShaderProgram>(shaderId)));
+	uint32_t textMaterialId = resourceManager.AddResource<TextMaterial>("Text", new TextMaterial(resourceManager.getResource<GenericShaderProgram>(axisShaderId)));
 	uint32_t meshId = resourceManager.getCubeMesh();
 
 	debugLog = DebugLog::getInstance(textRenderer);
@@ -49,7 +51,7 @@ bool loadMedia() {
 	scene = new SceneNode();
 	scene->addChild(mainCamera);
 
-	Axis* axis = new Axis(resourceManager.getResource<GenericShaderProgram>(axisShaderId));
+	Axis* axis = new Axis(resourceManager.getResource<TextMaterial>(textMaterialId));
 	scene->addChild(axis);
 	ChunkManager* chunk = new ChunkManager(resourceManager.getResource<GenericShaderProgram>(shaderId), resourceManager.getResource<Material>(materialId), mainCamera);
 	scene->addChild(chunk);
