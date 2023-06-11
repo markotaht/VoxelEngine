@@ -1,7 +1,7 @@
 #include "Texture.h"
 
-Texture::Texture(GLuint index, int width, int heigh) :GLtexture(index),
-width(width), height(height)
+Texture::Texture(GLuint index, int width, int height) :GLtexture{ index },
+width{width}, height{height}
 {
 }
 
@@ -24,7 +24,7 @@ bool Texture::loadFromFile(const char* path) {
 	else {
 		glGenTextures(1, &GLtexture);
 		glBindTexture(GL_TEXTURE_2D, GLtexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, 3, loadedSurface->w, loadedSurface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, loadedSurface->pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, loadedSurface->w, loadedSurface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, loadedSurface->pixels);
 		if (glGetError() != GL_NO_ERROR) {
 			printf("Error");
 		}
@@ -41,17 +41,35 @@ bool Texture::loadFromFile(const char* path, const char* path2)
 	return false;
 }
 
+bool Texture::loadToGlArray(const char* path, int i, GLuint texture)
+{
+	//free();
+
+	loadedTexture = IMG_Load(path);
+	if (loadedTexture == NULL) {
+		printf("Unable to load image %s! SDL_image Error: %s\n", path, IMG_GetError());
+		return false;
+	}
+	width = loadedTexture->w;
+	height = loadedTexture->h;
+
+	//glTextureSubImage3D(texture, 0, 0, 0, i, width, height, 1, GL_RGB, GL_UNSIGNED_BYTE, loadedTexture->pixels);
+
+	glTexSubImage3D(
+		GL_TEXTURE_2D_ARRAY,
+		0, 0, 0, i,
+		512, 512, 1, GL_RGB, GL_UNSIGNED_BYTE, loadedTexture->pixels);
+	return true;
+}
+
 void Texture::free()
 {
 	glDeleteTextures(1, &GLtexture);
 }
 
-int Texture::getWidth()
+void Texture::freeSurface()
 {
-	return width;
-}
-
-int Texture::getHeight()
-{
-	return height;
+	if (loadedTexture != NULL) {
+		SDL_FreeSurface(loadedTexture);
+	}
 }

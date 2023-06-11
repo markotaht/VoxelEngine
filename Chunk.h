@@ -2,7 +2,7 @@
 #include "MeshBuilder.h"
 #include "Block.h"
 #include "GameObject.h"
-#include "ShaderProgram.h"
+#include "ResourceManager.h"
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 #include <vector>
@@ -10,17 +10,17 @@
 class Chunk: public GameObject
 {
 public:
-	Chunk(ShaderProgram* shaderProgram, Material* material);
+	Chunk(Material* material);
 	~Chunk();
 
-	void CreateMesh();
+	void InitializeChunk();
+	void CreateMesh(ResourceManager* resourceManager);
 	void FinalizeMesh();
 
 	static const int CHUNK_SIZE = 16;
 	static const int CHUNK_SIZE_SQR = CHUNK_SIZE * CHUNK_SIZE;
 private:
 	std::vector<Block> blocks;
-	ShaderProgram* shaderProgram;
 	Material* material;
 	MeshBuilder builder;
 

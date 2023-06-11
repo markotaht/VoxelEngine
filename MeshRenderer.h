@@ -26,11 +26,9 @@ public:
 		if (material == nullptr) {
 			std::cout << "Object material is missing. Cannot render object." << std::endl;
 		}
-		material->setTextures();
-		material->getShaderProgram()->bind();
-		material->setUniforms();
+		material->bind();
 	}
-	void unbind() { material->getShaderProgram()->unbind(); }
+	void unbind() { material->unbind(); }
 
 	inline void setRenderMode(GLenum newRendermode) { this->renderMode = newRendermode; }
 

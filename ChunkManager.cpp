@@ -1,6 +1,6 @@
 #include "ChunkManager.h"
 
-ChunkManager::ChunkManager(ShaderProgram* shaderProgram, Material* material, Camera* camera) :material(material), shaderProgram{ shaderProgram }
+ChunkManager::ChunkManager(Material* material, Camera* camera, ResourceManager* resourceManager) :material{ material }, resourceManager{resourceManager}
 {
 	chunkSize = Chunk::CHUNK_SIZE * Block::BLOCK_SIZE * 2;
 	cameraChunk = glm::i32vec3(0, 0, 0);
@@ -45,16 +45,17 @@ void ChunkManager::loadChunks()
 
 	for (int x = 0; x < visibleRange*2; x++) {
 		for (int z = 0; z < visibleRange*2; z++) {
-			loadingChunks.emplace_back(std::async(std::launch::async, [&, x, z, minChunk, offset]() {return createChunk(x, 0, z, minChunk, offset); }));
+			loadingChunks.emplace_back(std::async(std::launch::async, [&, x, z, minChunk, offset]() {return createChunk(x, 0, z, minChunk, offset, resourceManager); }));
 		}
 	}
 	loading = true;
 }
 
-Chunk* ChunkManager::createChunk(int x, int y, int z, glm::i32vec3 minChunk, float offset)
+Chunk* ChunkManager::createChunk(int x, int y, int z, glm::i32vec3 minChunk, float offset, ResourceManager* resourceManager)
 {
-	Chunk* chunk = new Chunk(shaderProgram, material);
-	chunk->CreateMesh();
+	Chunk* chunk = new Chunk(material);
+	chunk->InitializeChunk();
+	chunk->CreateMesh(resourceManager);
 	chunk->position(glm::vec3((x + minChunk.x) * offset, 0, (z + minChunk.z) * offset));
 	return chunk;
 }

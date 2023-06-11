@@ -57,7 +57,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <Optimization>Disabled</Optimization>
     </ClCompile>
@@ -75,7 +75,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>C:\GLM\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <Optimization>Disabled</Optimization>
@@ -90,6 +90,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ArrayTexture.cpp" />
+    <ClCompile Include="ArrayTextureMaterial.cpp" />
     <ClCompile Include="Axis.cpp" />
     <ClCompile Include="BasicShaderProgram2D.cpp" />
     <ClCompile Include="Block.cpp" />
@@ -120,6 +122,8 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArrayTexture.h" />
+    <ClInclude Include="ArrayTextureMaterial.h" />
     <ClInclude Include="Axis.h" />
     <ClInclude Include="BasicShaderProgram2D.h" />
     <ClInclude Include="Block.h" />
@@ -154,6 +158,8 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="arrayTexture.fs" />
+    <None Include="arrayTexture.vs" />
     <None Include="axis.fs" />
     <None Include="axis.vs" />
     <None Include="basic.fs" />

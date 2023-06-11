@@ -90,9 +90,6 @@
     <ClCompile Include="Block.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StandardMaterial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TextRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -114,8 +111,17 @@
     <ClCompile Include="DebugLog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextMaterial.cpp">
+    <ClCompile Include="ArrayTexture.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StandardMaterial.cpp">
+      <Filter>Source Files\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrayTextureMaterial.cpp">
+      <Filter>Source Files\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="TextMaterial.cpp">
+      <Filter>Source Files\resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -194,9 +200,6 @@
     <ClInclude Include="MeshBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StandardMaterial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Transformation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -212,8 +215,17 @@
     <ClInclude Include="DebugLog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextMaterial.h">
+    <ClInclude Include="ArrayTexture.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StandardMaterial.h">
+      <Filter>Header Files\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrayTextureMaterial.h">
+      <Filter>Header Files\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="TextMaterial.h">
+      <Filter>Header Files\resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -233,6 +245,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="axis.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="arrayTexture.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="arrayTexture.fs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

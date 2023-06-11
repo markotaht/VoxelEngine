@@ -25,6 +25,8 @@ public:
 	void setUniforms();
 	void setTextures();
 
+	void init(Mesh* mesh, GLuint* vao);
+
 	void setAmbientColor(glm::vec3 color);
 	void setDiffuseColor(glm::vec3 color);
 	void setSpecularColor(glm::vec3 color);

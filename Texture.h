@@ -17,18 +17,35 @@ public:
 
 	bool loadFromFile(const char* path);
 	bool loadFromFile(const char* path, const char* path2);
+	bool loadToGlArray(const char* path, int i, GLuint texture);
+
+	void setArrayTextureData(GLuint layer, GLuint texture) {
+		this->layer = layer;
+		this->GLtexture = texture;
+	}
 
 	void free();
+	void freeSurface();
 
-	int getWidth();
-	int getHeight();
+	inline int getWidth() {
+		return width;
+	};
+	inline int getHeight() {
+		return height;
+	};
+	inline SDL_Surface* getPixels() {
+		return loadedTexture;
+	}
 
 	GLuint getGLindx() { return GLtexture; }
+	GLuint getLayer() { return layer; }
 
 private:
 	int width;
 	int height;
+	GLuint layer;
 
 	GLuint GLtexture;
+	SDL_Surface* loadedTexture;
 };
 

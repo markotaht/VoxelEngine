@@ -2,12 +2,11 @@
 #include "Material.h"
 #include "Texture.h"
 
-class StandardMaterial :
-	public Material
+class ArrayTextureMaterial:	public Material
 {
 public:
-	StandardMaterial();
-	StandardMaterial(Texture* texture, ShaderProgram* shaderProgram);
+	ArrayTextureMaterial();
+	ArrayTextureMaterial(Texture* texture, ShaderProgram* shaderProgram);
 	void setTextures();
 	void setUniforms();
 

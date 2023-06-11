@@ -11,7 +11,7 @@ Texture* ImageLoader::loadResource(const char* path)
 	else {
 		glGenTextures(1, &GLtexture);
 		glBindTexture(GL_TEXTURE_2D, GLtexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, 3, loadedSurface->w, loadedSurface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, loadedSurface->pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, loadedSurface->w, loadedSurface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, loadedSurface->pixels);
 		if (glGetError() != GL_NO_ERROR) {
 			printf("Error");
 		}

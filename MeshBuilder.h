@@ -16,6 +16,7 @@ public:
     ~MeshBuilder();
 
     GLuint addVertex(glm::vec3 vertex, glm::vec3 normal, glm::vec2 uv);
+    GLuint addVertex(glm::vec3 vertex, glm::vec3 normal, glm::vec2 uv, int layer);
     void addTriangle(GLuint v1, GLuint v2, GLuint v3);
     Mesh* buildMesh();
 

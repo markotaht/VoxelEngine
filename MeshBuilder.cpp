@@ -30,6 +30,20 @@ GLuint MeshBuilder::addVertex(glm::vec3 vertex, glm::vec3 normal, glm::vec2 uv)
 	return vertexIndex++;
 }
 
+GLuint MeshBuilder::addVertex(glm::vec3 vertex, glm::vec3 normal, glm::vec2 uv, int layer)
+{
+	vertices.push_back(vertex[0]);
+	vertices.push_back(vertex[1]);
+	vertices.push_back(vertex[2]);
+	normals.push_back(normal[0]);
+	normals.push_back(normal[1]);
+	normals.push_back(normal[2]);
+	uvs.push_back(uv[0]);
+	uvs.push_back(uv[1]);
+	uvs.push_back(layer);
+	return vertexIndex++;
+}
+
 void MeshBuilder::addTriangle(GLuint v1, GLuint v2, GLuint v3)
 {
 	indices.push_back(v1);
