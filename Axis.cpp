@@ -19,28 +19,28 @@ void Axis::render(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, glm::mat
 
 void Axis::init()
 {
-	axisVerts = new GLfloat[18]{
+	axisVerts = new glm::vec3[6]{
 		//BACK
-		0.f,0.f,0.f,
-		1.f,0.f,0.f,
-
-		0.f,0.f,0.f,
-		0.f,1.f,0.f,
-
-		0.f,0.f,0.f,
-		0.f,0.f,1.f
+		glm::vec3(0,0,0),
+		glm::vec3(1,0,0),
+		
+		glm::vec3(0,0,0),
+		glm::vec3(0,1,0),
+		
+		glm::vec3(0,0,0),
+		glm::vec3(0,0,1),
 	};
 
-	axisColors = new GLfloat[18]{
+	axisColors = new glm::vec3[6]{
 		//BACK
-		1.f,0.f,0.f,
-		1.f,0.f,0.f,
+		glm::vec3(1,0,0),
+		glm::vec3(1,0,0),
 
-		0.f,1.f,0.f,
-		0.f,1.f,0.f,
+		glm::vec3(0,1,0),
+		glm::vec3(0,1,0),
 
-		0.f,0.f,1.f,
-		0.f,0.f,1.f
+		glm::vec3(0,0,1),
+		glm::vec3(0,0,1),
 	};
 
 
@@ -50,7 +50,7 @@ void Axis::init()
 		4,5
 	};
 
-	Mesh* mesh = new Mesh(axisVerts, axisColors, axisIndices, 18, 18, 6);
+	Mesh* mesh = new Mesh(axisVerts, axisColors, axisIndices, 6, 6, 6);
 	meshRenderer = new MeshRenderer(mesh, material);
 	meshRenderer->setRenderMode(GL_LINES);
 }

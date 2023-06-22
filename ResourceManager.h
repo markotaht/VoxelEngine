@@ -110,7 +110,7 @@ public:
 		return new MTLParser(this);
 	}
 
-	uint32_t getCubeMesh() {
+	/*uint32_t getCubeMesh() {
 		auto it = resources.find("IN-BUILT-CUBE");
 		if (it != resources.end())
 		{
@@ -134,6 +134,6 @@ public:
 		cubeMesh->setId(currentId++);
 		resources["IN-BUILT-PLANE"] = cubeMesh;
 		return cubeMesh->getId();
-	}
+	}*/
 };
 

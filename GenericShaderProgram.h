@@ -4,7 +4,7 @@ class GenericShaderProgram : public ShaderProgram
 {
 public:
 	GenericShaderProgram(const GLchar* vertexFile, const GLchar* fragmentFile);
-	GenericShaderProgram() {};
+	GenericShaderProgram() :fragmentFile{ nullptr }, vertexFile{nullptr} {};
 	~GenericShaderProgram();
 	bool loadProgram();
 

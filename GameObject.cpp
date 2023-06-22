@@ -44,7 +44,7 @@ void GameObject::render(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, gl
 	glUniformMatrix4fv(meshRenderer->getShader()->getUniform("normalMatrix"), 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(worldTransform))));
 	glUniform3f(meshRenderer->getShader()->getUniform("lightPos"), 3, 3, -300);
 	glUniform3f(meshRenderer->getShader()->getUniform("u_lightDirection"), -3, -3, -5);
-	glUniform3f(meshRenderer->getShader()->getUniform("u_ambientLight"), 0.1, 0.1, 0.1);
+	glUniform3f(meshRenderer->getShader()->getUniform("u_ambientLight"), 0.1f, 0.1f, 0.1f);
 	meshRenderer->render();
 	meshRenderer->unbind();
 }
@@ -53,7 +53,7 @@ void GameObject::position(glm::vec3 position)
 {
 	transform.setPosition(position);
 }
-
+/*
 GameObject* GameObject::createCube()
 {
 	Texture* texture = new Texture();
@@ -62,7 +62,7 @@ GameObject* GameObject::createCube()
 	shader->loadProgram();
 	Material* material = new StandardMaterial(texture, shader);
 	Mesh* mesh = new Mesh();
-	mesh->init();
+	mesh->initBuffers();
 	mesh->cubePrimitive();
 	return new GameObject(mesh, material);
 }
@@ -75,10 +75,10 @@ GameObject* GameObject::createPlane()
 	shader->loadProgram();
 	Material* material = new StandardMaterial(texture, shader);
 	Mesh* mesh = new Mesh();
-	mesh->init();
+	mesh->initBuffers();
 	mesh->planePrimitive();
 	return new GameObject(mesh, material);
-}
+}*/
 
 void GameObject::update(float deltaTime)
 {

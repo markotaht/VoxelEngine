@@ -1,6 +1,8 @@
 #pragma once
 #include "GameObject.h"
 #include "Material.h"
+
+#include <glm/vec3.hpp>
 class Axis :
 	public GameObject
 {
@@ -13,8 +15,8 @@ private:
 
 	Material* material;
 
-	GLfloat* axisVerts;
-	GLfloat* axisColors;
+	glm::vec3* axisVerts;
+	glm::vec3* axisColors;
 	GLuint* axisIndices;
 };
 

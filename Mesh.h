@@ -5,24 +5,25 @@
 #include "GeometricPrimitives.h"
 #include <iostream>
 
+#include <glm/vec3.hpp>
 #include "Resource.h"
 class Mesh : public Resource
 {
 
 public:
 	Mesh();
-	Mesh(GLfloat* vertices, GLfloat* colors, GLuint* indices, int vertexCount, int colorCount, int indicesCount);
-	Mesh(GLfloat* vertices, GLfloat* normals, GLfloat* uvs, GLuint* indices, int vertexCount, int normalCount, int uvcount, int indicesCount);
+	Mesh(glm::vec3* vertices, glm::vec3* colors, GLuint* indices, int vertexCount, int colorCount, int indicesCount);
+	Mesh(glm::vec3* vertices, glm::vec3* normals, glm::vec3* uvs, GLuint* indices, int vertexCount, int normalCount, int uvcount, int indicesCount);
 	~Mesh();
 
 	bool loadFromFile(const char* path);
 	bool loadFromFile(const char* path, const char* path2);
 
-	void init();
+	void initBuffers();
 	void render(GLenum renderMode);
 
-	static Mesh* cubePrimitive();
-	static Mesh* planePrimitive();
+	//static Mesh* cubePrimitive();
+	//static Mesh* planePrimitive();
 
 	inline bool hasNormals() { return normalCount > 0; }
 	inline bool hasUVs() { return uvCount > 0; }
@@ -35,7 +36,7 @@ public:
 	GLuint getIndexBufferId() { return ibo; }
 private:
 
-	void bind();
+	void bind(glm::vec3* vertices, glm::vec3* normals, glm::vec3* uvs, glm::vec3* colors, GLuint* indices, int vertexCount, int normalCount, int uvcount, int colorCount, int indicesCount);
 	void freeArrays();
 	GLuint vbo;
 	GLuint cbo;

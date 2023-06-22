@@ -4,9 +4,9 @@ Camera::Camera()
 {
 	forward[2] = 1;
 	setPerspective(1);
-	transform.setPosition(glm::vec3(0, 0, 0));
+	transform.setPosition(glm::vec3(0, 1, 0));
 	viewMatrix = glm::mat4();
-	lookAt(transform.getPosition(), transform.getPosition() + forward);
+	lookAt(transform.getPosition(), transform.getPosition() - forward);
 	//viewMatrix = new Matrix4x4(transform.M().inverse());
 
 }

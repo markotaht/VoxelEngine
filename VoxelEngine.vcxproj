@@ -20,13 +20,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -78,7 +78,7 @@
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>C:\GLM\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -98,6 +98,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkManager.cpp" />
+    <ClCompile Include="ChunkSerializer.cpp" />
     <ClCompile Include="DebugLog.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GenericShaderProgram.cpp" />
@@ -112,6 +113,7 @@
     <ClCompile Include="MTLMaterial.cpp" />
     <ClCompile Include="MTLParser.cpp" />
     <ClCompile Include="OBJParser.cpp" />
+    <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="StandardMaterial.cpp" />
@@ -130,11 +132,14 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkManager.h" />
+    <ClInclude Include="ChunkSerializer.h" />
+    <ClInclude Include="ChunkStorage.h" />
     <ClInclude Include="cmp_str.h" />
     <ClInclude Include="DebugLog.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GenericShaderProgram.h" />
     <ClInclude Include="GeometricPrimitives.h" />
+    <ClInclude Include="NoiseGenerator.h" />
     <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="KeyboardHandler.h" />
@@ -146,6 +151,7 @@
     <ClInclude Include="MTLMaterial.h" />
     <ClInclude Include="MTLParser.h" />
     <ClInclude Include="OBJParser.h" />
+    <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SceneNode.h" />

@@ -111,6 +111,7 @@ bool Window::init() {
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 		//Create window
+		SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
 		window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 		if (window == NULL)
 		{
@@ -186,7 +187,20 @@ SDL_Renderer* Window::getRenderer() {
 
 Window::~Window() {
 	SDL_DestroyRenderer(renderer);
+	SDL_GL_DeleteContext(gContext);
+	for (auto it : threadContexts) {
+		SDL_GL_DeleteContext(it);
+	}
 	SDL_DestroyWindow(window);
 	window = NULL;
 	renderer = NULL;
+}
+
+SDL_GLContext Window::getThreadContext(int i)
+{
+	if (threadContexts.size() < i + 1) {
+		threadContexts.push_back(SDL_GL_CreateContext(window));
+		SDL_GL_MakeCurrent(window, gContext);
+	}
+	return threadContexts[i];
 }

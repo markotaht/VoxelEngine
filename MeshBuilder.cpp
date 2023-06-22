@@ -15,32 +15,29 @@ MeshBuilder::MeshBuilder(int vertexCount, int indexCount)
 
 MeshBuilder::~MeshBuilder()
 {
+	vertices.clear();
+	vertices.shrink_to_fit();
+	normals.clear();
+	normals.shrink_to_fit();
+	uvs.clear();
+	uvs.shrink_to_fit();
+	indices.clear();
+	indices.shrink_to_fit();
 }
-
+/*
 GLuint MeshBuilder::addVertex(glm::vec3 vertex, glm::vec3 normal, glm::vec2 uv)
 {
-	vertices.push_back(vertex[0]);
-	vertices.push_back(vertex[1]);
-	vertices.push_back(vertex[2] );
-	normals.push_back(normal[0]);
-	normals.push_back(normal[1]);
-	normals.push_back(normal[2]);
-	uvs.push_back(uv[0]);
-	uvs.push_back(uv[1]);
+	vertices.push_back(vertex);
+	normals.push_back(normal);
+	uvs.push_back(uv);
 	return vertexIndex++;
-}
+}*/
 
-GLuint MeshBuilder::addVertex(glm::vec3 vertex, glm::vec3 normal, glm::vec2 uv, int layer)
+GLuint MeshBuilder::addVertex(glm::vec3 vertex, glm::vec3 normal, glm::vec3 uv)
 {
-	vertices.push_back(vertex[0]);
-	vertices.push_back(vertex[1]);
-	vertices.push_back(vertex[2]);
-	normals.push_back(normal[0]);
-	normals.push_back(normal[1]);
-	normals.push_back(normal[2]);
-	uvs.push_back(uv[0]);
-	uvs.push_back(uv[1]);
-	uvs.push_back(layer);
+	vertices.push_back(vertex);
+	normals.push_back(normal);
+	uvs.push_back(uv);
 	return vertexIndex++;
 }
 

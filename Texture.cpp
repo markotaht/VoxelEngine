@@ -58,7 +58,7 @@ bool Texture::loadToGlArray(const char* path, int i, GLuint texture)
 	glTexSubImage3D(
 		GL_TEXTURE_2D_ARRAY,
 		0, 0, 0, i,
-		512, 512, 1, GL_RGB, GL_UNSIGNED_BYTE, loadedTexture->pixels);
+		width, height, 1, GL_RGB, GL_UNSIGNED_BYTE, loadedTexture->pixels);
 	return true;
 }
 

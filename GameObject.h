@@ -7,7 +7,7 @@
 #include "StandardMaterial.h"
 #include "SceneNode.h"
 #include "Camera.h"
-#include "MeshRenderer.h";
+#include "MeshRenderer.h"
 #include "Texture.h"
 #include "ShaderProgram.h"
 #include "Mesh.h"
@@ -30,10 +30,9 @@ public:
 	void render(glm::mat4x4 projectionMatrix, glm::mat4x4 viewMatrix, glm::mat4x4 parentTransform);
 	void position(glm::vec3 position);
 
-	static GameObject* createCube();
-	static GameObject* createPlane();
+	//static GameObject* createCube();
+	//static GameObject* createPlane();
 
-	Transformation transform;
 	MeshRenderer* meshRenderer;
 };
 

@@ -8,7 +8,7 @@ float naive_atof2(const char* p) {
 		++p;
 	}
 	while (*p >= '0' && *p <= '9') {
-		r = (r * 10.0) + (*p - '0');
+		r = (r * 10.0f) + (*p - '0');
 		++p;
 	}
 	if (*p == '.') {
@@ -16,11 +16,11 @@ float naive_atof2(const char* p) {
 		int n = 0;
 		++p;
 		while (*p >= '0' && *p <= '9') {
-			f = (f * 10.0) + (*p - '0');
+			f = (f * 10.0f) + (*p - '0');
 			++p;
 			++n;
 		}
-		r += f / std::pow(10.0, n);
+		r += f / std::pow(10.0f, n);
 	}
 	if (neg) {
 		r = -r;

@@ -10,10 +10,9 @@ void ArrayTexture::init()
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
 
-	//glTextureStorage3D(texture, 1, GL_RGB8, 512, 512, textures.size());
 	glTexStorage3D(GL_TEXTURE_2D_ARRAY,
 		1,
-		GL_RGB8, 512, 512, 6);
+		GL_RGB8, 512, 512, textures.size());
 
 	for (auto pair : textures) {
 		Texture* tempTexture = new Texture();

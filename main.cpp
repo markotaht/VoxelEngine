@@ -18,6 +18,7 @@
 
 #include "ResourceManager.h"
 #include "KeyboardHandler.h"
+#include "PerlinNoise.h"
 
 #include "ArrayTexture.h"
 
@@ -36,10 +37,11 @@ DebugLog* debugLog;
 ResourceManager resourceManager;
 KeyboardHandler* keyboardHandler;
 ArrayTexture* arrayTexture;
+PerlinNoise* perlinNoise;
 
 bool loadMedia() {
 	bool success = true;
-
+	perlinNoise = new PerlinNoise();
 	keyboardHandler = KeyboardHandler::getInstance();
 	uint32_t textureId = resourceManager.AddResource<Texture>("D:/Visual studio/GameEngine/Debug/UV.png");
 	//uint32_t shaderId = resourceManager.AddResource<GenericShaderProgram>("basic.vs", "basic.fs");
@@ -66,7 +68,7 @@ bool loadMedia() {
 
 	Axis* axis = new Axis(resourceManager.getResource<TextMaterial>("Text"));
 	scene->addChild(axis);
-	ChunkManager* chunk = new ChunkManager(resourceManager.getResource<Material>(arrayTextureMaterialId), mainCamera, &resourceManager);
+	ChunkManager* chunk = new ChunkManager(resourceManager.getResource<Material>(arrayTextureMaterialId), mainCamera, &resourceManager, perlinNoise);
 	scene->addChild(chunk);
 
 	return success;
@@ -78,6 +80,7 @@ void close() {
 	delete keyboardHandler;
 	//texture.free();
 	delete debugLog;
+	delete perlinNoise;
 
 	window.~Window();
 
@@ -108,7 +111,7 @@ int main(int argc, char* args[])
 				deltaTime = (NOW - LAST) / (double)SDL_GetPerformanceFrequency();
 				debugLog->addMessage(std::to_string(1000.f / (NOW_TICK - LAST_TICK)) + "FPS");
 				debugLog->addMessage(std::to_string(deltaTime) + "s");
-				float chunkSize = Chunk::CHUNK_SIZE * Block::BLOCK_SIZE * 2;
+				float chunkSize = Chunk::CHUNK_WIDTH * BLOCK_WIDTH;
 				debugLog->addMessage("XYZ:" + std::to_string(mainCamera->transform.getPosition().x) + " " + std::to_string(mainCamera->transform.getPosition().y) + " " + std::to_string(mainCamera->transform.getPosition().x));
 				debugLog->addMessage("CHUNK: [" + std::to_string(mainCamera->transform.getPosition().x / chunkSize) + " " + std::to_string(mainCamera->transform.getPosition().y /  chunkSize)+ " " + std::to_string(mainCamera->transform.getPosition().z / chunkSize) + "]");
 
@@ -121,7 +124,7 @@ int main(int argc, char* args[])
 
 
 				//std::cout << deltaTime << std::endl;
-				scene->update(deltaTime);
+				scene->update((float)deltaTime);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 				glEnable(GL_DEPTH_TEST);

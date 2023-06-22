@@ -15,16 +15,16 @@ public:
     MeshBuilder(int vertexCount, int indexCount);
     ~MeshBuilder();
 
-    GLuint addVertex(glm::vec3 vertex, glm::vec3 normal, glm::vec2 uv);
-    GLuint addVertex(glm::vec3 vertex, glm::vec3 normal, glm::vec2 uv, int layer);
+//    GLuint addVertex(glm::vec3 vertex, glm::vec3 normal, glm::vec2 uv);
+    GLuint addVertex(glm::vec3 vertex, glm::vec3 normal, glm::vec3 uv);
     void addTriangle(GLuint v1, GLuint v2, GLuint v3);
     Mesh* buildMesh();
 
 
 private:
-    std::vector<GLfloat> vertices;
-    std::vector<GLfloat> normals;
-    std::vector<GLfloat> uvs;
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec3> uvs;
     std::vector<GLuint> indices;
 
     GLuint vertexIndex = 0;

@@ -12,9 +12,12 @@ Mesh::Mesh()
 	uvCount = 0;
 }
 
-Mesh::Mesh(GLfloat* vertices, GLfloat* colors, GLuint* indices, int vertexCount, int colorCount, int indicesCount)
+Mesh::Mesh(glm::vec3* vertices, glm::vec3* colors, GLuint* indices, int vertexCount, int colorCount, int indicesCount)
 {
-	verticesCount = vertexCount;
+	this->indicesCount = indicesCount;
+	initBuffers();
+	bind(vertices, nullptr, nullptr, colors, indices, vertexCount, 0, 0, colorCount, indicesCount);
+	/*verticesCount = vertexCount;
 	this->vertices = new GLfloat[verticesCount];
 	std::copy(vertices, vertices + verticesCount, this->vertices);
 
@@ -29,12 +32,15 @@ Mesh::Mesh(GLfloat* vertices, GLfloat* colors, GLuint* indices, int vertexCount,
 	normals = nullptr;
 	UVs = nullptr;
 
-	init();
+	init();*/
 }
 
-Mesh::Mesh(GLfloat* vertices, GLfloat* normals, GLfloat* uvs, GLuint* indices, int vertexCount, int normalCount, int uvcount, int indicesCount)
+Mesh::Mesh(glm::vec3* vertices, glm::vec3* normals, glm::vec3* uvs, GLuint* indices, int vertexCount, int normalCount, int uvcount, int indicesCount)
 {
-	verticesCount = vertexCount;
+	this->indicesCount = indicesCount;
+	initBuffers();
+	bind(vertices, normals, uvs, nullptr, indices, vertexCount, normalCount, uvcount, 0, indicesCount);
+	/*verticesCount = vertexCount;
 	this->vertices = new GLfloat[verticesCount];
 	std::copy(vertices, vertices + verticesCount, this->vertices);
 
@@ -50,12 +56,12 @@ Mesh::Mesh(GLfloat* vertices, GLfloat* normals, GLfloat* uvs, GLuint* indices, i
 	UVs = new GLfloat[uvCount];
 	std::copy(uvs, uvs + uvCount, UVs);
 
-	init();
+	init();*/
 }
 
 Mesh::~Mesh()
 {
-	freeArrays();
+	//freeArrays();
 
 	glDeleteBuffers(1, &vbo);
 	glDeleteBuffers(1, &ibo);
@@ -73,26 +79,25 @@ bool Mesh::loadFromFile(const char* path, const char* path2)
 	return false;
 }
 
-inline void Mesh::bind()
+inline void Mesh::bind(glm::vec3* vertices, glm::vec3* normals, glm::vec3* uvs, glm::vec3* colors, GLuint* indices, int vertexCount, int normalCount, int uvcount, int colorCount, int indicesCount)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(glm::vec3), vertices, GL_STATIC_DRAW);
 
 	if (normals != nullptr) {
 		glBindBuffer(GL_ARRAY_BUFFER, nbo);
-		glBufferData(GL_ARRAY_BUFFER, normalCount * sizeof(GLfloat), normals, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, normalCount * sizeof(glm::vec3), normals, GL_STATIC_DRAW);
 	}
 
 	if (colors != nullptr) {
 		glBindBuffer(GL_ARRAY_BUFFER, cbo);
-		glBufferData(GL_ARRAY_BUFFER, colorCount * sizeof(GLfloat), colors, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, colorCount * sizeof(glm::vec3), colors, GL_STATIC_DRAW);
 	}
 
-	if (UVs != nullptr) {
+	if (uvs != nullptr) {
 		glBindBuffer(GL_ARRAY_BUFFER, uvbo);
-		glBufferData(GL_ARRAY_BUFFER, uvCount * sizeof(GLfloat), UVs, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, uvcount * sizeof(glm::vec3), uvs, GL_STATIC_DRAW);
 	}
-
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesCount * sizeof(GLuint), indices, GL_STATIC_DRAW);
@@ -122,22 +127,22 @@ void Mesh::freeArrays()
 	}
 }
 
-void Mesh::init()
+void Mesh::initBuffers()
 {
 	glGenBuffers(1, &vbo);
 	glGenBuffers(1, &cbo);
 	glGenBuffers(1, &ibo);
 	glGenBuffers(1, &nbo);
 	glGenBuffers(1, &uvbo);
-	bind();
-	freeArrays();
+	//bind();
+	//freeArrays();
 }
 
 void Mesh::render(GLenum renderMode)
 {
 	glDrawElements(renderMode, indicesCount, GL_UNSIGNED_INT, 0);
 }
-
+/*
 Mesh* Mesh::cubePrimitive()
 {
 
@@ -147,4 +152,4 @@ Mesh* Mesh::cubePrimitive()
 Mesh* Mesh::planePrimitive()
 {
 	return new Mesh(planeVerts, planeNormals, planeUV, planeIndices, 12, 12, 8, 6);
-}
+}*/

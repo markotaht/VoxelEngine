@@ -1,12 +1,16 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-#include <map>
+#include <unordered_map>
 #include <string>
 
-enum class BlockType {
-	BlockType_Default = 0,
-	BlockType_Grass = 1,
+#include <array>
+
+enum class BlockType : uint8_t {
+	BlockType_Air = 0,
+	BlockType_Default = 1,
+	BlockType_Grass = 2,
+	BlockCount
 };
 
 struct BlockTextureData {
@@ -18,22 +22,10 @@ struct BlockTextureData {
 	std::string back;
 };
 
-extern std::map<BlockType, BlockTextureData*> BlockTextures;
+extern std::unordered_map<BlockType, BlockTextureData*> BlockTextures;
+extern std::array < BlockTextureData, static_cast<size_t>(BlockType::BlockCount)> blockTextures;
 
-class Block {
-public:
-	Block();
-	Block(BlockType blockType) :blockType{ blockType }, active{ true }{};
-
-	inline bool IsActive() { return active; }
-	inline bool setActive(bool active) { this->active = active; }
-	inline BlockType getBlockType() { return blockType; }
-
-	static constexpr float BLOCK_SIZE = 0.01f;
-private:
-	bool active;
-	BlockType blockType;
-
-};
+static const float BLOCK_SIZE = 0.01f;
+static const float BLOCK_WIDTH = 2 * BLOCK_SIZE;
 
 #endif // !BLOCK_H

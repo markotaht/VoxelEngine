@@ -15,7 +15,7 @@ float naive_atof(const char* p) {
 		++p;
 	}
 	while (*p >= '0' && *p <= '9') {
-		r = (r * 10.0) + (*p - '0');
+		r = (r * 10.0f) + (*p - '0');
 		++p;
 	}
 	if (*p == '.') {
@@ -23,11 +23,11 @@ float naive_atof(const char* p) {
 		int n = 0;
 		++p;
 		while (*p >= '0' && *p <= '9') {
-			f = (f * 10.0) + (*p - '0');
+			f = (f * 10.0f) + (*p - '0');
 			++p;
 			++n;
 		}
-		r += f / std::pow(10.0, n);
+		r += f / std::pow(10.0f, n);
 	}
 	if (neg) {
 		r = -r;
@@ -221,7 +221,7 @@ Mesh* OBJParser::loadResource(const char* path)
 		}
 		else if (line[0] == 'o') {
 			if (out_indices.size() > 0) {
-				meshes.push_back(new Mesh(&out_vertices[0], &out_normals[0], &out_UVs[0], &out_indices[0], out_vertices.size(), out_normals.size(), out_UVs.size(), out_indices.size()));
+				//meshes.push_back(new Mesh(&out_vertices[0], &out_normals[0], &out_UVs[0], &out_indices[0], out_vertices.size(), out_normals.size(), out_UVs.size(), out_indices.size()));
 				manager->AddResource(std::string(meshName) + "." + std::string(materialName), meshes[meshes.size() - 1]);
 				out_normals.clear();
 				out_UVs.clear();
@@ -241,7 +241,7 @@ Mesh* OBJParser::loadResource(const char* path)
 		}
 		else if (line[0] == 'u') {
 			if (out_indices.size() > 0) {
-				meshes.push_back(new Mesh(&out_vertices[0], &out_normals[0], &out_UVs[0], &out_indices[0], out_vertices.size(), out_normals.size(), out_UVs.size(), out_indices.size()));
+				//meshes.push_back(new Mesh(&out_vertices[0], &out_normals[0], &out_UVs[0], &out_indices[0], out_vertices.size(), out_normals.size(), out_UVs.size(), out_indices.size()));
 				manager->AddResource(std::string(meshName) + "." + std::string(materialName), meshes[meshes.size() - 1]);
 				out_normals.clear();
 				out_UVs.clear();
@@ -258,7 +258,7 @@ Mesh* OBJParser::loadResource(const char* path)
 			meshMaterial.push_back(std::make_pair(std::string(meshName) + "." + std::string(materialName), std::string(materialName)));
 		}
 	}
-	meshes.push_back(new Mesh(&out_vertices[0], &out_normals[0], &out_UVs[0], &out_indices[0], out_vertices.size(), out_normals.size(), out_UVs.size(), out_indices.size()));
+	//meshes.push_back(new Mesh(&out_vertices[0], &out_normals[0], &out_UVs[0], &out_indices[0], out_vertices.size(), out_normals.size(), out_UVs.size(), out_indices.size()));
 	manager->AddResource(std::string(meshName) + "." + std::string(materialName), meshes[meshes.size() - 1]);
 	manager->model = std::make_pair(path, meshMaterial);
 	auto fullParsingEnd = std::chrono::high_resolution_clock::now();

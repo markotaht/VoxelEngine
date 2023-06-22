@@ -19,7 +19,7 @@ class MTLMaterial : public Material
 public:
 	MTLMaterial() {
 		opacity = 1;
-		shininess = 10.00002;
+		shininess = 10.00002f;
 	};
 
 	void setUniforms();
