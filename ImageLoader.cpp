@@ -1,10 +1,12 @@
+#include <memory>
 #include "ImageLoader.h"
 
-Texture* ImageLoader::loadResource(const char* path)
+
+std::unique_ptr<Texture> ImageLoader::loadResource(const char* path)
 {
 	GLuint GLtexture = 0;
 	SDL_Surface* loadedSurface = IMG_Load(path);
-	Texture* texture = nullptr;
+	std::unique_ptr<Texture> texture {};
 	if (loadedSurface == NULL) {
 		printf("Unable to load image %s! SDL_image Error: %s\n", path, IMG_GetError());
 	}
@@ -19,7 +21,7 @@ Texture* ImageLoader::loadResource(const char* path)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		texture = new Texture(GLtexture, loadedSurface->w, loadedSurface->h);
+		texture = std::make_unique<Texture>(GLtexture, loadedSurface->w, loadedSurface->h);
 		SDL_FreeSurface(loadedSurface);
 	}
 

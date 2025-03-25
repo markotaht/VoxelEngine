@@ -27,7 +27,7 @@ float naive_atof2(const char* p) {
 	}
 	return r;
 }
-MTLMaterial* MTLParser::loadResource(const char* path)
+std::unique_ptr<MTLMaterial> MTLParser::loadResource(const char* path)
 {
 	FILE* fp;
 	errno_t err = fopen_s(&fp, path, "r");
@@ -72,5 +72,5 @@ MTLMaterial* MTLParser::loadResource(const char* path)
 		}
 	}
 
-	return materials[0];
+	return std::unique_ptr<MTLMaterial>(materials[0]);
 }

@@ -79,6 +79,7 @@
       <AdditionalIncludeDirectories>C:\GLM\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <Optimization>MaxSpeed</Optimization>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,19 +108,27 @@
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="KeyboardHandler.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MaterialLoader.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshBuilder.cpp" />
     <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="MTLMaterial.cpp" />
     <ClCompile Include="MTLParser.cpp" />
+    <ClCompile Include="NewMaterial.cpp" />
+    <ClCompile Include="NewMesh.cpp" />
+    <ClCompile Include="NewMeshRenderer.cpp" />
+    <ClCompile Include="NewShaderProgram.cpp" />
+    <ClCompile Include="NewTexture.cpp" />
     <ClCompile Include="OBJParser.cpp" />
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="SceneNode.cpp" />
+    <ClCompile Include="ShaderLoader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="StandardMaterial.cpp" />
     <ClCompile Include="TextMaterial.cpp" />
     <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="Transformation.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -136,9 +145,21 @@
     <ClInclude Include="ChunkStorage.h" />
     <ClInclude Include="cmp_str.h" />
     <ClInclude Include="DebugLog.h" />
+    <ClInclude Include="FileDescriptor.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GenericShaderProgram.h" />
     <ClInclude Include="GeometricPrimitives.h" />
+    <ClInclude Include="IAnyLoader.h" />
+    <ClInclude Include="IResourceLoader.h" />
+    <ClInclude Include="MaterialDescriptor.h" />
+    <ClInclude Include="MaterialLoader.h" />
+    <ClInclude Include="NewMaterial.h" />
+    <ClInclude Include="NewMesh.h" />
+    <ClInclude Include="NewMeshRenderer.h" />
+    <ClInclude Include="NewResource.h" />
+    <ClInclude Include="NewResourceManager.h" />
+    <ClInclude Include="NewShaderProgram.h" />
+    <ClInclude Include="NewTexture.h" />
     <ClInclude Include="NoiseGenerator.h" />
     <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="InputHandler.h" />
@@ -153,14 +174,22 @@
     <ClInclude Include="OBJParser.h" />
     <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ResourceId.h" />
+    <ClInclude Include="ResourceLoaderWrapper.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SceneNode.h" />
+    <ClInclude Include="ShaderDescriptor.h" />
+    <ClInclude Include="ShaderLoader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="StandardMaterial.h" />
+    <ClInclude Include="StringUtils.h" />
     <ClInclude Include="TextMaterial.h" />
     <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="Transformation.h" />
+    <ClInclude Include="Types.h" />
+    <ClInclude Include="TypeTag.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -168,10 +197,12 @@
     <None Include="arrayTexture.vs" />
     <None Include="axis.fs" />
     <None Include="axis.vs" />
-    <None Include="basic.fs" />
     <None Include="basic.vs" />
-    <None Include="textShader.fs" />
+    <None Include="basic2.frag" />
+    <None Include="fragmentShader.frag" />
+    <None Include="textShader.frag" />
     <None Include="textShader.vs" />
+    <None Include="vertexLayout.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

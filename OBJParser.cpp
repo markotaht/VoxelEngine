@@ -46,7 +46,7 @@ int convertToInt(char a[1000]) {
 	return num;;
 }
 
-Mesh* OBJParser::loadResource(const char* path)
+std::unique_ptr<Mesh> OBJParser::loadResource(const char* path)
 {
 
 	FILE* fp;
@@ -264,5 +264,5 @@ Mesh* OBJParser::loadResource(const char* path)
 	auto fullParsingEnd = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(fullParsingEnd - fullParsingStart).count();
 	//	std::cout << duration << std::endl;
-	return meshes[0];
+	return std::unique_ptr<Mesh>(meshes[0]);
 }

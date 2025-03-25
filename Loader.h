@@ -1,6 +1,8 @@
 #pragma once
+
+#include <memory>
 template <typename T>
 class Loader {
 public:
-	virtual T* loadResource(const char* path) = 0;
+	virtual std::unique_ptr<T> loadResource(const char* path) = 0;
 };

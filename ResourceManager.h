@@ -2,6 +2,8 @@
 #include <map>
 #include <atomic>
 #include <string>
+#include <string_view>
+#include <memory>
 #include "Resource.h"
 
 #include "ImageLoader.h"
@@ -13,13 +15,14 @@
 
 class ResourceManager
 {
-	std::map<std::string, Resource*>  resources;
+	std::map<std::string, std::unique_ptr<Resource>>  resources;
 	std::atomic_uint32_t currentId = 0;
 public:
 
 	std::pair < std::string, std::vector<std::pair<std::string, std::string>>> model;
+
 	template <typename T>
-	uint32_t AddResource(std::string filePath) {
+	uint32_t AddResource(const std::string& filePath) {
 
 		auto it = resources.find(filePath);
 		if (it != resources.end())
@@ -31,17 +34,18 @@ public:
 		if (loader == nullptr) {
 			return -1;
 		}
-		Resource* resource = loader->loadResource(filePath.c_str());
+
+		std::unique_ptr<Resource> resource = loader->loadResource(filePath.c_str());
 		if (resource == nullptr) {
 			return -1;
 		}
 		resource->setId(currentId++);
-		resources[filePath] = resource;
-		return resource->getId();
+		resources[filePath] = std::move(resource);
+		return resources[filePath]->getId();
 	}
 
 	template <typename T>
-	uint32_t AddResource(std::string filePath, std::string filePath2) {
+	uint32_t AddResource(const std::string& filePath, const std::string& filePath2) {
 
 		auto it = resources.find(filePath);
 		if (it != resources.end())
@@ -49,17 +53,17 @@ public:
 			return it->second->getId();
 		}
 
-		Resource* resource = new T();
+		std::unique_ptr<Resource> resource = std::make_unique<T>();
 		if (!resource->loadFromFile(filePath.c_str(), filePath2.c_str())) {
 			return -1;
 		}
 		resource->setId(currentId++);
-		resources[filePath] = resource;
-		return resource->getId();
+		resources[filePath] = std::move(resource);
+		return resources[filePath]->getId();
 	}
 
 	template <typename T>
-	uint32_t AddResource(std::string name, T* resource) {
+	uint32_t AddResource(const std::string& name, T* resource) {
 
 		auto it = resources.find(name);
 		if (it != resources.end())
@@ -68,8 +72,8 @@ public:
 		}
 
 		resource->setId(currentId++);
-		resources[name] = resource;
-		return resource->getId();
+		resources[name] = std::move(std::unique_ptr<T>(resource));
+		return resources[name]->getId();
 	}
 
 	template<typename T>
@@ -77,7 +81,7 @@ public:
 		auto it = resources.begin();
 		while (it != resources.end()) {
 			if (it->second->getId() == id) {
-				return static_cast<T*>(it->second);
+				return static_cast<T*>(it->second.get());
 			}
 			it++;
 		}
@@ -87,7 +91,7 @@ public:
 
 	template<typename T>
 	T* getResource(std::string id) {
-		return static_cast<T*>(resources[id]);
+		return static_cast<T*>(resources[id].get());
 	}
 
 	template<typename T>

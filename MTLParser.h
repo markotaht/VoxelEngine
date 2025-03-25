@@ -8,6 +8,7 @@
 #include <string>
 #include <gl/glew.h>
 #include <vector>
+#include <memory>
 
 #include "GenericShaderProgram.h"
 class ResourceManager;
@@ -19,6 +20,6 @@ public:
 	MTLParser(ResourceManager* manager) {
 		this->manager = manager;
 	}
-	MTLMaterial* loadResource(const char* path);
+	std::unique_ptr<MTLMaterial> loadResource(const char* path);
 };
 

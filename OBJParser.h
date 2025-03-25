@@ -6,6 +6,7 @@
 #include <vector>
 #include "Mesh.h"
 #include <stdio.h>
+#include <memory>
 #include "Loader.h"
 
 
@@ -20,6 +21,6 @@ public:
 	OBJParser(ResourceManager* manager) {
 		this->manager = manager;
 	}
-	Mesh* loadResource(const char* path);
+	std::unique_ptr<Mesh> loadResource(const char* path);
 };
 

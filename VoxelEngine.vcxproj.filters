@@ -34,6 +34,39 @@
     <Filter Include="Header Files\noise">
       <UniqueIdentifier>{073ae54c-d54e-4684-ad74-8ff8348cf453}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\engine">
+      <UniqueIdentifier>{5e901233-407b-43df-8cf5-6bfb7099ca5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\resource">
+      <UniqueIdentifier>{eebd9173-6043-43be-b4ff-f77c62b7d9b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\loaders">
+      <UniqueIdentifier>{ded66f40-e2f2-46a8-8cc3-5b7b67509209}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\asset">
+      <UniqueIdentifier>{4df0b1f4-3e5c-4f2b-ae30-f2c160e3f983}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\descriptor">
+      <UniqueIdentifier>{6f65512b-2472-4a92-9801-6acd384c8fc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine">
+      <UniqueIdentifier>{7ebbb635-6d92-43fd-95cb-d02b9d9ed622}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\asset">
+      <UniqueIdentifier>{203d4b9a-cd5c-4940-97c4-ae8dcf351c1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\loader">
+      <UniqueIdentifier>{44f4609c-970a-4cfc-8506-0b34d86980d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\core">
+      <UniqueIdentifier>{6d475852-3339-42db-b381-646ae250e36a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\render">
+      <UniqueIdentifier>{e33aad52-bcfd-4907-a86c-2de6e421f52c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\render">
+      <UniqueIdentifier>{b4015764-9ff4-4b14-9cbd-37b7fc80fe75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -131,6 +164,30 @@
     </ClCompile>
     <ClCompile Include="ChunkSerializer.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NewShaderProgram.cpp">
+      <Filter>Source Files\engine\asset</Filter>
+    </ClCompile>
+    <ClCompile Include="NewTexture.cpp">
+      <Filter>Source Files\engine\asset</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureLoader.cpp">
+      <Filter>Source Files\engine\loader</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderLoader.cpp">
+      <Filter>Source Files\engine\loader</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialLoader.cpp">
+      <Filter>Source Files\engine\loader</Filter>
+    </ClCompile>
+    <ClCompile Include="NewMesh.cpp">
+      <Filter>Source Files\engine\asset</Filter>
+    </ClCompile>
+    <ClCompile Include="NewMeshRenderer.cpp">
+      <Filter>Source Files\engine\render</Filter>
+    </ClCompile>
+    <ClCompile Include="NewMaterial.cpp">
+      <Filter>Source Files\engine\asset</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -248,15 +305,69 @@
     <ClInclude Include="ChunkStorage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StringUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NewResourceManager.h">
+      <Filter>Header Files\engine\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="NewResource.h">
+      <Filter>Header Files\engine\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureLoader.h">
+      <Filter>Header Files\engine\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderLoader.h">
+      <Filter>Header Files\engine\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="IAnyLoader.h">
+      <Filter>Header Files\engine\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="IResourceLoader.h">
+      <Filter>Header Files\engine\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceLoaderWrapper.h">
+      <Filter>Header Files\engine\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="NewTexture.h">
+      <Filter>Header Files\engine\asset</Filter>
+    </ClInclude>
+    <ClInclude Include="NewShaderProgram.h">
+      <Filter>Header Files\engine\asset</Filter>
+    </ClInclude>
+    <ClInclude Include="FileDescriptor.h">
+      <Filter>Header Files\engine\descriptor</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderDescriptor.h">
+      <Filter>Header Files\engine\descriptor</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialDescriptor.h">
+      <Filter>Header Files\engine\descriptor</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialLoader.h">
+      <Filter>Header Files\engine\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="NewMaterial.h">
+      <Filter>Header Files\engine\asset</Filter>
+    </ClInclude>
+    <ClInclude Include="NewMeshRenderer.h">
+      <Filter>Header Files\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceId.h">
+      <Filter>Header Files\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="NewMesh.h">
+      <Filter>Header Files\engine\asset</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeTag.h">
+      <Filter>Header Files\engine\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="basic.fs">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="basic.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="textShader.fs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="textShader.vs">
@@ -272,6 +383,18 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="arrayTexture.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="vertexLayout.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="basic2.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="fragmentShader.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="textShader.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
