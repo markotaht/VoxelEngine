@@ -8,14 +8,14 @@
 
 namespace engine {
 	namespace render {
-		void MeshRenderer::render(resource::ResourceManager& resourceManager)
+		void MeshRenderer::render(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection, resource::ResourceManager& resourceManager)
 		{
 			asset::Material* material = resourceManager.get<asset::Material>(materialId);
 			asset::Mesh* mesh = resourceManager.get<asset::Mesh>(meshId);
 
 			if (!material || !mesh) return;
 
-			material->bind(resourceManager);
+			material->bind(model, view, projection, resourceManager);
 			mesh->bind();
 			mesh->render();
 		}

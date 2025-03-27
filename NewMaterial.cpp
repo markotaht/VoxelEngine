@@ -7,11 +7,20 @@
 
 namespace engine {
 	namespace asset {
-		void Material::bind(resource::ResourceManager& resourceManager)
+		void Material::bind(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection, resource::ResourceManager& resourceManager)
 		{
 			ShaderProgram* shaderProgram = resourceManager.get<ShaderProgram>(shaderProgramId);
 			if (!shaderProgram) return;
 			shaderProgram->bind();
+
+            GLint modelLoc = glGetUniformLocation(shaderProgram->getProgramId(), "model");
+            GLint viewLoc = glGetUniformLocation(shaderProgram->getProgramId(), "view");
+            GLint projLoc = glGetUniformLocation(shaderProgram->getProgramId(), "projection");
+
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+            glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
 
             bindUniforms(shaderProgram);
             bindTextures(shaderProgram, resourceManager);
@@ -68,7 +77,6 @@ namespace engine {
 
 				++unit;
 			}
-            glBindTexture(GL_TEXTURE_2D, 0);
         }
 	}
 }

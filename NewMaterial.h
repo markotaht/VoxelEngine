@@ -18,7 +18,7 @@ namespace engine {
 				,uniforms(std::move(uniforms))
 				,textures(std::move(textures)){}
 
-			void bind(resource::ResourceManager& resourceManager);
+			void bind(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection, resource::ResourceManager& resourceManager);
 
 			void unload(){}
 

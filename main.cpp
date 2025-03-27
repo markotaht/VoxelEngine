@@ -34,11 +34,20 @@
 #include "NewMeshRenderer.h"
 #include "NewMesh.h"
 #include <memory>
+
+#include <glm/glm.hpp>
+
+#include "Registry.h"
+#include "Entity.h"
+#include "RenderSystem.h"
+#include "CameraComponent.h"
+#include "TransformComponent.h"
+#include "MeshRendererComponent.h"
 //Texture texture;
 Window window;
 bool quit = false;
 SDL_Event e;
-SceneNode* scene;
+//SceneNode* scene;
 Camera* mainCamera;
 
 DebugLog* debugLog;
@@ -86,7 +95,8 @@ engine::resource::ResourceManager resMan;
 //	return success;
 //}
 
-std::unique_ptr<engine::render::MeshRenderer> renderer {};
+engine::entity::Registry registry;
+engine::system::RenderSystem renderer;
 
 bool loadMediaNew() {
 	resMan.registerLoader(std::make_unique<engine::loader::TextureLoader>());
@@ -104,14 +114,26 @@ bool loadMediaNew() {
 		}
 		}, "Cube");
 
-	std::cout << matId << std::endl;
-	renderer = std::make_unique<engine::render::MeshRenderer>(meshId, matId);
+	engine::component::TransformComponent cubeTransform;
+	engine::component::MeshRendererComponent meshRenderer {meshId, matId};
+
+	engine::entity::Entity cubeEntity = registry.create();
+	registry.add<engine::component::TransformComponent>(cubeEntity, cubeTransform);
+	registry.add<engine::component::MeshRendererComponent>(cubeEntity, meshRenderer);
+
+	engine::component::TransformComponent cameraTransform;
+	engine::component::CameraComponent cameraComponent;
+	cameraTransform.position.z = 5;
+
+	engine::entity::Entity camera = registry.create();
+	registry.add<engine::component::TransformComponent>(camera, cameraTransform);
+	registry.add<engine::component::CameraComponent>(camera, cameraComponent);
 
 	return true;
 }
 
 void close() {
-	delete scene;
+	//delete scene;
 	//delete mainCamera;
 	delete keyboardHandler;
 	//texture.free();
@@ -140,12 +162,15 @@ int main(int argc, char* args[])
 			Uint32 LAST_TICK = 0;
 			double deltaTime = 0;
 			glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+
 			while (!quit) {
 				LAST_TICK = NOW_TICK;
 				NOW_TICK = SDL_GetTicks();
 				LAST = NOW;
 				NOW = SDL_GetPerformanceCounter();
 				deltaTime = (NOW - LAST) / (double)SDL_GetPerformanceFrequency();
+
+				engine::system::SystemContext context {registry, &resMan, deltaTime};
 			//	debugLog->addMessage(std::to_string(1000.f / (NOW_TICK - LAST_TICK)) + "FPS");
 			//	debugLog->addMessage(std::to_string(deltaTime) + "s");
 			//	float chunkSize = Chunk::CHUNK_WIDTH * BLOCK_WIDTH;
@@ -165,8 +190,9 @@ int main(int argc, char* args[])
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 				glEnable(GL_DEPTH_TEST);
+			//	scene.render(resMan);
 				//scene->render(mainCamera->getProjectionMatrix(), mainCamera->getViewMatrix());
-				renderer->render(resMan);
+				renderer.update(context);
 				glDisable(GL_DEPTH_TEST);
 			//	debugLog->render();
 				window.update();
