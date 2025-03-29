@@ -31,6 +31,8 @@
 #include "TextureLoader.h"
 #include "MaterialLoader.h"
 #include "ShaderLoader.h"
+#include "TextMaterialLoader.h"
+#include "FontLoader.h"
 #include "NewMeshRenderer.h"
 #include "NewMesh.h"
 #include <memory>
@@ -43,6 +45,7 @@
 #include "CameraComponent.h"
 #include "TransformComponent.h"
 #include "MeshRendererComponent.h"
+#include "NewTextRenderer.h"
 //Texture texture;
 Window window;
 bool quit = false;
@@ -98,13 +101,19 @@ engine::resource::ResourceManager resMan;
 engine::entity::Registry registry;
 engine::system::RenderSystem renderer;
 
+std::unique_ptr<engine::render::TextRenderer> textRenderer;
+
 bool loadMediaNew() {
 	resMan.registerLoader(std::make_unique<engine::loader::TextureLoader>());
 	resMan.registerLoader(std::make_unique<engine::loader::MaterialLoader>(resMan));
+	resMan.registerLoader(std::make_unique<engine::loader::TextMaterialLoader>(resMan));
 	resMan.registerLoader(std::make_unique<engine::loader::ShaderLoader>());
+	resMan.registerLoader(std::make_unique<engine::loader::FontLoader>());
 
 	engine::core::ResourceId<engine::asset::Texture> texId = resMan.load<engine::asset::Texture>("D:/Visual studio/GameEngine/Debug/UV.png", "UV_Texture");
+	engine::core::ResourceId<engine::asset::Font> fontId = resMan.load<engine::asset::Font>("ProggyClean.ttf", "ProggyClean");
 	engine::core::ResourceId<engine::asset::ShaderProgram> shaderId = resMan.load<engine::descriptor::ShaderDescriptor, engine::asset::ShaderProgram>({ "vertexLayout.vs", "fragmentShader.frag" }, "Basic");
+	engine::core::ResourceId<engine::asset::ShaderProgram> textShaderId = resMan.load<engine::descriptor::ShaderDescriptor, engine::asset::ShaderProgram>({ "textShader.vs", "textShader.frag" }, "TextShader");
 	engine::core::ResourceId<engine::asset::Mesh> meshId = resMan.add(std::move(engine::asset::Mesh::makeCube()), "Cube");
 	engine::core::ResourceId<engine::asset::Material> matId = resMan.load<engine::descriptor::MaterialDescriptor, engine::asset::Material>({
 		{ "vertexLayout.vs", "fragmentShader.frag" } ,
@@ -113,6 +122,12 @@ bool loadMediaNew() {
 			{"albedo", {"D:/Visual studio/GameEngine/Debug/UV.png"}}
 		}
 		}, "Cube");
+	engine::core::ResourceId<engine::asset::TextMaterial> textMatId = resMan.load<engine::descriptor::TextMaterialDescriptor, engine::asset::TextMaterial>({
+		{ "textShader.vs", "textShader.frag" } ,
+		{"ProggyClean.ttf"}
+		}, "TextMaterial");
+
+	textRenderer = std::move(std::make_unique<engine::render::TextRenderer>(textMatId));
 
 	engine::component::TransformComponent cubeTransform;
 	engine::component::MeshRendererComponent meshRenderer {meshId, matId};
@@ -161,7 +176,7 @@ int main(int argc, char* args[])
 			Uint32 NOW_TICK = SDL_GetTicks();
 			Uint32 LAST_TICK = 0;
 			double deltaTime = 0;
-			glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+			//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 			while (!quit) {
 				LAST_TICK = NOW_TICK;
@@ -171,6 +186,7 @@ int main(int argc, char* args[])
 				deltaTime = (NOW - LAST) / (double)SDL_GetPerformanceFrequency();
 
 				engine::system::SystemContext context {registry, &resMan, deltaTime};
+				textRenderer->addMessage(std::to_string(1000.f / (NOW_TICK - LAST_TICK)) + "FPS");
 			//	debugLog->addMessage(std::to_string(1000.f / (NOW_TICK - LAST_TICK)) + "FPS");
 			//	debugLog->addMessage(std::to_string(deltaTime) + "s");
 			//	float chunkSize = Chunk::CHUNK_WIDTH * BLOCK_WIDTH;
@@ -192,9 +208,10 @@ int main(int argc, char* args[])
 				glEnable(GL_DEPTH_TEST);
 			//	scene.render(resMan);
 				//scene->render(mainCamera->getProjectionMatrix(), mainCamera->getViewMatrix());
-				renderer.update(context);
+			//	renderer.update(context);
 				glDisable(GL_DEPTH_TEST);
 			//	debugLog->render();
+				textRenderer->render(resMan);
 				window.update();
 			}
 		}

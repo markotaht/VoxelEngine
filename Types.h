@@ -26,6 +26,8 @@ namespace engine {
         class ShaderProgram;
         class Material;
         class Mesh;
+        class Font;
+        class TextureMaterial;
     }
 }
 

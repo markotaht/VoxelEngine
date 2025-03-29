@@ -101,6 +101,8 @@
     <ClCompile Include="ChunkManager.cpp" />
     <ClCompile Include="ChunkSerializer.cpp" />
     <ClCompile Include="DebugLog.cpp" />
+    <ClCompile Include="Font.cpp" />
+    <ClCompile Include="FontLoader.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GenericShaderProgram.cpp" />
     <ClCompile Include="GeometricPrimitives.cpp" />
@@ -118,6 +120,8 @@
     <ClCompile Include="NewMesh.cpp" />
     <ClCompile Include="NewMeshRenderer.cpp" />
     <ClCompile Include="NewShaderProgram.cpp" />
+    <ClCompile Include="NewTextMaterial.cpp" />
+    <ClCompile Include="NewTextRenderer.cpp" />
     <ClCompile Include="NewTexture.cpp" />
     <ClCompile Include="OBJParser.cpp" />
     <ClCompile Include="PerlinNoise.cpp" />
@@ -128,6 +132,7 @@
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="StandardMaterial.cpp" />
     <ClCompile Include="TextMaterial.cpp" />
+    <ClCompile Include="TextMaterialLoader.cpp" />
     <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
@@ -152,6 +157,8 @@
     <ClInclude Include="DebugLog.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="FileDescriptor.h" />
+    <ClInclude Include="Font.h" />
+    <ClInclude Include="FontLoader.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GenericShaderProgram.h" />
     <ClInclude Include="GeometricPrimitives.h" />
@@ -169,6 +176,8 @@
     <ClInclude Include="NewResourceManager.h" />
     <ClInclude Include="NewSceneNode.h" />
     <ClInclude Include="NewShaderProgram.h" />
+    <ClInclude Include="NewTextMaterial.h" />
+    <ClInclude Include="NewTextRenderer.h" />
     <ClInclude Include="NewTexture.h" />
     <ClInclude Include="NoiseGenerator.h" />
     <ClInclude Include="ImageLoader.h" />
@@ -195,10 +204,14 @@
     <ClInclude Include="ShaderLoader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="StandardMaterial.h" />
+    <ClInclude Include="stb_image_write.h" />
+    <ClInclude Include="stb_rect_pack.h" />
     <ClInclude Include="StringUtils.h" />
     <ClInclude Include="ISystem.h" />
     <ClInclude Include="SystemContext.h" />
     <ClInclude Include="TextMaterial.h" />
+    <ClInclude Include="TextMaterialDescriptor.h" />
+    <ClInclude Include="TextMaterialLoader.h" />
     <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureLoader.h" />

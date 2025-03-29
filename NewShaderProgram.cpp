@@ -10,10 +10,10 @@ namespace engine {
 		{
 			glUseProgram(programId);
 
-		/*	for (const auto& [name, location] : attributeMap) {
+			for (const auto& [name, location] : attributeMap) {
 				glEnableVertexAttribArray(location);
 			}
-		*/
+		
 			GLenum error = glGetError();
 			if (error != GL_NO_ERROR) {
 				printf("Error binding shader! %s\n", glewGetErrorString(error));

@@ -207,6 +207,21 @@
     <ClCompile Include="RenderSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FontLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NewTextMaterial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NewTextRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextMaterialLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -424,6 +439,30 @@
     </ClInclude>
     <ClInclude Include="IComponentStorage.h">
       <Filter>Header Files\engine\component</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Header Files\engine\asset</Filter>
+    </ClInclude>
+    <ClInclude Include="FontLoader.h">
+      <Filter>Header Files\engine\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="NewTextMaterial.h">
+      <Filter>Header Files\engine\asset</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_rect_pack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NewTextRenderer.h">
+      <Filter>Header Files\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="TextMaterialDescriptor.h">
+      <Filter>Header Files\engine\descriptor</Filter>
+    </ClInclude>
+    <ClInclude Include="TextMaterialLoader.h">
+      <Filter>Header Files\engine\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image_write.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

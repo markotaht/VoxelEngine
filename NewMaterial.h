@@ -11,7 +11,7 @@ namespace engine {
 	namespace asset {
 		using TexturesMap = std::unordered_map<std::string, core::ResourceId<asset::Texture>>;
 
-		class Material : public engine::resource::Resource {
+		class Material : public resource::Resource {
 		public:
 			Material(core::ResourceId<ShaderProgram> shaderProgramId, UniformMap uniforms, TexturesMap textures)
 				:shaderProgramId(shaderProgramId)
