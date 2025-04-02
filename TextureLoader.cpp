@@ -10,7 +10,7 @@
 #include <SDL_image.h>
 #include <SDL_surface.h>
 
-#include "NewTexture.h"
+#include "Texture2D.h"
 #include "StringUtils.h"
 
 namespace engine {
@@ -21,7 +21,7 @@ namespace engine {
             return ends_with(desc.filePath, ".png") || ends_with(desc.filePath, ".jpg");
         }
 
-        std::unique_ptr<asset::Texture> TextureLoader::load(const descriptor::FileDescriptor& desc) const
+        std::unique_ptr<asset::Texture2D> TextureLoader::load(const descriptor::FileDescriptor& desc) const
         {
             SDL_Surface* loadedSurface = IMG_Load(desc.filePath.c_str());
             if (loadedSurface == NULL) {
@@ -57,9 +57,9 @@ namespace engine {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-            asset::Texture::SurfacePtr surface(loadedSurface, SDL_FreeSurface);
+            asset::Texture2D::SurfacePtr surface(loadedSurface, SDL_FreeSurface);
             glBindTexture(GL_TEXTURE_2D, 0);
-            return std::make_unique<asset::Texture>(GLtexture, std::move(surface));
+            return std::make_unique<asset::Texture2D>(GLtexture, std::move(surface));
         }
     }
 }

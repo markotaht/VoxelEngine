@@ -1,9 +1,9 @@
-#include "NewTexture.h"
+#include "Texture2D.h"
 #include <SDL_surface.h>
 
 namespace engine {
     namespace asset {
-        void Texture::unload()
+        void Texture2D::unload()
         {
             if (textureID != 0) {
                 glDeleteTextures(1, &textureID);
@@ -13,7 +13,7 @@ namespace engine {
             loadedTexture.reset();
         }
 
-        Texture::~Texture() {
+        Texture2D::~Texture2D() {
             unload();
         }
     }

@@ -114,9 +114,12 @@ namespace engine {
 
             template <typename T>
             T* get(engine::core::ResourceId<T> id) {
-                using engine::core::TypeTag;
-                std::type_index resourceType = core::TypeTag<T>::index();
-                auto tableIt = typedResources.find(resourceType);
+                auto typeIt = idToType.find(id);
+                if (typeIt == idToType.end()) return nullptr;
+
+                std::type_index actualType = typeIt->second;
+
+                auto tableIt = typedResources.find(actualType);
                 if (tableIt == typedResources.end()) return nullptr;
 
                 auto& table = tableIt->second;

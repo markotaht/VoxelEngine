@@ -1,15 +1,15 @@
-#version 140 core
+#version 330 core
 
-in vec3 VertexPosition;
-in vec3 VertexColor;
+layout(location = 0) in vec3 vposition;
+layout(location = 3) in vec3 vcolor;
 
-uniform mat4 modelMatrix;
-uniform mat4 viewMatrix;
-uniform mat4 projectionMatrix;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 out vec3 color;
 
 void main() {
-	color = VertexColor;
-	gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(VertexPosition, 1 );
+	color = vcolor;
+	gl_Position = projection * view * model * vec4(vposition, 1.0);
 }

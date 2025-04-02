@@ -9,15 +9,20 @@
 
 #include "ShaderDescriptor.h"
 #include "FileDescriptor.h"
+#include "Texture2DArrayDescriptor.h"
 #include "Types.h"
 
 namespace engine {
 	namespace descriptor {
+		using TextureDescriptorVariant = std::variant<
+			descriptor::FileDescriptor,
+			descriptor::Texture2DArrayDescriptor
+		>;
 
 		struct MaterialDescriptor {
 			ShaderDescriptor shaderDescriptor;
 			std::unordered_map<std::string, UniformValue> uniforms;
-			std::unordered_map<std::string, FileDescriptor> textures;
+			std::unordered_map<std::string, TextureDescriptorVariant> textures;
 
 			bool operator==(const MaterialDescriptor& other) const {
 				return shaderDescriptor == other.shaderDescriptor && uniforms == other.uniforms
@@ -68,11 +73,11 @@ namespace std {
 		return result;
 	}
 
-	inline std::size_t hashTextures(const std::unordered_map<std::string, engine::descriptor::FileDescriptor>& textures) {
+	inline std::size_t hashTextures(const std::unordered_map<std::string, engine::descriptor::TextureDescriptorVariant>& textures) {
 		std::size_t result = 0;
 		for (const auto& [key, value] : textures) {
 			std::size_t h1 = std::hash<std::string>{}(key);
-			std::size_t h2 = std::hash<engine::descriptor::FileDescriptor>{}(value);
+			std::size_t h2 = std::hash<engine::descriptor::TextureDescriptorVariant>{}(value);
 			result ^= (h1 ^ (h2 << 1));
 		}
 		return result;

@@ -135,6 +135,9 @@
     <ClCompile Include="TextMaterialLoader.cpp" />
     <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Texture2D.cpp" />
+    <ClCompile Include="Texture2DArray.cpp" />
+    <ClCompile Include="Texture2DArrayLoader.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="Transformation.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -165,6 +168,7 @@
     <ClInclude Include="IAnyLoader.h" />
     <ClInclude Include="IComponentStorage.h" />
     <ClInclude Include="IResourceLoader.h" />
+    <ClInclude Include="ITexture.h" />
     <ClInclude Include="MaterialDescriptor.h" />
     <ClInclude Include="MaterialLoader.h" />
     <ClInclude Include="MeshRendererComponent.h" />
@@ -178,7 +182,7 @@
     <ClInclude Include="NewShaderProgram.h" />
     <ClInclude Include="NewTextMaterial.h" />
     <ClInclude Include="NewTextRenderer.h" />
-    <ClInclude Include="NewTexture.h" />
+    <ClInclude Include="Texture2D.h" />
     <ClInclude Include="NoiseGenerator.h" />
     <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="InputHandler.h" />
@@ -214,6 +218,9 @@
     <ClInclude Include="TextMaterialLoader.h" />
     <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Texture2DArray.h" />
+    <ClInclude Include="Texture2DArrayDescriptor.h" />
+    <ClInclude Include="Texture2DArrayLoader.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="Transformation.h" />
@@ -224,7 +231,7 @@
   <ItemGroup>
     <None Include="arrayTexture.fs" />
     <None Include="arrayTexture.vs" />
-    <None Include="axis.fs" />
+    <None Include="axis.frag" />
     <None Include="axis.vs" />
     <None Include="basic.vs" />
     <None Include="basic2.frag" />

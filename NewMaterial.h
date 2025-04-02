@@ -9,7 +9,7 @@
 
 namespace engine {
 	namespace asset {
-		using TexturesMap = std::unordered_map<std::string, core::ResourceId<asset::Texture>>;
+		using TexturesMap = std::unordered_map<std::string, core::ResourceId<asset::ITexture>>;
 
 		class Material : public resource::Resource {
 		public:

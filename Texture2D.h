@@ -5,28 +5,32 @@
 
 #include <gl/glew.h>
 
-#include "NewResource.h"
+#include "ITexture.h"
 
 namespace engine {
 	namespace asset {
-		class Texture : public resource::Resource {
+		class Texture2D : public ITexture{
 
 		public:
 			using SurfacePtr = std::unique_ptr<SDL_Surface, void(*)(SDL_Surface*)>;
 
-			Texture() = default;
-			Texture(GLuint textureId, SurfacePtr loadedTexture)
+			Texture2D() = default;
+			Texture2D(GLuint textureId, SurfacePtr loadedTexture)
 				:textureID{ textureId }, loadedTexture(std::move(loadedTexture))
 			{
 			}
-			~Texture();
+
+
+			void bind(GLuint slot) const override;
+
+			~Texture2D();
 
 			[[nodiscard]] inline int getWidth() const { return loadedTexture->w; }
 			[[nodiscard]] inline int getHeight() const { return loadedTexture->h; }
 
 			[[nodiscard]] inline void* getPixels() const { return loadedTexture->pixels; }
 			[[nodiscard]] inline SDL_Surface* getSDLSurface() const { return loadedTexture.get(); }
-			[[nodiscard]] GLuint getGLID() const { return textureID; }
+			[[nodiscard]] GLuint getID() const override { return textureID; }
 
 			void unload();
 

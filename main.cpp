@@ -20,6 +20,9 @@
 #include "KeyboardHandler.h"
 #include "PerlinNoise.h"
 
+#include "FileDescriptor.h"
+#include "Texture2DArrayDescriptor.h"
+
 #include "ArrayTexture.h"
 
 #include "TextRenderer.h"
@@ -27,10 +30,12 @@
 #include "Axis.h"
 
 #include "NewResourceManager.h"
-#include "NewTexture.h"
+#include "Texture2D.h"
+#include "Texture2DArray.h"
 #include "TextureLoader.h"
 #include "MaterialLoader.h"
 #include "ShaderLoader.h"
+#include "Texture2DArrayLoader.h"
 #include "TextMaterialLoader.h"
 #include "FontLoader.h"
 #include "NewMeshRenderer.h"
@@ -67,13 +72,6 @@ engine::resource::ResourceManager resMan;
 //
 //	perlinNoise = new PerlinNoise();
 //	keyboardHandler = KeyboardHandler::getInstance();
-//	uint32_t textureId = resourceManager.AddResource<Texture>("D:/Visual studio/GameEngine/Debug/UV.png");
-//	uint32_t shaderId = resourceManager.AddResource<GenericShaderProgram>("basic.vs", "basic.fs");
-//	uint32_t textShaderId = resourceManager.AddResource<GenericShaderProgram>("textShader.vs", "textShader.fs");
-//	uint32_t axisShaderId = resourceManager.AddResource<GenericShaderProgram>("axis.vs", "axis.fs");
-//	TextRenderer* textRenderer = new TextRenderer("ProggyClean.ttf", resourceManager.getResource<GenericShaderProgram>(textShaderId));
-//	uint32_t materialId = resourceManager.AddResource<StandardMaterial>("Standard", new StandardMaterial(resourceManager.getResource<Texture>(textureId), resourceManager.getResource<GenericShaderProgram>(shaderId)));
-//	uint32_t axisMaterialId = resourceManager.AddResource<TextMaterial>("Text", new TextMaterial(resourceManager.getResource<GenericShaderProgram>(axisShaderId)));
 //
 //	arrayTexture = new ArrayTexture(&resourceManager);
 //	arrayTexture->addTexture("GrassTop", "D:/Visual studio/VoxelEngine/VoxelEngine/GrassTop.png");
@@ -86,12 +84,8 @@ engine::resource::ResourceManager resMan;
 //	uint32_t arrayTextureMaterialId = resourceManager.AddResource<ArrayTextureMaterial>("ArrayTexture", new ArrayTextureMaterial(resourceManager.getResource<Texture>("UV"), resourceManager.getResource<GenericShaderProgram>(arrayTextureShaderId)));
 //
 //	debugLog = DebugLog::getInstance(textRenderer);
-//	mainCamera = new Camera();
 //	scene = new SceneNode();
-//	scene->addChild(mainCamera);
-//
-//	Axis* axis = new Axis(resourceManager.getResource<TextMaterial>("Text"));
-//	scene->addChild(axis);
+
 //	ChunkManager* chunk = new ChunkManager(resourceManager.getResource<Material>(materialId), mainCamera, &resourceManager, perlinNoise);
 //	scene->addChild(chunk);
 //	
@@ -109,19 +103,37 @@ bool loadMediaNew() {
 	resMan.registerLoader(std::make_unique<engine::loader::TextMaterialLoader>(resMan));
 	resMan.registerLoader(std::make_unique<engine::loader::ShaderLoader>());
 	resMan.registerLoader(std::make_unique<engine::loader::FontLoader>());
+	resMan.registerLoader(std::make_unique<engine::loader::Texture2DArrayLoader>());
 
-	engine::core::ResourceId<engine::asset::Texture> texId = resMan.load<engine::asset::Texture>("D:/Visual studio/GameEngine/Debug/UV.png", "UV_Texture");
+	engine::core::ResourceId<engine::asset::Texture2D> texId = resMan.load<engine::asset::Texture2D>("D:/Visual studio/GameEngine/Debug/UV.png", "UV_Texture");
+	engine::core::ResourceId<engine::asset::Texture2DArray> arrayTexId = resMan.load<engine::descriptor::Texture2DArrayDescriptor, engine::asset::Texture2DArray>(
+		{
+			512,512,
+			{
+				{"GrassTop", {"D:/Visual studio/VoxelEngine/GrassTop.png"}},
+				{"GrassSide", {"D:/Visual studio/VoxelEngine/GrassSide.png"}},
+				{"GrassBottom", {"D:/Visual studio/VoxelEngine/GrassBottom.png"}},
+				{"UV", {"D:/Visual studio/VoxelEngine/GrassBottom.png"} },
+		}}
+		, "ArrayTexture");
 	engine::core::ResourceId<engine::asset::Font> fontId = resMan.load<engine::asset::Font>("ProggyClean.ttf", "ProggyClean");
-	engine::core::ResourceId<engine::asset::ShaderProgram> shaderId = resMan.load<engine::descriptor::ShaderDescriptor, engine::asset::ShaderProgram>({ "vertexLayout.vs", "fragmentShader.frag" }, "Basic");
+	engine::core::ResourceId<engine::asset::ShaderProgram> shaderId = resMan.load<engine::descriptor::ShaderDescriptor, engine::asset::ShaderProgram>({ "vertexLayout.vs", "fragmentShader.frag" }, "BasicShader");
 	engine::core::ResourceId<engine::asset::ShaderProgram> textShaderId = resMan.load<engine::descriptor::ShaderDescriptor, engine::asset::ShaderProgram>({ "textShader.vs", "textShader.frag" }, "TextShader");
+	engine::core::ResourceId<engine::asset::ShaderProgram> axisShaderId = resMan.load<engine::descriptor::ShaderDescriptor, engine::asset::ShaderProgram>({ "axis.vs", "axis.frag" }, "AxisShader");
 	engine::core::ResourceId<engine::asset::Mesh> meshId = resMan.add(std::move(engine::asset::Mesh::makeCube()), "Cube");
+	engine::core::ResourceId<engine::asset::Mesh> axisMeshId = resMan.add(std::move(engine::asset::Mesh::makeAxis()), "Axis");
 	engine::core::ResourceId<engine::asset::Material> matId = resMan.load<engine::descriptor::MaterialDescriptor, engine::asset::Material>({
 		{ "vertexLayout.vs", "fragmentShader.frag" } ,
 		{},
 		{
-			{"albedo", {"D:/Visual studio/GameEngine/Debug/UV.png"}}
+			{"albedo", engine::descriptor::FileDescriptor{"D:/Visual studio/GameEngine/Debug/UV.png"}}
 		}
 		}, "Cube");
+	engine::core::ResourceId<engine::asset::Material> axisMatId = resMan.load<engine::descriptor::MaterialDescriptor, engine::asset::Material>({
+	{ "axis.vs", "axis.frag" } ,
+	{},
+	{}
+	}, "Cube");
 	engine::core::ResourceId<engine::asset::TextMaterial> textMatId = resMan.load<engine::descriptor::TextMaterialDescriptor, engine::asset::TextMaterial>({
 		{ "textShader.vs", "textShader.frag" } ,
 		{"ProggyClean.ttf"}
@@ -135,6 +147,13 @@ bool loadMediaNew() {
 	engine::entity::Entity cubeEntity = registry.create();
 	registry.add<engine::component::TransformComponent>(cubeEntity, cubeTransform);
 	registry.add<engine::component::MeshRendererComponent>(cubeEntity, meshRenderer);
+
+	engine::component::TransformComponent axisTransform;
+	engine::component::MeshRendererComponent axisMeshRenderer {axisMeshId, axisMatId};
+
+	engine::entity::Entity axisEntity = registry.create();
+	registry.add<engine::component::TransformComponent>(axisEntity, axisTransform);
+	registry.add<engine::component::MeshRendererComponent>(axisEntity, axisMeshRenderer);
 
 	engine::component::TransformComponent cameraTransform;
 	engine::component::CameraComponent cameraComponent;
@@ -185,7 +204,7 @@ int main(int argc, char* args[])
 				NOW = SDL_GetPerformanceCounter();
 				deltaTime = (NOW - LAST) / (double)SDL_GetPerformanceFrequency();
 
-				engine::system::SystemContext context {registry, &resMan, deltaTime};
+				engine::system::SystemContext context {registry, &resMan, static_cast<float>(deltaTime)};
 				textRenderer->addMessage(std::to_string(1000.f / (NOW_TICK - LAST_TICK)) + "FPS");
 			//	debugLog->addMessage(std::to_string(1000.f / (NOW_TICK - LAST_TICK)) + "FPS");
 			//	debugLog->addMessage(std::to_string(deltaTime) + "s");
@@ -208,7 +227,7 @@ int main(int argc, char* args[])
 				glEnable(GL_DEPTH_TEST);
 			//	scene.render(resMan);
 				//scene->render(mainCamera->getProjectionMatrix(), mainCamera->getViewMatrix());
-			//	renderer.update(context);
+				renderer.update(context);
 				glDisable(GL_DEPTH_TEST);
 			//	debugLog->render();
 				textRenderer->render(resMan);

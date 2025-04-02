@@ -22,7 +22,9 @@ namespace engine {
     }
 
     namespace asset {
-        class Texture;
+        class ITexture;
+        class Texture2D;
+        class Texture2DArray;
         class ShaderProgram;
         class Material;
         class Mesh;

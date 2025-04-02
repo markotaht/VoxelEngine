@@ -1,5 +1,5 @@
 #include "NewMaterial.h"
-#include "NewTexture.h"
+#include "ITexture.h"
 #include "NewShaderProgram.h"
 #include "NewResourceManager.h"
 
@@ -65,10 +65,10 @@ namespace engine {
         {
 			GLuint unit = 0;
 			for (auto& [id, textureId] : textures) {
-				Texture* texture = resourceManager.get<Texture>(textureId);
+				ITexture* texture = resourceManager.get<ITexture>(textureId);
 				if (!texture) continue;
 				glActiveTexture(GL_TEXTURE0 + unit);
-				glBindTexture(GL_TEXTURE_2D, texture->getGLID());
+				glBindTexture(GL_TEXTURE_2D, texture->getID());
 
 				GLint location = shaderProgram->getUniform(id.c_str());
 				if (location != -1) {

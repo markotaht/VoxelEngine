@@ -150,7 +150,7 @@ namespace engine::loader {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 
-		dumpTexture(texture, 512, 512, "font_atlas2.png");
+		//dumpTexture(texture, 512, 512, "font_atlas2.png");
 
         return std::make_unique<asset::Font>(texture, vao, vbo, std::move(characters));
     }

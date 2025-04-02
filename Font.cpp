@@ -13,7 +13,6 @@ void engine::asset::Font::bind()
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(vao);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	std::cout << "VAO: " << vao << " Texture: " << texture << std::endl;
 }
 
 void engine::asset::Font::unbind()

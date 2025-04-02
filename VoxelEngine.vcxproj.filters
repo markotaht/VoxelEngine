@@ -222,6 +222,15 @@
     <ClCompile Include="TextMaterialLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Texture2DArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2DArrayLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -362,7 +371,7 @@
     <ClInclude Include="ResourceLoaderWrapper.h">
       <Filter>Header Files\engine\loaders</Filter>
     </ClInclude>
-    <ClInclude Include="NewTexture.h">
+    <ClInclude Include="Texture2D.h">
       <Filter>Header Files\engine\asset</Filter>
     </ClInclude>
     <ClInclude Include="NewShaderProgram.h">
@@ -464,15 +473,24 @@
     <ClInclude Include="stb_image_write.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ITexture.h">
+      <Filter>Header Files\engine\asset</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2DArray.h">
+      <Filter>Header Files\engine\asset</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2DArrayLoader.h">
+      <Filter>Header Files\engine\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2DArrayDescriptor.h">
+      <Filter>Header Files\engine\descriptor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="basic.vs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="textShader.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="axis.fs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="axis.vs">
@@ -494,6 +512,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="textShader.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="axis.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

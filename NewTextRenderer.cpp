@@ -9,7 +9,6 @@ void engine::render::TextRenderer::render(resource::ResourceManager& resourceMan
 {
 	asset::TextMaterial* textMaterial = resourceManager.get<asset::TextMaterial>(textMaterialId);
     asset::Font* font = resourceManager.get<asset::Font>(textMaterial->getFontId());
-    std::cout << "[TextRenderer] Font: " << font << " Material: " << textMaterial << std::endl;
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(Window::SCREEN_WIDTH), 0.0f, static_cast<float>(Window::SCREEN_HEIGHT));
 	textMaterial->bind(glm::vec3(1.f, 1.f, 1.f), projection, resourceManager);
     for (int i = 0; i < messages.size(); i++) {
@@ -17,12 +16,10 @@ void engine::render::TextRenderer::render(resource::ResourceManager& resourceMan
 	}
 	textMaterial->unbind(resourceManager);
     messages.clear();
-    std::cout << font << std::endl;
 }
 
 void engine::render::TextRenderer::_render(std::string& text, float x, float y, float scale, asset::Font* font)
 {
-    std::cout << "Rendering: " << text << std::endl;
     for (char c : text) {
         asset::Character ch = font->getCharater(c);
 
