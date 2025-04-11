@@ -92,21 +92,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ArrayTextureMaterial.cpp" />
-    <ClCompile Include="BasicShaderProgram2D.cpp" />
     <ClCompile Include="ChunkGenerator.cpp" />
     <ClCompile Include="ChunkMesher.cpp" />
     <ClCompile Include="ChunkRenderer.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontLoader.cpp" />
-    <ClCompile Include="GenericShaderProgram.cpp" />
     <ClCompile Include="GeometricPrimitives.cpp" />
-    <ClCompile Include="ImageLoader.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="LookSystem.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MaterialLoader.cpp" />
-    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MoveSystem.cpp" />
     <ClCompile Include="MTLMaterial.cpp" />
     <ClCompile Include="MTLParser.cpp" />
@@ -121,11 +116,7 @@
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="ShaderLoader.cpp" />
-    <ClCompile Include="ShaderProgram.cpp" />
-    <ClCompile Include="StandardMaterial.cpp" />
-    <ClCompile Include="TextMaterial.cpp" />
     <ClCompile Include="TextMaterialLoader.cpp" />
-    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="Texture2DArray.cpp" />
     <ClCompile Include="Texture2DArrayLoader.cpp" />
@@ -134,8 +125,6 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ArrayTextureMaterial.h" />
-    <ClInclude Include="BasicShaderProgram2D.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="ChunkGenerator.h" />
     <ClInclude Include="ChunkMesher.h" />
@@ -146,7 +135,6 @@
     <ClInclude Include="FileDescriptor.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontLoader.h" />
-    <ClInclude Include="GenericShaderProgram.h" />
     <ClInclude Include="GeometricPrimitives.h" />
     <ClInclude Include="IAnyLoader.h" />
     <ClInclude Include="IComponentStorage.h" />
@@ -171,34 +159,24 @@
     <ClInclude Include="TagPlayerControlled.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="NoiseGenerator.h" />
-    <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="InputHandler.h" />
-    <ClInclude Include="Loader.h" />
-    <ClInclude Include="Material.h" />
-    <ClInclude Include="Mesh.h" />
     <ClInclude Include="MTLMaterial.h" />
     <ClInclude Include="MTLParser.h" />
     <ClInclude Include="OBJParser.h" />
     <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="Registry.h" />
     <ClInclude Include="RenderSystem.h" />
-    <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceId.h" />
     <ClInclude Include="ResourceLoaderWrapper.h" />
-    <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="ShaderDescriptor.h" />
     <ClInclude Include="ShaderLoader.h" />
-    <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="StandardMaterial.h" />
     <ClInclude Include="stb_image_write.h" />
     <ClInclude Include="stb_rect_pack.h" />
     <ClInclude Include="StringUtils.h" />
     <ClInclude Include="ISystem.h" />
     <ClInclude Include="SystemContext.h" />
-    <ClInclude Include="TextMaterial.h" />
     <ClInclude Include="TextMaterialDescriptor.h" />
     <ClInclude Include="TextMaterialLoader.h" />
-    <ClInclude Include="Texture.h" />
     <ClInclude Include="Texture2DArray.h" />
     <ClInclude Include="Texture2DArrayDescriptor.h" />
     <ClInclude Include="Texture2DArrayLoader.h" />

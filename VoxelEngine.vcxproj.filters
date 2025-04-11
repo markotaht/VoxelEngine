@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Shader">
-      <UniqueIdentifier>{69f1f9ab-143a-43ce-b1e1-06cd1877c377}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Shader">
-      <UniqueIdentifier>{16e4500f-4085-494a-b0fa-14de5f16eb65}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\resource">
       <UniqueIdentifier>{c1580dcb-35c7-421c-98d6-a9ccde3ea6a9}</UniqueIdentifier>
     </Filter>
@@ -105,41 +99,14 @@
     <ClCompile Include="GeometricPrimitives.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderProgram.cpp">
-      <Filter>Source Files\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="GenericShaderProgram.cpp">
-      <Filter>Source Files\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="BasicShaderProgram2D.cpp">
-      <Filter>Source Files\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files\resource</Filter>
-    </ClCompile>
     <ClCompile Include="MTLMaterial.cpp">
       <Filter>Source Files\resource</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageLoader.cpp">
-      <Filter>Source Files\resource\loaders</Filter>
     </ClCompile>
     <ClCompile Include="MTLParser.cpp">
       <Filter>Source Files\resource\loaders</Filter>
     </ClCompile>
     <ClCompile Include="OBJParser.cpp">
       <Filter>Source Files\resource\loaders</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files\resource</Filter>
-    </ClCompile>
-    <ClCompile Include="StandardMaterial.cpp">
-      <Filter>Source Files\resource</Filter>
-    </ClCompile>
-    <ClCompile Include="ArrayTextureMaterial.cpp">
-      <Filter>Source Files\resource</Filter>
-    </ClCompile>
-    <ClCompile Include="TextMaterial.cpp">
-      <Filter>Source Files\resource</Filter>
     </ClCompile>
     <ClCompile Include="PerlinNoise.cpp">
       <Filter>Source Files</Filter>
@@ -224,35 +191,8 @@
     <ClInclude Include="GeometricPrimitives.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderProgram.h">
-      <Filter>Header Files\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="GenericShaderProgram.h">
-      <Filter>Header Files\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="BasicShaderProgram2D.h">
-      <Filter>Header Files\Shader</Filter>
-    </ClInclude>
     <ClInclude Include="cmp_str.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Header Files\resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files\resource</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>Header Files\resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Header Files\resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>Header Files\resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Loader.h">
-      <Filter>Header Files\resource\loaders</Filter>
     </ClInclude>
     <ClInclude Include="MTLParser.h">
       <Filter>Header Files\resource\loaders</Filter>
@@ -260,19 +200,7 @@
     <ClInclude Include="OBJParser.h">
       <Filter>Header Files\resource\loaders</Filter>
     </ClInclude>
-    <ClInclude Include="ImageLoader.h">
-      <Filter>Header Files\resource\loaders</Filter>
-    </ClInclude>
     <ClInclude Include="MTLMaterial.h">
-      <Filter>Header Files\resource</Filter>
-    </ClInclude>
-    <ClInclude Include="StandardMaterial.h">
-      <Filter>Header Files\resource</Filter>
-    </ClInclude>
-    <ClInclude Include="ArrayTextureMaterial.h">
-      <Filter>Header Files\resource</Filter>
-    </ClInclude>
-    <ClInclude Include="TextMaterial.h">
       <Filter>Header Files\resource</Filter>
     </ClInclude>
     <ClInclude Include="NoiseGenerator.h">
