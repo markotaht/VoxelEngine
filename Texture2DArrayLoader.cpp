@@ -14,6 +14,32 @@
 #include <SDL_opengl.h>
 #include <gl/GLU.h>
 
+SDL_Surface* flipSurfaceVertically(SDL_Surface* surface) {
+    SDL_Surface* flipped = SDL_CreateRGBSurfaceWithFormat(
+        0,
+        surface->w,
+        surface->h,
+        surface->format->BitsPerPixel,
+        surface->format->format
+    );
+
+    if (!flipped) return nullptr;
+
+    int pitch = surface->pitch;
+    uint8_t* srcPixels = static_cast<uint8_t*>(surface->pixels);
+    uint8_t* dstPixels = static_cast<uint8_t*>(flipped->pixels);
+
+    for (int y = 0; y < surface->h; ++y) {
+        memcpy(
+            dstPixels + y * pitch,
+            srcPixels + (surface->h - 1 - y) * pitch,
+            pitch
+        );
+    }
+
+    return flipped;
+}
+
 namespace engine::loader {
     bool Texture2DArrayLoader::canLoad(const descriptor::Texture2DArrayDescriptor& desc) const
     {
@@ -46,13 +72,13 @@ namespace engine::loader {
                 GL_RGBA,
                 GL_UNSIGNED_BYTE,
                 surfacePtr->pixels);
+            ++index;
         }
 
-        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 
         return std::make_unique<asset::Texture2DArray>(textureArray, std::move(textureMap));
     }
@@ -66,7 +92,7 @@ namespace engine::loader {
                 printf("Unable to load image %s! SDL_image Error: %s\n", fileDescriptor.filePath.c_str(), IMG_GetError());
                 return {};
             }
-            SDL_Surface* converted = SDL_ConvertSurfaceFormat(loadedSurface, SDL_PIXELFORMAT_ABGR8888, 0);
+            SDL_Surface* converted = flipSurfaceVertically(SDL_ConvertSurfaceFormat(loadedSurface, SDL_PIXELFORMAT_ABGR8888, 0));
             SDL_FreeSurface(loadedSurface);
 
             if (!converted) {

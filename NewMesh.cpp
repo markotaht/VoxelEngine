@@ -121,6 +121,7 @@ namespace engine {
 			normals.clear();
 			uvs2D.clear();
 			uvs3D.clear();
+			colors.clear();
 			indices.clear();
 		}
 

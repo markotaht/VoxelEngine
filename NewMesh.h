@@ -16,6 +16,37 @@ namespace engine {
 		{
 		public:
 			Mesh() = default;
+			Mesh(Mesh&& other) noexcept {
+				*this = std::move(other);
+			}
+			Mesh& operator=(Mesh&& other) noexcept {
+				if (this != &other) {
+					// First unload existing resources if any
+					unload();
+
+					// Move GPU handles
+					vao = other.vao; other.vao = 0;
+					vboPositions = other.vboPositions; other.vboPositions = 0;
+					vboNormals = other.vboNormals; other.vboNormals = 0;
+					vboColors = other.vboColors; other.vboColors = 0;
+					vboUVs = other.vboUVs; other.vboUVs = 0;
+					ibo = other.ibo; other.ibo = 0;
+
+					// Move render state
+					indexCount = other.indexCount;
+					renderType = other.renderType;
+					uvType = other.uvType;
+
+					// Move data vectors
+					vertices = std::move(other.vertices);
+					normals = std::move(other.normals);
+					colors = std::move(other.colors);
+					uvs3D = std::move(other.uvs3D);
+					uvs2D = std::move(other.uvs2D);
+					indices = std::move(other.indices);
+				}
+				return *this;
+			}
 			~Mesh() { unload(); }
 
 			void setVertices(std::vector<glm::vec3> newVertices) { vertices = std::move(newVertices); }

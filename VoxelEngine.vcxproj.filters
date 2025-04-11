@@ -67,9 +67,6 @@
     <Filter Include="Source Files\engine\render">
       <UniqueIdentifier>{b4015764-9ff4-4b14-9cbd-37b7fc80fe75}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\engine\scene">
-      <UniqueIdentifier>{e066d790-c89c-4f4e-8cf1-c8a2365d5026}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\engine\entity">
       <UniqueIdentifier>{fc2d69a6-9694-4362-bc7a-2a72fc8aae1b}</UniqueIdentifier>
     </Filter>
@@ -79,6 +76,21 @@
     <Filter Include="Header Files\engine\component">
       <UniqueIdentifier>{d8b77d91-6c1a-4f31-a0ac-d5b3c294edfd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\engine\world">
+      <UniqueIdentifier>{2a243c60-84ad-4987-b0b4-9c40bf74244e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\world\voxel">
+      <UniqueIdentifier>{0dffa628-5606-4e02-a24a-9dc19cd5088e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\world">
+      <UniqueIdentifier>{6c8a162f-3469-412c-b6e6-676e66bde6ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\world\voxel">
+      <UniqueIdentifier>{387dd549-d212-4483-8160-0856042d3358}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\system">
+      <UniqueIdentifier>{3ec40480-4bf0-4ee5-8ee2-eed10c3186c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -87,22 +99,7 @@
     <ClCompile Include="Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneNode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Transformation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="KeyboardHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="InputHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeometricPrimitives.cpp">
@@ -132,35 +129,8 @@
     <ClCompile Include="OBJParser.cpp">
       <Filter>Source Files\resource\loaders</Filter>
     </ClCompile>
-    <ClCompile Include="MeshBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Block.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TextRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Chunk.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>Source Files\resource</Filter>
-    </ClCompile>
-    <ClCompile Include="ChunkManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Axis.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugLog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ArrayTexture.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StandardMaterial.cpp">
       <Filter>Source Files\resource</Filter>
@@ -172,9 +142,6 @@
       <Filter>Source Files\resource</Filter>
     </ClCompile>
     <ClCompile Include="PerlinNoise.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ChunkSerializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NewShaderProgram.cpp">
@@ -201,54 +168,57 @@
     <ClCompile Include="NewMaterial.cpp">
       <Filter>Source Files\engine\asset</Filter>
     </ClCompile>
-    <ClCompile Include="Scene3D.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Font.cpp">
+      <Filter>Source Files\engine\asset</Filter>
     </ClCompile>
-    <ClCompile Include="RenderSystem.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ChunkGenerator.cpp">
+      <Filter>Source Files\engine\world\voxel</Filter>
+    </ClCompile>
+    <ClCompile Include="ChunkMesher.cpp">
+      <Filter>Source Files\engine\world\voxel</Filter>
+    </ClCompile>
+    <ClCompile Include="ChunkRenderer.cpp">
+      <Filter>Source Files\engine\world\voxel</Filter>
     </ClCompile>
     <ClCompile Include="FontLoader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\engine\loader</Filter>
     </ClCompile>
-    <ClCompile Include="Font.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="LookSystem.cpp">
+      <Filter>Source Files\engine\system</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveSystem.cpp">
+      <Filter>Source Files\engine\system</Filter>
     </ClCompile>
     <ClCompile Include="NewTextMaterial.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\engine\asset</Filter>
     </ClCompile>
     <ClCompile Include="NewTextRenderer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\engine\render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem.cpp">
+      <Filter>Source Files\engine\system</Filter>
     </ClCompile>
     <ClCompile Include="TextMaterialLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture2DArray.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture2DArrayLoader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\engine\loader</Filter>
     </ClCompile>
     <ClCompile Include="Texture2D.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\engine\asset</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2DArray.cpp">
+      <Filter>Source Files\engine\asset</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2DArrayLoader.cpp">
+      <Filter>Source Files\engine\loader</Filter>
+    </ClCompile>
+    <ClCompile Include="VoxelTerrain.cpp">
+      <Filter>Source Files\engine\world\voxel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyboardHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="InputHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GeometricPrimitives.h">
@@ -264,9 +234,6 @@
       <Filter>Header Files\Shader</Filter>
     </ClInclude>
     <ClInclude Include="cmp_str.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
@@ -299,33 +266,6 @@
     <ClInclude Include="MTLMaterial.h">
       <Filter>Header Files\resource</Filter>
     </ClInclude>
-    <ClInclude Include="Block.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Chunk.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Transformation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ChunkManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Axis.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugLog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ArrayTexture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="StandardMaterial.h">
       <Filter>Header Files\resource</Filter>
     </ClInclude>
@@ -339,12 +279,6 @@
       <Filter>Header Files\noise</Filter>
     </ClInclude>
     <ClInclude Include="PerlinNoise.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ChunkSerializer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ChunkStorage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StringUtils.h">
@@ -407,18 +341,6 @@
     <ClInclude Include="TypeTag.h">
       <Filter>Header Files\engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="NewSceneNode.h">
-      <Filter>Header Files\engine\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="NewCamera.h">
-      <Filter>Header Files\engine\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene3D.h">
-      <Filter>Header Files\engine\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="BasicObject.h">
-      <Filter>Header Files\engine\scene</Filter>
-    </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>Header Files\engine\entity</Filter>
     </ClInclude>
@@ -430,9 +352,6 @@
     </ClInclude>
     <ClInclude Include="SystemContext.h">
       <Filter>Header Files\engine\system</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderSystem.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ComponentStorage.h">
       <Filter>Header Files\engine\component</Filter>
@@ -485,6 +404,39 @@
     <ClInclude Include="Texture2DArrayDescriptor.h">
       <Filter>Header Files\engine\descriptor</Filter>
     </ClInclude>
+    <ClInclude Include="ITerrain.h">
+      <Filter>Header Files\engine\world</Filter>
+    </ClInclude>
+    <ClInclude Include="VoxelTerrain.h">
+      <Filter>Header Files\engine\world\voxel</Filter>
+    </ClInclude>
+    <ClInclude Include="NewChunk.h">
+      <Filter>Header Files\engine\world\voxel</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkGenerator.h">
+      <Filter>Header Files\engine\world\voxel</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkMesher.h">
+      <Filter>Header Files\engine\world\voxel</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem.h">
+      <Filter>Header Files\engine\system</Filter>
+    </ClInclude>
+    <ClInclude Include="TagPlayerControlled.h">
+      <Filter>Header Files\engine\component</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveSystem.h">
+      <Filter>Header Files\engine\system</Filter>
+    </ClInclude>
+    <ClInclude Include="PitchYawRotation.h">
+      <Filter>Header Files\engine\component</Filter>
+    </ClInclude>
+    <ClInclude Include="LookSystem.h">
+      <Filter>Header Files\engine\system</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkRenderer.h">
+      <Filter>Header Files\engine\world\voxel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="basic.vs">
@@ -499,7 +451,7 @@
     <None Include="arrayTexture.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="arrayTexture.fs">
+    <None Include="arrayTexture.frag">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="vertexLayout.vs">

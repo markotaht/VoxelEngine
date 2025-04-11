@@ -67,8 +67,7 @@ namespace engine {
 			for (auto& [id, textureId] : textures) {
 				ITexture* texture = resourceManager.get<ITexture>(textureId);
 				if (!texture) continue;
-				glActiveTexture(GL_TEXTURE0 + unit);
-				glBindTexture(GL_TEXTURE_2D, texture->getID());
+                texture->bind(unit);
 
 				GLint location = shaderProgram->getUniform(id.c_str());
 				if (location != -1) {
