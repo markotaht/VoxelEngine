@@ -44,6 +44,10 @@
 #include "MoveSystem.h"
 #include "LookSystem.h"
 #include "VoxelTerrain.h"
+#include "PhysicsSystem.h"
+
+#include "RigidBodyComponent.h"
+#include "ColliderComponent.h"
 
 Window window;
 bool quit = false;
@@ -56,6 +60,7 @@ engine::entity::Registry registry;
 engine::system::RenderSystem renderer;
 engine::system::MoveSystem mover;
 engine::system::LookSystem looker;
+engine::system::PhysicsSystem physics;
 
 
 std::unique_ptr<engine::render::TextRenderer> textRenderer;
@@ -124,10 +129,29 @@ bool loadMedia() {
 
 	engine::component::TransformComponent cubeTransform;
 	engine::component::MeshRendererComponent meshRenderer {meshId, matId};
+	engine::component::RigidBodyComponent cubeRigid;
+	cubeRigid.isStatic = true;
+	engine::component::ColliderComponent cubeCollider;
+	cubeCollider.type = engine::component::ColliderType::AABB;
+	cubeCollider.size = glm::vec3{ 1, 1, 1};
 
-	//engine::entity::Entity cubeEntity = registry.create();
-	//registry.add<engine::component::TransformComponent>(cubeEntity, cubeTransform);
-	//registry.add<engine::component::MeshRendererComponent>(cubeEntity, meshRenderer);
+	engine::entity::Entity cubeEntity = registry.create();
+
+	registry.addEntity(cubeEntity, cubeTransform, meshRenderer, cubeRigid, cubeCollider);
+
+	engine::component::TransformComponent cubeTransform2;
+	cubeTransform2.position.y = 5;
+	cubeTransform2.position.x = 1.5f;
+	engine::component::MeshRendererComponent meshRenderer2 {meshId, matId};
+	engine::component::RigidBodyComponent cubeRigid2;
+	cubeRigid2.isStatic = false;
+	cubeRigid2.acceleration = { 0,  -0.5f ,0 };
+	engine::component::ColliderComponent cubeCollider2;
+	cubeCollider2.type = engine::component::ColliderType::AABB;
+	cubeCollider2.size = glm::vec3{ 1, 1, 1 };
+
+	engine::entity::Entity cubeEntity2 = registry.create();
+	registry.addEntity(cubeEntity2, cubeTransform2, meshRenderer2, cubeRigid2, cubeCollider2);
 
 	engine::component::TransformComponent axisTransform;
 	engine::component::MeshRendererComponent axisMeshRenderer {axisMeshId, axisMatId};
@@ -140,14 +164,11 @@ bool loadMedia() {
 	engine::component::CameraComponent cameraComponent;
 	engine::component::PitchYawRotationComponent pirtchYaw;
 	engine::component::TagPlayerControlled tagPlayerControllerd;
-	cameraTransform.position.z = 50;
-	cameraTransform.position.y = 50;
+	cameraTransform.position.z = 10;
+	cameraTransform.position.y = 0;
 
 	camera = registry.create();
-	registry.add<engine::component::TransformComponent>(camera, cameraTransform);
-	registry.add<engine::component::CameraComponent>(camera, cameraComponent);
-	registry.add<engine::component::TagPlayerControlled>(camera, tagPlayerControllerd);
-	registry.add<engine::component::PitchYawRotationComponent>(camera, pirtchYaw);
+	registry.addEntity(camera, cameraTransform, cameraComponent, pirtchYaw, tagPlayerControllerd);
 
 	return true;
 }
@@ -195,8 +216,8 @@ int main(int argc, char* args[])
 				engine::component::TransformComponent* camTransform = nullptr;
 				engine::component::CameraComponent* cam = nullptr;
 
-				camTransform = registry.get<engine::component::TransformComponent>(camera);
-				cam = registry.get<engine::component::CameraComponent>(camera);
+				camTransform = registry.tryGetComponent<engine::component::TransformComponent>(camera);
+				cam = registry.tryGetComponent<engine::component::CameraComponent>(camera);
 
 				engine::system::SystemContext context {registry, &resMan, static_cast<float>(deltaTime)};
 				textRenderer->addMessage(std::to_string(static_cast<int>(smoothedFps)) + "FPS");
@@ -221,10 +242,10 @@ int main(int argc, char* args[])
 				glEnable(GL_DEPTH_TEST);
 			//	scene.render(resMan);
 				//scene->render(mainCamera->getProjectionMatrix(), mainCamera->getViewMatrix());
-				terrain->update(camTransform->position);
-				terrain->render(camTransform->getInverseMatrix(), cam->getProjectionMatrix());
-				terrain->finalize();
-				
+			//	terrain->update(camTransform->position);
+			//	terrain->render(camTransform->getInverseMatrix(), cam->getProjectionMatrix());
+			//	terrain->finalize();
+				physics.update(context);
 				renderer.update(context);
 				looker.update(context);
 				mover.update(context);

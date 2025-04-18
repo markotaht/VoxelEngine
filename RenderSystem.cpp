@@ -17,13 +17,13 @@ namespace engine::system {
 
 		entity::Registry& ecs = ctx.ecs;
 
-		ecs.each<component::CameraComponent>([&](entity::Entity e, component::CameraComponent& c) {
+		ecs.forEach<component::CameraComponent>([&](entity::Entity e, component::CameraComponent& c) {
 			activeCamera = e;
 			cam = &c;
-			camTransform = ecs.get<component::TransformComponent>(e);
+			camTransform = ecs.tryGetComponent<component::TransformComponent>(e);
 		});
 
-		ecs.each<component::TransformComponent, component::MeshRendererComponent>([&](entity::Entity e, component::TransformComponent& transform, component::MeshRendererComponent& meshRenderer) {
+		ecs.forEach<component::TransformComponent, component::MeshRendererComponent>([&](entity::Entity e, component::TransformComponent& transform, component::MeshRendererComponent& meshRenderer) {
 			asset::Mesh* mesh = ctx.resMan->get<asset::Mesh>(meshRenderer.meshId);
 			asset::Material* material = ctx.resMan->get<asset::Material>(meshRenderer.materialId);
 

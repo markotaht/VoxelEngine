@@ -6,7 +6,7 @@
 namespace engine::component {
 	struct TransformComponent {
         glm::vec3 position = glm::vec3(0.0f);
-        glm::quat  rotation = glm::quat(1.0f,0,0,0); // Euler angles in radians
+        glm::quat rotation = glm::quat(1.0f,0,0,0); // Euler angles in radians
         glm::vec3 scale = glm::vec3(1.0f);
 
         glm::mat4 getMatrix() const {
@@ -20,6 +20,18 @@ namespace engine::component {
 
         glm::mat4 getInverseMatrix() const {
             return glm::inverse(getMatrix());
+        }
+
+        glm::vec3 up() const {
+            return glm::rotate(rotation, { 0,1,0 });
+        }
+
+        glm::vec3 right() const {
+            return glm::rotate(rotation, { 1,0,0 });
+        }
+
+        glm::vec3 forward() const {
+            return glm::rotate(rotation, { 0,0,1 });
         }
 	};
 }

@@ -46,7 +46,7 @@ namespace engine::world::voxel {
 		void finalize();
 
 	private:
-		const int loadRadius = 1;
+		const int loadRadius = 4;
 		ChunkGenerator chunkGenerator;
 		ChunkMesher chunkMesher;
 		std::unique_ptr<ChunkRenderer> chunkRenderer;

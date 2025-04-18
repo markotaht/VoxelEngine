@@ -1,6 +1,6 @@
 #include "TextMaterialLoader.h"
 #include "ShaderDescriptor.h"
-#include "ShaderProgram.h"
+#include "NewShaderProgram.h"
 #include "NewResourceManager.h"
 #include "TextMaterialDescriptor.h"
 #include "Font.h"

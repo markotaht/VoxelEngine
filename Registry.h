@@ -1,82 +1,81 @@
 #pragma once
 #include "Entity.h"
-#include "ComponentStorage.h"
-#include "IComponentStorage.h"
+#include "Archetype.h"
+
+#include <cassert>
+#include <memory>
+#include <unordered_map>
 
 namespace engine::entity {
+    struct EntityLocation {
+        Archetype* archetype;
+        size_t index;
+    };
+
+
 	class Registry {
     public:
         Entity nextEntity = 1;
-
-        template<typename T>
-        component::ComponentStorage<T>& getStorage() {
-            static component::ComponentStorage<T> storage;
-            return storage;
-        }
 
         Entity create() {
             return nextEntity++;
         }
 
-        template<typename T>
-        void add(Entity e, const T& component) {
-            getStorage<T>().add(e, component);
+        template<typename... Components>
+        void addEntity(Entity entity, Components&&... components) {
+            ArchetypeKey key = getArchetypeKey<std::decay_t<Components>...>();
+            Archetype& archetype = getOrCreateArchetype(key);
+
+            std::size_t index = archetype.size();
+            archetype.addEntity(entity);
+            (archetype.addComponentData(std::forward<Components>(components)), ...);
+
+            entityToArchetype.try_emplace(entity, EntityLocation{ &archetype, index });
         }
 
-        template<typename T>
-        T* get(Entity e) {
-            return getStorage<T>().get(e);
-        }
+        template<typename... Components, typename Func>
+        void forEach(Func func){
+            for (auto& [_, archetype] : archetypes) {
+                if (archetype->hasComponents<Components...>()) {
+                    Entity* entityArray = archetype->getEntityArray();
 
-        template<typename T>
-        bool has(Entity e) const {
-            return getStorage<T>().has(e);
-        }
+                    std::tuple<Components*...> componentArrays = { archetype->getComponentArray<Components>()... };
 
-        template<typename T>
-        void remove(Entity e) {
-            getStorage<T>().remove(e);
-        }
-
-        // Iterate helper (basic)
-      /*  template<typename T, typename Func>
-        void each(Func func) {
-            auto& storage = getStorage<T>();
-            for (size_t i = 0; i < storage.size(); ++i)
-                func(storage.getEntities()[i], storage.getComponents()[i]);
-        }*/
-
-        template<typename First, typename... Rest>
-        component::IComponentStorage& getSmallestStorage(First& first, Rest&... rest) {
-            component::IComponentStorage* smallest = &first;
-            size_t minSize = smallest->size();
-
-            (([&] {
-                if (rest.size() < minSize) {
-                    smallest = &rest;
-                    minSize = rest.size();
-                }
-                }()), ...);
-
-            return *smallest;
-        }
-
-        template<typename First, typename... Rest, typename Func>
-        void each(Func func) {
-            component::IComponentStorage& baseStorageIface = getSmallestStorage(getStorage<First>(), getStorage<Rest>()...);
-
-            auto* basePtr = static_cast<component::ComponentStorage<First>*>(&baseStorageIface); // Step 1
-            auto& baseStorage = *basePtr;
-
-            for (size_t i = 0; i < baseStorage.size(); ++i) {
-                Entity e = baseStorage.getEntities()[i];
-
-                std::tuple<First*, Rest*...> refs = { getStorage<First>().get(e), getStorage<Rest>().get(e)... };
-
-                if ((std::get<First*>(refs) != nullptr) && (... && (std::get<Rest*>(refs) != nullptr))) {
-                    func(e, *std::get<First*>(refs), *std::get<Rest*>(refs)...);
+                    for (size_t i = 0; i < archetype->size(); i++) {
+                        applyToEntity(func, i, entityArray[i], componentArrays, std::index_sequence_for<Components...>{});
+                    }
                 }
             }
+        }
+
+        template<typename T>
+        T& getComponent(Entity e) {
+            EntityLocation& loc = entityToArchetype[e];  // Safe because you control input
+            assert(loc.archetype && "Entity has no valid archetype!");
+            assert(loc.archetype->hasComponents<T>() && "Entity is missing required component!");
+            return loc.archetype->getComponentArray<T>()[loc.index];
+        }
+
+        template<typename T>
+        T* tryGetComponent(Entity e) {
+            EntityLocation& loc = entityToArchetype[e];  // Safe because you control input
+            assert(loc.archetype && "Entity has no valid archetype!");
+            assert(loc.archetype->hasComponents<T>() && "Entity is missing required component!");
+            return &loc.archetype->getComponentArray<T>()[loc.index];
+        }
+
+    private:
+        std::unordered_map<ArchetypeKey, std::unique_ptr<Archetype>> archetypes;
+        std::unordered_map<Entity, EntityLocation> entityToArchetype;
+
+        inline Archetype& getOrCreateArchetype(ArchetypeKey key) {
+            auto [it, inserted] = archetypes.try_emplace(key, std::make_unique<Archetype>());
+            return *it->second.get();
+        }
+
+        template<typename Func, typename... Components, std::size_t... Indices>
+        void applyToEntity(Func& func, std::size_t i, Entity entity, std::tuple<Components*...>& arrays, std::index_sequence<Indices...>) {
+            func(entity, (std::get<Indices>(arrays)[i])...);
         }
 	};
 }

@@ -11,7 +11,7 @@ void engine::system::MoveSystem::update(SystemContext& ctx)
 
 	InputHandler& inputHandler = InputHandler::getInstance();
 
-	ecs.each<component::TransformComponent, component::TagPlayerControlled>([&](entity::Entity e, component::TransformComponent& transform, component::TagPlayerControlled& tag) {
+	ecs.forEach<component::TransformComponent, component::TagPlayerControlled>([&](entity::Entity e, component::TransformComponent& transform, component::TagPlayerControlled& tag) {
 		glm::vec3 dir = { inputHandler.getHorizontalAxis(), 0, inputHandler.getVerticalAxis() };
 		if (glm::length(dir) > 0.0f) {
 			dir = glm::normalize(dir);

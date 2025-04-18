@@ -180,6 +180,9 @@
     <ClCompile Include="VoxelTerrain.cpp">
       <Filter>Source Files\engine\world\voxel</Filter>
     </ClCompile>
+    <ClCompile Include="PhysicsSystem.cpp">
+      <Filter>Source Files\engine\system</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -281,9 +284,6 @@
     <ClInclude Include="SystemContext.h">
       <Filter>Header Files\engine\system</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentStorage.h">
-      <Filter>Header Files\engine\component</Filter>
-    </ClInclude>
     <ClInclude Include="CameraComponent.h">
       <Filter>Header Files\engine\component</Filter>
     </ClInclude>
@@ -291,9 +291,6 @@
       <Filter>Header Files\engine\component</Filter>
     </ClInclude>
     <ClInclude Include="MeshRendererComponent.h">
-      <Filter>Header Files\engine\component</Filter>
-    </ClInclude>
-    <ClInclude Include="IComponentStorage.h">
       <Filter>Header Files\engine\component</Filter>
     </ClInclude>
     <ClInclude Include="Font.h">
@@ -364,6 +361,24 @@
     </ClInclude>
     <ClInclude Include="ChunkRenderer.h">
       <Filter>Header Files\engine\world\voxel</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBodyComponent.h">
+      <Filter>Header Files\engine\component</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderComponent.h">
+      <Filter>Header Files\engine\component</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsSystem.h">
+      <Filter>Header Files\engine\system</Filter>
+    </ClInclude>
+    <ClInclude Include="Archetype.h">
+      <Filter>Header Files\engine\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="IComponentArray.h">
+      <Filter>Header Files\engine\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentArray.h">
+      <Filter>Header Files\engine\entity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

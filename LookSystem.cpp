@@ -11,7 +11,7 @@ void engine::system::LookSystem::update(SystemContext& ctx)
 
 	InputHandler& inputHandler = InputHandler::getInstance();
 
-	ecs.each<component::TransformComponent, component::PitchYawRotationComponent, component::TagPlayerControlled>([&](
+	ecs.forEach<component::TransformComponent, component::PitchYawRotationComponent, component::TagPlayerControlled>([&](
 		entity::Entity e, 
 		component::TransformComponent& transform,
 		component::PitchYawRotationComponent& pitchYaw,
