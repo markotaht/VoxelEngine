@@ -1,5 +1,7 @@
 #include "InputHandler.h"
 #include <SDL.h>
+
+#include <iostream>
 glm::vec2 InputHandler::getMousePosition()
 {
 	int x, y;
@@ -41,11 +43,15 @@ bool InputHandler::isReleased(SDL_Scancode keycode) {
 	return !keystates[keycode];
 }
 
+void InputHandler::handleEvent(SDL_Event& e)
+{
+	if (e.type == SDL_MOUSEMOTION && (e.motion.xrel != 0 || e.motion.yrel != 0)) {
+		mouseMovement = { e.motion.xrel, e.motion.yrel };
+	}
+}
+
 void InputHandler::update()
 {
 	keystates = SDL_GetKeyboardState(nullptr);
-
-	glm::vec2 mousePos = getMousePosition();
-	mouseMovement = mousePos - prevMousePosition;
-	prevMousePosition = mousePos;
+	mouseMovement = { 0,0 };
 }

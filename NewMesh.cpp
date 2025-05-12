@@ -62,7 +62,7 @@ namespace engine {
 			this->uvs2D = std::move(uv2D);
 			this->indices = std::move(indices);
 			uvType = UVType::Vec2;
-			upload();
+	
 		}
 
 		void Mesh::upload(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec3> colors, std::vector<uint32_t> indices)
@@ -72,7 +72,7 @@ namespace engine {
 			this->colors = std::move(colors);
 			this->indices = std::move(indices);
 			uvType = UVType::Vec2;
-			upload();
+		
 		}
 
 		void Mesh::upload(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec3> colors, std::vector<glm::vec3> uv3D, std::vector<uint32_t> indices)
@@ -83,7 +83,7 @@ namespace engine {
 			this->uvs3D = std::move(uv3D);
 			this->indices = std::move(indices);
 			uvType = UVType::Vec3;
-			upload();
+
 		}
 
 		void Mesh::unload()

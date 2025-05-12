@@ -1,4 +1,4 @@
-#include "PhysicsSystem.h"
+﻿#include "PhysicsSystem.h"
 
 #include <glm/glm.hpp>
 #include <array>
@@ -8,13 +8,20 @@
 #include "RigidBodyComponent.h"
 #include "ColliderComponent.h"
 #include "Entity.h"
+#include "AutoSystemRegistrar.h"
+
+#include "ICollidableTerrain.h"
 
 namespace engine::system {
+	static AutoSystemRegistrar<PhysicsSystem> _regPhysicsSys(true);
+
 	void PhysicsSystem::update(SystemContext& ctx)
 	{
-		entity::Registry& ecs = ctx.ecs;
+		entity::Registry& ecs = ctx.getRegistry();
 
 		std::vector<entity::Entity> entities;
+
+		auto* terrain = ctx.getSubsystem<world::ICollidableTerrain>();
 
 		ecs.forEach<component::TransformComponent, component::RigidBodyComponent, component::ColliderComponent>([&](entity::Entity e, component::TransformComponent& transform, component::RigidBodyComponent& rb, component::ColliderComponent& collider) {
 			entities.push_back(e);
@@ -23,7 +30,7 @@ namespace engine::system {
 				rb.velocity += rb.acceleration * ctx.dt;
 				transform.position += rb.velocity * ctx.dt;
 			}
-			});
+		});
 
 		for (size_t i = 0; i < entities.size(); ++i) {
 			entity::Entity a = entities[i];
@@ -31,6 +38,25 @@ namespace engine::system {
 			auto& tA = ecs.getComponent<TransformComponent>(a);
 			auto& rbA = ecs.getComponent<RigidBodyComponent>(a);
 			auto& cA = ecs.getComponent<ColliderComponent>(a);
+
+			if (terrain && !rbA.isStatic) {
+				std::vector<TransformComponent> voxelTransforms;
+				std::vector<ColliderComponent> voxelColliders;
+
+				if (terrain->checkCollision(cA, tA, voxelColliders, voxelTransforms)) {
+					for (size_t vi = 0; vi < voxelTransforms.size(); vi++) {
+						auto& vt = voxelTransforms[vi];
+						auto& vc = voxelColliders[vi];
+						CollisionInfo collision = checkCollision(tA, cA, vt, vc);
+						if (collision.collided) {
+
+							RigidBodyComponent vr;
+							vr.isStatic = true;
+							resolveCollision(tA, rbA, vt, vr, collision);
+						}
+					}
+				}
+			}
 
 			for (size_t j = i + 1; j < entities.size(); ++j) {
 				entity::Entity b = entities[j];
@@ -57,6 +83,9 @@ namespace engine::system {
 			float dx = (ca.size.x + cb.size.x) - abs(a.position.x - b.position.x);
 			float dy = (ca.size.y + cb.size.y) - abs(a.position.y - b.position.y);
 			float dz = (ca.size.z + cb.size.z) - abs(a.position.z - b.position.z);
+
+			constexpr float EPSILON = 0.0001f;
+			if (dx <= EPSILON || dy <= EPSILON || dz <= EPSILON) return { {}, 0.0f, false };
 
 			if (dx <= 0 || dy <= 0 || dz <= 0)
 				return { {}, 0.0f, false }; // no collision
@@ -112,8 +141,17 @@ namespace engine::system {
 
 		glm::vec3 correction = collision.normal * collision.penetration;
 
-		if (!rbA.isStatic) a.position += correction * 0.5f;
-		if (!rbB.isStatic) b.position -= correction * 0.5f;
+		if (!rbA.isStatic && rbB.isStatic) {
+			a.position += correction;  // full correction to A
+		}
+		else if (rbA.isStatic && !rbB.isStatic) {
+			b.position -= correction;  // full correction to B
+		}
+		else {
+			// both dynamic → split
+			a.position += correction * 0.5f;
+			b.position -= correction * 0.5f;
+		}
 
 		// Simple velocity response
 		float restitution = 0.5f; // bounciness

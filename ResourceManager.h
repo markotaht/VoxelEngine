@@ -24,6 +24,11 @@ namespace engine {
         class ResourceManager {
         public:
 
+            static ResourceManager& instance() {
+                static ResourceManager resMan;
+                return resMan;
+            }
+
             template<typename Loader>
             void registerLoader(std::unique_ptr<Loader> loader) {
                 using Desc = typename Loader::DescriptorType;

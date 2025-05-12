@@ -112,15 +112,17 @@ bool Window::init() {
 
 		//Create window
 		SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
-		window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-		if (window == NULL)
+		SDL_Window* createdWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+		if (createdWindow == NULL)
 		{
 			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 			success = false;
 		}
 		else
 		{
-			gContext = SDL_GL_CreateContext(window);
+			SDL_SetRelativeMouseMode(SDL_TRUE);
+			window = std::move(WindowPtr(createdWindow, SDL_DestroyWindow));
+			gContext = SDL_GL_CreateContext(window.get());
 			if (gContext == NULL)
 			{
 				printf("OpenGL context could not be created! SDL Error: %s\n", SDL_GetError());
@@ -149,27 +151,6 @@ bool Window::init() {
 					printf("SDL image could not be initilaized! SDL_image Error: %s\n", IMG_GetError());
 					success = false;
 				}
-
-				//Initialize OpenGL
-			/*	if (!initGL())
-				{
-					printf("Unable to initialize OpenGL!\n");
-					success = false;
-				}*/
-
-
-				/*
-							renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-							if (renderer == NULL) {
-								printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
-								success = false;
-							}
-							else {
-								int imgFlags = IMG_INIT_PNG;
-								if (!(IMG_Init(imgFlags) & imgFlags)) {
-									printf("SDL image could not be initilaized! SDL_image Error: %s\n", IMG_GetError());
-									success = false;
-								}*/
 			}
 		}
 	}
@@ -177,30 +158,26 @@ bool Window::init() {
 }
 
 void Window::update() {
-	SDL_GL_SwapWindow(window);
+	SDL_GL_SwapWindow(window.get());
 	//SDL_UpdateWindowSurface(window);
 }
 
-SDL_Renderer* Window::getRenderer() {
-	return renderer;
-}
-
 Window::~Window() {
-	SDL_DestroyRenderer(renderer);
+	SDL_SetRelativeMouseMode(SDL_FALSE);
 	SDL_GL_DeleteContext(gContext);
 	for (auto it : threadContexts) {
 		SDL_GL_DeleteContext(it);
 	}
-	SDL_DestroyWindow(window);
-	window = NULL;
-	renderer = NULL;
+//	SDL_DestroyWindow(window);
+//	window = NULL;
+//	renderer = NULL;
 }
 
 SDL_GLContext Window::getThreadContext(int i)
 {
 	if (threadContexts.size() < i + 1) {
-		threadContexts.push_back(SDL_GL_CreateContext(window));
-		SDL_GL_MakeCurrent(window, gContext);
+		threadContexts.push_back(SDL_GL_CreateContext(window.get()));
+		SDL_GL_MakeCurrent(window.get(), gContext);
 	}
 	return threadContexts[i];
 }

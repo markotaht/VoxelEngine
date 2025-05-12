@@ -9,8 +9,15 @@
 
 #include <fstream>
 
+#include "AutoLoaderRegistrar.h"
+#include "ResourceManager.h"
+
 namespace engine {
 	namespace loader {
+		static AutoLoaderRegistrar<engine::loader::ShaderLoader, IResourceLoader<descriptor::ShaderDescriptor, asset::ShaderProgram>> regTex([](resource::ResourceManager&) {
+			return std::make_unique<engine::loader::ShaderLoader>();
+			});
+
 		bool ShaderLoader::canLoad(const descriptor::ShaderDescriptor& descriptor) const
 		{
 			//TODO make it broader or remove

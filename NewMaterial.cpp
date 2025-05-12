@@ -1,7 +1,7 @@
 #include "NewMaterial.h"
 #include "ITexture.h"
 #include "NewShaderProgram.h"
-#include "NewResourceManager.h"
+#include "ResourceManager.h"
 
 #include <gl/glew.h>
 

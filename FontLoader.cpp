@@ -18,6 +18,9 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#include "AutoLoaderRegistrar.h"
+#include "ResourceManager.h"
+
 void dumpTexture(GLuint texture, int width, int height, const std::string& filename)
 {
 	std::vector<unsigned char> pixels(width * height);
@@ -40,6 +43,10 @@ void dumpTexture(GLuint texture, int width, int height, const std::string& filen
 }
 
 namespace engine::loader {
+	static AutoLoaderRegistrar<engine::loader::FontLoader, IResourceLoader<descriptor::FileDescriptor, asset::Font>> regTex([](resource::ResourceManager&) {
+		return std::make_unique<engine::loader::FontLoader>();
+		});
+
     bool FontLoader::canLoad(const descriptor::FileDescriptor& descriptor) const
     {
         return ends_with(descriptor.filePath, ".ttf");

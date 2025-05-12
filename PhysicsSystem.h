@@ -4,20 +4,21 @@
 #include "TransformComponent.h"
 #include "RigidBodyComponent.h"
 #include "ColliderComponent.h"
+#include "ITerrainCollision.h"
+#include "CollisionInfo.h"
 
 namespace engine::system {
     using namespace component;
-
-    struct CollisionInfo {
-        glm::vec3 normal;
-        float penetration;
-        bool collided;
-    };
 
     class PhysicsSystem : public ISystem
     {
     public:
         void update(SystemContext& ctx) override;
+
+        inline void setTerrainCollision(world::ITerrainCollision* terrainCollision) {
+            this->terrainCollision = terrainCollision;
+        }
+
     private:
         CollisionInfo checkCollision(const TransformComponent& a, const ColliderComponent& ca,
             const TransformComponent& b, const ColliderComponent& cb);
@@ -30,6 +31,8 @@ namespace engine::system {
             const TransformComponent& sphere, const ColliderComponent& csphere,
             const TransformComponent& aabb, const ColliderComponent& caabb);
 
+
+        world::ITerrainCollision* terrainCollision = nullptr;
     };
 }
 

@@ -14,6 +14,9 @@
 #include <SDL_opengl.h>
 #include <gl/GLU.h>
 
+#include "AutoLoaderRegistrar.h"
+#include "ResourceManager.h"
+
 SDL_Surface* flipSurfaceVertically(SDL_Surface* surface) {
     SDL_Surface* flipped = SDL_CreateRGBSurfaceWithFormat(
         0,
@@ -41,6 +44,11 @@ SDL_Surface* flipSurfaceVertically(SDL_Surface* surface) {
 }
 
 namespace engine::loader {
+
+    static AutoLoaderRegistrar<engine::loader::Texture2DArrayLoader, IResourceLoader<descriptor::Texture2DArrayDescriptor, asset::Texture2DArray>> regTex([](resource::ResourceManager&) {
+        return std::make_unique<engine::loader::Texture2DArrayLoader>();
+        });
+
     bool Texture2DArrayLoader::canLoad(const descriptor::Texture2DArrayDescriptor& desc) const
     {
         return true;

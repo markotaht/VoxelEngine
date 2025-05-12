@@ -2,7 +2,7 @@
 #include <glm/glm.hpp>
 
 #include "NewChunk.h"
-#include "NewResourceManager.h"
+#include "ResourceManager.h"
 #include "NewMaterial.h"
 #include "ResourceId.h"
 

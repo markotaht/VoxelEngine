@@ -10,7 +10,7 @@ public:
 		return instance;
 	}
 
-	float mouseSensitivity = 0.05f;
+	float mouseSensitivity = 0.02f;
 
 	glm::vec2 getMousePosition();
 	glm::vec2 getMouseMovement() { return mouseMovement; }
@@ -21,8 +21,11 @@ public:
 	bool isReleased(SDL_Scancode keycode);
 
 	void update();
+	void handleEvent(SDL_Event& e);
 private:
-	InputHandler() = default;
+	InputHandler() {
+		prevMousePosition = getMousePosition();
+	};
 	~InputHandler() = default;
 
 	InputHandler(const InputHandler&) = delete;
@@ -30,6 +33,6 @@ private:
 
 	const Uint8* keystates;
 	glm::vec2 prevMousePosition;
-	glm::vec2 mouseMovement;
+	glm::vec2 mouseMovement {0, 0};
 };
 

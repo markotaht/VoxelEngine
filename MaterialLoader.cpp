@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "Types.h"
-#include "NewResourceManager.h"
+#include "ResourceManager.h"
 #include "MaterialDescriptor.h"
 #include "FileDescriptor.h"
 #include "Texture2DArrayDescriptor.h"
@@ -13,8 +13,15 @@
 #include "NewMaterial.h"
 #include "ResourceId.h"
 
+#include "AutoLoaderRegistrar.h"
+#include "ResourceManager.h"
+
 namespace engine {
     namespace loader {
+        static AutoLoaderRegistrar<engine::loader::MaterialLoader, IResourceLoader<descriptor::MaterialDescriptor, asset::Material>> regTex([](resource::ResourceManager& rm) {
+            return std::make_unique<engine::loader::MaterialLoader>(rm);
+            });
+
         bool MaterialLoader::canLoad(const descriptor::MaterialDescriptor& descriptor) const
         {
             return true;

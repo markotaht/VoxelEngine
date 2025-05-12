@@ -3,7 +3,7 @@
 #include <string>
 #include "ResourceId.h"
 #include "NewTextMaterial.h"
-#include "NewResourceManager.h"
+#include "ResourceManager.h"
 
 namespace engine::render {
 	class TextRenderer

@@ -7,21 +7,20 @@
 
 #include "NewMesh.h"
 #include "NewMaterial.h"
+#include "AutoSystemRegistrar.h"
 
 namespace engine::system {
+
+	static AutoSystemRegistrar<RenderSystem> _regRenderSys;
+
 	void engine::system::RenderSystem::update(SystemContext& ctx)
 	{
-		entity::Entity activeCamera = entity::INVALID_ENTITY;
-		component::TransformComponent* camTransform = nullptr;
-		component::CameraComponent* cam = nullptr;
+		component::TransformComponent* camTransform = ctx.getCameraTransform();
+		component::CameraComponent* cam = ctx.getCameraComponent();
 
-		entity::Registry& ecs = ctx.ecs;
+		if (!cam || !camTransform) return;
 
-		ecs.forEach<component::CameraComponent>([&](entity::Entity e, component::CameraComponent& c) {
-			activeCamera = e;
-			cam = &c;
-			camTransform = ecs.tryGetComponent<component::TransformComponent>(e);
-		});
+		entity::Registry& ecs = ctx.getRegistry();
 
 		ecs.forEach<component::TransformComponent, component::MeshRendererComponent>([&](entity::Entity e, component::TransformComponent& transform, component::MeshRendererComponent& meshRenderer) {
 			asset::Mesh* mesh = ctx.resMan->get<asset::Mesh>(meshRenderer.meshId);

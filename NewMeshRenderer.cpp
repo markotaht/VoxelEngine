@@ -1,6 +1,6 @@
 #include "NewMeshRenderer.h"
 
-#include "NewResourceManager.h"
+#include "ResourceManager.h"
 #include "NewMesh.h"
 #include "NewMaterial.h"
 

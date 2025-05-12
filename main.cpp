@@ -6,76 +6,71 @@
 #include <SDL_opengl.h>
 #include <gl/GLU.h>
 #include <iostream>
+#include <glm/gtx/string_cast.hpp>
 
 #include "InputHandler.h"
 #include "PerlinNoise.h"
 
 #include "FileDescriptor.h"
 #include "Texture2DArrayDescriptor.h"
+#include "TextMaterialDescriptor.h"
+#include "MaterialDescriptor.h"
 
-#include "NewResourceManager.h"
+#include "ResourceManager.h"
 #include "Texture2D.h"
 #include "Texture2DArray.h"
-#include "TextureLoader.h"
-#include "MaterialLoader.h"
-#include "ShaderLoader.h"
-#include "Texture2DArrayLoader.h"
-#include "TextMaterialLoader.h"
-#include "FontLoader.h"
 #include "NewMeshRenderer.h"
 #include "NewMesh.h"
+#include "NewMaterial.h"
 #include <memory>
 
 #include <glm/glm.hpp>
 
-#include "Registry.h"
 #include "Entity.h"
-#include "RenderSystem.h"
 #include "CameraComponent.h"
 #include "TransformComponent.h"
 #include "MeshRendererComponent.h"
 #include "NewTextRenderer.h"
-#include "NewChunk.h"
 #include "TagPlayerControlled.h"
 #include "PitchYawRotation.h"
 
-#include "ChunkGenerator.h"
-#include "ChunkMesher.h"
-#include "MoveSystem.h"
-#include "LookSystem.h"
-#include "VoxelTerrain.h"
-#include "PhysicsSystem.h"
+#include "VoxelTerrainBackend.h"
 
 #include "RigidBodyComponent.h"
 #include "ColliderComponent.h"
+#include "SystemRegistry.h"
+
+#include "Scene.h"
+#include "SceneSystemRunner.h"
+#include "FrameTimer.h"
+
+#include "TerrainSystem.h"
+#include "CameraData.h"
+
+#include "ThreadPool.h"
+#include "MainThreadDispatcher.h"
 
 Window window;
 bool quit = false;
 SDL_Event e;
 InputHandler& inputHandler = InputHandler::getInstance();
 
-engine::resource::ResourceManager resMan;
+engine::resource::ResourceManager& resMan = engine::resource::ResourceManager::instance();
+engine::system::SystemRegistry& sysReg = engine::system::SystemRegistry::instance();
 
-engine::entity::Registry registry;
-engine::system::RenderSystem renderer;
-engine::system::MoveSystem mover;
-engine::system::LookSystem looker;
-engine::system::PhysicsSystem physics;
+engine::scene::Scene globalScene;
+engine::scene::Scene localScene;
 
 
 std::unique_ptr<engine::render::TextRenderer> textRenderer;
-std::unique_ptr<engine::world::voxel::VoxelTerrain> terrain;
+engine::world::TerrainSystem* terrainSystem = nullptr;
 
 engine::entity::Entity camera;
 
-bool loadMedia() {
-	resMan.registerLoader(std::make_unique<engine::loader::TextureLoader>());
-	resMan.registerLoader(std::make_unique<engine::loader::MaterialLoader>(resMan));
-	resMan.registerLoader(std::make_unique<engine::loader::TextMaterialLoader>(resMan));
-	resMan.registerLoader(std::make_unique<engine::loader::ShaderLoader>());
-	resMan.registerLoader(std::make_unique<engine::loader::FontLoader>());
-	resMan.registerLoader(std::make_unique<engine::loader::Texture2DArrayLoader>());
+engine::core::ThreadPool threadPool {5};
+engine::core::MainThreadDispatcher mainThreadDispatcher;
 
+bool loadMedia() {
 	engine::core::ResourceId<engine::asset::Texture2D> texId = resMan.load<engine::asset::Texture2D>("D:/Visual studio/GameEngine/Debug/UV.png", "UV_Texture");
 	engine::core::ResourceId<engine::asset::Texture2DArray> arrayTexId = resMan.load<engine::descriptor::Texture2DArrayDescriptor, engine::asset::Texture2DArray>(
 		{
@@ -125,7 +120,11 @@ bool loadMedia() {
 		}, "TextMaterial");
 
 	textRenderer = std::move(std::make_unique<engine::render::TextRenderer>(textMatId));
-	terrain = std::move(std::make_unique<engine::world::voxel::VoxelTerrain>(resMan, arrayMatId));
+
+	//physicsSystem.setTerrainCollision(terrain.get());
+
+	terrainSystem = globalScene.addSubsystem<engine::world::TerrainSystem>();
+	terrainSystem->setBackend(std::make_unique<engine::world::voxel::VoxelTerrainBackend>(resMan, arrayMatId, threadPool, mainThreadDispatcher));
 
 	engine::component::TransformComponent cubeTransform;
 	engine::component::MeshRendererComponent meshRenderer {meshId, matId};
@@ -135,23 +134,24 @@ bool loadMedia() {
 	cubeCollider.type = engine::component::ColliderType::AABB;
 	cubeCollider.size = glm::vec3{ 1, 1, 1};
 
-	engine::entity::Entity cubeEntity = registry.create();
+	//engine::entity::Entity cubeEntity = globalScene.createEntity();
 
-	registry.addEntity(cubeEntity, cubeTransform, meshRenderer, cubeRigid, cubeCollider);
+	//registry.addEntity(cubeEntity, cubeTransform, meshRenderer, cubeRigid, cubeCollider);
 
 	engine::component::TransformComponent cubeTransform2;
-	cubeTransform2.position.y = 5;
-	cubeTransform2.position.x = 1.5f;
+	cubeTransform2.position.y = 70;
+	cubeTransform2.position.x = 1.0f;
+	cubeTransform2.position.z = -1;
 	engine::component::MeshRendererComponent meshRenderer2 {meshId, matId};
 	engine::component::RigidBodyComponent cubeRigid2;
 	cubeRigid2.isStatic = false;
-	cubeRigid2.acceleration = { 0,  -0.5f ,0 };
+	cubeRigid2.velocity = { 0,  -4 ,0 };
 	engine::component::ColliderComponent cubeCollider2;
 	cubeCollider2.type = engine::component::ColliderType::AABB;
 	cubeCollider2.size = glm::vec3{ 1, 1, 1 };
 
-	engine::entity::Entity cubeEntity2 = registry.create();
-	registry.addEntity(cubeEntity2, cubeTransform2, meshRenderer2, cubeRigid2, cubeCollider2);
+	//engine::entity::Entity cubeEntity2 = registry.create();
+	//registry.addEntity(cubeEntity2, cubeTransform2, meshRenderer2, cubeRigid2, cubeCollider2);
 
 	engine::component::TransformComponent axisTransform;
 	engine::component::MeshRendererComponent axisMeshRenderer {axisMeshId, axisMatId};
@@ -162,13 +162,22 @@ bool loadMedia() {
 
 	engine::component::TransformComponent cameraTransform;
 	engine::component::CameraComponent cameraComponent;
-	engine::component::PitchYawRotationComponent pirtchYaw;
+	engine::component::PitchYawRotationComponent pirtchYaw {-6.5f, 0};
 	engine::component::TagPlayerControlled tagPlayerControllerd;
-	cameraTransform.position.z = 10;
-	cameraTransform.position.y = 0;
 
-	camera = registry.create();
-	registry.addEntity(camera, cameraTransform, cameraComponent, pirtchYaw, tagPlayerControllerd);
+	engine::component::RigidBodyComponent camRigid;
+	camRigid.isStatic = false;
+	camRigid.acceleration = { 0,  -4 ,0 };
+	engine::component::ColliderComponent camCollider;
+	camCollider.type = engine::component::ColliderType::AABB;
+	camCollider.size = glm::vec3{ 1, 1, 1 };
+	cameraTransform.position.z = 10;
+	cameraTransform.position.y = 70;
+
+	camera = globalScene.createEntity();
+	globalScene.addEntity(camera, cameraTransform, cameraComponent, pirtchYaw, tagPlayerControllerd, camCollider);
+
+	terrainSystem->streamChunksAround(cameraTransform.position);
 
 	return true;
 }
@@ -180,82 +189,74 @@ void close() {
 	IMG_Quit();
 	SDL_Quit();
 }
+
+engine::core::CameraData getActiveCameraData(engine::scene::Scene& scene, engine::entity::Entity camEntity) {
+	return {
+		scene.tryGetComponent<engine::component::TransformComponent>(camEntity),
+		scene.tryGetComponent<engine::component::CameraComponent>(camEntity)
+	};
+}
+
+void printDebugData(engine::render::TextRenderer* textRenderer, engine::component::TransformComponent* camTransform, engine::core::FrameTimer& timer) {
+	textRenderer->addMessage("DeltaTime: " + std::to_string(timer.getDeltaTime()));
+	textRenderer->addMessage(std::to_string(static_cast<int>(timer.getSmoothedFPS())) + "FPS");
+	textRenderer->addMessage("Camera position: " + glm::to_string(camTransform->position));
+	textRenderer->addMessage("Chunk: " + glm::to_string(glm::floor(camTransform->position / engine::world::voxel::Chunk::chunkSize)));
+	textRenderer->addMessage("ChunkRaw: " + glm::to_string(camTransform->position / engine::world::voxel::Chunk::chunkSize));
+}
+
 int main(int argc, char* args[])
 {
 	if (!window.init()) {
-		printf("Failed to initiate\n");
+		std::cerr << "Failed to initialize window\n";
+		return -1;
 	}
-	else {
-		if (!loadMedia()) {
-			printf("Failed to load media");
+
+	if (!loadMedia()) {
+		std::cerr << "Failed to load media\n";
+		return -1;
+	}
+
+	engine::system::SceneSystemRunner systemsRunner {sysReg, resMan, globalScene};
+	std::vector<engine::scene::Scene*> loadedScenes = { &localScene };
+
+	engine::core::FrameTimer timer;
+
+	while (!quit) {
+		timer.update();
+
+		engine::core::CameraData camData = getActiveCameraData(globalScene, camera);
+		if (!camData.camera || !camData.transform) {
+			continue; // skip frame
 		}
-		else {
-			Uint64 NOW = 0;
-			Uint64 LAST = SDL_GetPerformanceCounter();
 
-			Uint32 NOW_TICK = 0;
-			Uint32 LAST_TICK = SDL_GetTicks();
-			double deltaTime = 0;
-			//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			float smoothedFps = 60.0f;
+		printDebugData(textRenderer.get(), camData.transform, timer);
 
-			while (!quit) {
-				NOW_TICK = SDL_GetTicks();
-				float delta = static_cast<float>(NOW_TICK - LAST_TICK);
-				LAST_TICK = NOW_TICK;
-
-				NOW = SDL_GetPerformanceCounter();
-				deltaTime = (NOW - LAST) / (double)SDL_GetPerformanceFrequency();
-				LAST = NOW;
-
-				if (delta <= 0.01f) delta = 0.01f;
-
-				float fps = 1000.f / delta;
-				smoothedFps = glm::mix(smoothedFps, fps, 0.1f);
-
-				engine::component::TransformComponent* camTransform = nullptr;
-				engine::component::CameraComponent* cam = nullptr;
-
-				camTransform = registry.tryGetComponent<engine::component::TransformComponent>(camera);
-				cam = registry.tryGetComponent<engine::component::CameraComponent>(camera);
-
-				engine::system::SystemContext context {registry, &resMan, static_cast<float>(deltaTime)};
-				textRenderer->addMessage(std::to_string(static_cast<int>(smoothedFps)) + "FPS");
-			//	debugLog->addMessage(std::to_string(1000.f / (NOW_TICK - LAST_TICK)) + "FPS");
-			//	debugLog->addMessage(std::to_string(deltaTime) + "s");
-			//	float chunkSize = Chunk::CHUNK_WIDTH * BLOCK_WIDTH;
-			//	debugLog->addMessage("XYZ:" + std::to_string(mainCamera->transform.getPosition().x) + " " + std::to_string(mainCamera->transform.getPosition().y) + " " + std::to_string(mainCamera->transform.getPosition().x));
-			//	debugLog->addMessage("CHUNK: [" + std::to_string(mainCamera->transform.getPosition().x / chunkSize) + " " + std::to_string(mainCamera->transform.getPosition().y /  chunkSize)+ " " + std::to_string(mainCamera->transform.getPosition().z / chunkSize) + "]");
-
-				inputHandler.update();
-				while (SDL_PollEvent(&e) != 0) {
-					if (e.type == SDL_QUIT) {
-						quit = true;
-					}
-				}
-
-
-				//std::cout << deltaTime << std::endl;
-			//	scene->update((float)deltaTime);
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-				glEnable(GL_DEPTH_TEST);
-			//	scene.render(resMan);
-				//scene->render(mainCamera->getProjectionMatrix(), mainCamera->getViewMatrix());
-			//	terrain->update(camTransform->position);
-			//	terrain->render(camTransform->getInverseMatrix(), cam->getProjectionMatrix());
-			//	terrain->finalize();
-				physics.update(context);
-				renderer.update(context);
-				looker.update(context);
-				mover.update(context);
-				glDisable(GL_DEPTH_TEST);
-			//	debugLog->render();
-				textRenderer->render(resMan);
-				window.update();
+		inputHandler.update();
+		while (SDL_PollEvent(&e) != 0) {
+			if (e.type == SDL_QUIT) {
+				quit = true;
 			}
+			inputHandler.handleEvent(e);
 		}
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
+
+		terrainSystem->streamChunksAroundThrottled(camData.transform->position);
+		mainThreadDispatcher.runMainThreadTasks();
+
+		while (timer.shouldRunFixedUpdate()) {
+			systemsRunner.fixedUpdateAll(timer.getFixedTimeStep(), loadedScenes, camData);
+		}
+
+		systemsRunner.updateAll(timer.getDeltaTime(), loadedScenes, camData);
+
+		glDisable(GL_DEPTH_TEST);
+		textRenderer->render(resMan);
+		window.update();
 	}
+
 	close();
 	return 0;
 }

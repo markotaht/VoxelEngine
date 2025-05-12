@@ -13,8 +13,15 @@
 #include "Texture2D.h"
 #include "StringUtils.h"
 
+#include "AutoLoaderRegistrar.h"
+#include "ResourceManager.h"
+
 namespace engine {
     namespace loader {
+
+        static AutoLoaderRegistrar<engine::loader::TextureLoader, IResourceLoader<descriptor::FileDescriptor, asset::Texture2D>> regTex([](resource::ResourceManager&) {
+            return std::make_unique<engine::loader::TextureLoader>();
+         });
 
         bool TextureLoader::canLoad(const descriptor::FileDescriptor& desc) const
         {

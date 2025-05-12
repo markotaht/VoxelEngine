@@ -1,6 +1,6 @@
 #include "NewTextMaterial.h"
 #include "NewShaderProgram.h"
-#include "NewResourceManager.h"
+#include "ResourceManager.h"
 #include "Font.h"
 
 namespace engine::asset {

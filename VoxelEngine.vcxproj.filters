@@ -85,6 +85,9 @@
     <Filter Include="Source Files\engine\system">
       <UniqueIdentifier>{3ec40480-4bf0-4ee5-8ee2-eed10c3186c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\engine\scene">
+      <UniqueIdentifier>{64df17e8-1b67-4d2c-9fe3-c99387b883f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -177,11 +180,26 @@
     <ClCompile Include="Texture2DArrayLoader.cpp">
       <Filter>Source Files\engine\loader</Filter>
     </ClCompile>
-    <ClCompile Include="VoxelTerrain.cpp">
+    <ClCompile Include="VoxelTerrainBackend.cpp">
       <Filter>Source Files\engine\world\voxel</Filter>
     </ClCompile>
     <ClCompile Include="PhysicsSystem.cpp">
       <Filter>Source Files\engine\system</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneSystemRunner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameTimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainThreadDispatcher.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -215,7 +233,7 @@
     <ClInclude Include="StringUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NewResourceManager.h">
+    <ClInclude Include="ResourceManager.h">
       <Filter>Header Files\engine\resource</Filter>
     </ClInclude>
     <ClInclude Include="NewResource.h">
@@ -332,7 +350,7 @@
     <ClInclude Include="ITerrain.h">
       <Filter>Header Files\engine\world</Filter>
     </ClInclude>
-    <ClInclude Include="VoxelTerrain.h">
+    <ClInclude Include="VoxelTerrainBackend.h">
       <Filter>Header Files\engine\world\voxel</Filter>
     </ClInclude>
     <ClInclude Include="NewChunk.h">
@@ -379,6 +397,51 @@
     </ClInclude>
     <ClInclude Include="ComponentArray.h">
       <Filter>Header Files\engine\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemRegistry.h">
+      <Filter>Header Files\engine\system</Filter>
+    </ClInclude>
+    <ClInclude Include="ITerrainCollision.h">
+      <Filter>Header Files\engine\world</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionInfo.h">
+      <Filter>Header Files\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSystemRunner.h">
+      <Filter>Header Files\engine\system</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameTimer.h">
+      <Filter>Header Files\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="ISceneSubsystem.h">
+      <Filter>Header Files\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="ICollidableTerrain.h">
+      <Filter>Header Files\engine\world</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraData.h">
+      <Filter>Header Files\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="ITerrainBackend.h">
+      <Filter>Header Files\engine\world</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainSystem.h">
+      <Filter>Header Files\engine\world</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPool.h">
+      <Filter>Header Files\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="MainThreadDispatcher.h">
+      <Filter>Header Files\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoSystemRegistrar.h">
+      <Filter>Header Files\engine\system</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoLoaderRegistrar.h">
+      <Filter>Header Files\engine\loaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

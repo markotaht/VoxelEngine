@@ -7,26 +7,28 @@
 #include <gl/GLU.h>
 
 #include <vector>
+#include <memory>
 
 class Window
 {
 public:
+
+	using WindowPtr = std::unique_ptr<SDL_Window, void(*)(SDL_Window*)>;
+
+	Window() = default;
+
 	bool init();
 	void update();
-	SDL_Renderer* getRenderer();
 	~Window();
 
 	SDL_GLContext getThreadContext(int i);
-	inline SDL_Window* getWindow() { return window; }
+	inline SDL_Window* getWindow() const { return window.get(); }
 
 	static const int SCREEN_WIDTH = 640;
 	static const int SCREEN_HEIGHT = 480;
 private:
-	SDL_Window* window = NULL;
-	SDL_Renderer* renderer = NULL;
+	WindowPtr window = { nullptr, SDL_DestroyWindow };
 	SDL_GLContext gContext;
 
 	std::vector<SDL_GLContext> threadContexts;
 };
-
-#pragma once

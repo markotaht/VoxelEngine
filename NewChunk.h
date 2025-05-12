@@ -14,8 +14,7 @@ namespace engine::world::voxel {
 		VoxelTypeCount
 	};
 
-	static const float VOXEL_SIZE = 0.25f;
-	static const float VOXEL_WIDTH = 2 * VOXEL_SIZE;
+	static const float VOXEL_SIZE = 2.0f;
 
 	struct Voxel {
 		VoxelType type = VoxelType::VoxelType_Air;
@@ -23,6 +22,10 @@ namespace engine::world::voxel {
 
 	struct Chunk {
 		static constexpr int SizeX = 16, SizeY = 64, SizeZ = 16;
+		static inline const glm::vec3 chunkSize { Chunk::SizeX* VOXEL_SIZE,
+			Chunk::SizeY* VOXEL_SIZE,
+			Chunk::SizeZ* VOXEL_SIZE };
+
 		Voxel voxels[SizeX * SizeY * SizeZ];
 			
 		bool dirty = true;
@@ -33,7 +36,7 @@ namespace engine::world::voxel {
 		Chunk(const glm::ivec3& pos): chunkPosition(pos){}
 
 		inline glm::vec3 getWorldCoordinates() const {
-			return glm::vec3(chunkPosition) * glm::vec3(Chunk::SizeX, Chunk::SizeY, Chunk::SizeZ);
+			return glm::vec3(chunkPosition) * chunkSize;
 		}
 
 		inline glm::mat4 getModelMatrix() const {
@@ -41,12 +44,32 @@ namespace engine::world::voxel {
 		}
 
 		inline Voxel getVoxel(glm::ivec3 pos) const {
+			if (pos.x < 0 || pos.y < 0 || pos.z < 0 ||
+				pos.x >= SizeX || pos.y >= SizeY || pos.z >= SizeZ) {
+				return Voxel{}; // or throw, or return default air voxel
+			}
 			return voxels[pos.x + pos.y * SizeX + pos.z * SizeY * SizeZ];
+		};
+
+		inline Voxel getVoxel(glm::vec3 pos) const {
+			return getVoxel(worldToVoxel(pos));
 		};
 
 		inline Voxel getVoxel(int x, int y, int z) const {
 			return voxels[x + y * SizeX + z * SizeY * SizeZ];
 		};
+
+		inline glm::vec3 voxelToWorld(glm::ivec3 voxelPos) const{
+			return getWorldCoordinates() + (glm::vec3(voxelPos) + 0.5f) * VOXEL_SIZE;
+		}
+
+		inline glm::ivec3 worldToVoxel(glm::vec3 pos) const{
+			return glm::floor((pos - getWorldCoordinates()) / VOXEL_SIZE);
+		}
+
+		inline glm::vec3 worldToVoxelWorld(glm::vec3 pos) const {
+			return voxelToWorld(worldToVoxel(pos)) + glm::vec3(VOXEL_SIZE * 0.5f);
+		}
 
 		inline bool inBounds(glm::ivec3 pos) const {
 			return pos.x >= 0 && pos.x < SizeX &&

@@ -132,7 +132,7 @@ namespace engine::world::voxel {
                         // For each of the 4 vertices of the face
                         for (int i = 0; i < 4; ++i) {
                             // Calculate the world-space position for this vertex
-                            glm::vec3 worldPos = glm::vec3(voxelPos) + faceVerts[i].position;
+                            glm::vec3 worldPos = (glm::vec3(voxelPos) + faceVerts[i].position) * VOXEL_SIZE;
                             vertices.push_back(worldPos);
 
                             // Normal for the face (same for all four vertices)

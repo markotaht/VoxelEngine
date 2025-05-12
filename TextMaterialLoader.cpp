@@ -1,12 +1,20 @@
 #include "TextMaterialLoader.h"
 #include "ShaderDescriptor.h"
 #include "NewShaderProgram.h"
-#include "NewResourceManager.h"
+#include "ResourceManager.h"
 #include "TextMaterialDescriptor.h"
 #include "Font.h"
 #include <memory>
 
+#include "AutoLoaderRegistrar.h"
+#include "ResourceManager.h"
+
 namespace engine::loader {
+
+    static AutoLoaderRegistrar<engine::loader::TextMaterialLoader, IResourceLoader<descriptor::TextMaterialDescriptor, asset::TextMaterial>> regTex([](resource::ResourceManager& rm) {
+        return std::make_unique<engine::loader::TextMaterialLoader>(rm);
+        });
+
     bool TextMaterialLoader::canLoad(const descriptor::TextMaterialDescriptor& descriptor) const
     {
         return true;
