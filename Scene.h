@@ -14,6 +14,13 @@ namespace engine::scene {
 		}
 
 		template<typename... Components>
+		entity::Entity createEntityWith(Components&&... components) {
+			entity::Entity e = createEntity();
+			addEntity<Components...>(e, std::forward<Components>(components)...);
+			return e;
+		}
+
+		template<typename... Components>
 		void addEntity(entity::Entity entity, Components&&... components) {
 			entityRegistry.addEntity<Components...>(entity, std::forward<Components>(components)...);
 		}

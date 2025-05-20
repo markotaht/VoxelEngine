@@ -13,6 +13,7 @@ namespace engine {
 
 			bool canLoad(const descriptor::FileDescriptor& desc) const;
 			std::unique_ptr<asset::Texture2D> load(const descriptor::FileDescriptor& desc) const;
+			bool uploadGPU(asset::Texture2D& tex) const;
 
 			bool operator==(const TextureLoader& other) const
 			{

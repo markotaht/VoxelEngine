@@ -6,7 +6,7 @@
 #include <memory>
 
 
-#include "NewResource.h"
+#include "Resource.h"
 
 namespace engine {
 	namespace asset {
@@ -74,6 +74,8 @@ namespace engine {
 			void upload(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec3> colors, std::vector<glm::vec2> uv2D, std::vector<uint32_t> indices);
 			void upload(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec3> colors, std::vector<uint32_t> indices);
 
+			size_t estimateMemoryUsage() const;
+
 			void unload();
 
 			void bind();
@@ -81,6 +83,8 @@ namespace engine {
 
 			static std::unique_ptr<Mesh> makeCube();
 			static std::unique_ptr<Mesh> makeAxis();
+
+			std::string toString() { return ""; }
 
 		private:
 			void initBuffers();

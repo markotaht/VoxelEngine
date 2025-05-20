@@ -12,6 +12,30 @@ namespace engine::asset {
 			glDeleteTextures(1, &textureId);
 			textureId = 0;
 		}
-		surfaces.clear();
+		layers.clear();
+	}
+
+	size_t Texture2DArray::estimateMemoryUsage() const {
+		if (layers.size() == 0) return 0;
+
+		size_t total = 0;
+		for (const auto& layer : layers) {
+			total += layer.surface->pitch * layer.surface->h;
+		}
+
+		return total;
+	}
+
+	size_t Texture2DArray::estimateGpuMemoryUsage() const {
+		if (layers.size() == 0) return 0;
+
+		size_t total = 0;
+		for (const auto& layer : layers) {
+			const SDL_PixelFormat* fmt = layer.surface->format;
+			int bytesPerPixel = fmt->BytesPerPixel;  // SDL handles padding/packing
+			total += layer.surface->w * layer.surface->h * bytesPerPixel;
+		}
+
+		return total;
 	}
 }

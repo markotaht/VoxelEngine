@@ -18,13 +18,15 @@ namespace engine {
 
 			bool canLoad(const descriptor::Texture2DArrayDescriptor& desc) const;
 			std::unique_ptr<asset::Texture2DArray> load(const descriptor::Texture2DArrayDescriptor& desc) const;
+			bool uploadGPU(asset::Texture2DArray& tex) const;
+
 
 			bool operator==(const Texture2DArrayLoader& other) const
 			{
 				return false;
 			}
 		private:
-			std::vector<std::pair<std::string, asset::Texture2DArray::SurfacePtr>> loadImages(const descriptor::Texture2DArrayDescriptor& desc) const;
+			std::vector<asset::TextureLayer> loadImages(const descriptor::Texture2DArrayDescriptor& desc) const;
 		};
 	}
 }

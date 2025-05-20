@@ -57,13 +57,13 @@ namespace engine::loader {
 		FT_Library ft;
 		if (FT_Init_FreeType(&ft)) {
 			std::cout << "Error:Freetype: Could not init FreeType Library" << std::endl;
-			return false;
+			return nullptr;
 		}
 
 		FT_Face face;
 		if (FT_New_Face(ft, descriptor.filePath.c_str(), 0, &face)) {
 			std::cout << "ERROR:FREETYPE:Failed to load font: " << descriptor.filePath << std::endl;
-			return false;
+			return nullptr;
 		}
 
 		FT_Set_Pixel_Sizes(face, 0, 48);
@@ -100,8 +100,8 @@ namespace engine::loader {
 			FT_Bitmap& bmp = face->glyph->bitmap;
 
 			// Copy glyph bitmap to atlas
-			for (int row = 0; row < bmp.rows; ++row) {
-				for (int col = 0; col < bmp.width; ++col) {
+			for (unsigned int row = 0; row < bmp.rows; ++row) {
+				for (unsigned int col = 0; col < bmp.width; ++col) {
 					//int flippedRow = bmp.rows - 1 - row;
 					//atlasPixels[(x + col) + (y + flippedRow) * atlasWidth] = bmp.buffer[col + row * bmp.width];
 					atlasPixels[(x + col) + (y + row) * atlasWidth] = bmp.buffer[col + row * bmp.width];
@@ -124,11 +124,21 @@ namespace engine::loader {
 			characters[ch] = character;
 		}
 
+		FT_Done_Face(face);
+		FT_Done_FreeType(ft);
 
-		GLuint texture;
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, atlasWidth, atlasHeight, 0, GL_RED, GL_UNSIGNED_BYTE, atlasPixels.data());
+		return std::make_unique<asset::Font>(descriptor.filePath, atlasWidth, atlasHeight, std::move(atlasPixels), std::move(characters));
+    }
+
+	bool FontLoader::uploadGPU(asset::Font& font) const
+	{
+		if (font.texture != 0) {
+			glDeleteTextures(1, &font.texture);
+		}
+		glGenTextures(1, &font.texture);
+
+		glBindTexture(GL_TEXTURE_2D, font.texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, font.atlasWidth, font.atlasHeight, 0, GL_RED, GL_UNSIGNED_BYTE, font.atlasPixels.data());
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -141,16 +151,12 @@ namespace engine::loader {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, GL_RED);
 
 
-		FT_Done_Face(face);
-		FT_Done_FreeType(ft);
-
-		GLuint vao;
-		GLuint vbo;
-
-		glGenVertexArrays(1, &vao);
-		glGenBuffers(1, &vbo);
-		glBindVertexArray(vao);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		if (font.vao != 0) glDeleteVertexArrays(1, &font.vao);
+		if (font.vbo != 0) glDeleteBuffers(1, &font.vbo);
+		glGenVertexArrays(1, &font.vao);
+		glGenBuffers(1, &font.vbo);
+		glBindVertexArray(font.vao);
+		glBindBuffer(GL_ARRAY_BUFFER, font.vbo);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
@@ -158,8 +164,7 @@ namespace engine::loader {
 		glBindVertexArray(0);
 
 		//dumpTexture(texture, 512, 512, "font_atlas2.png");
-
-        return std::make_unique<asset::Font>(texture, vao, vbo, std::move(characters));
-    }
+		return true;
+	}
 
 }

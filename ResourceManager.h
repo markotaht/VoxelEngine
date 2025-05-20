@@ -7,87 +7,80 @@
 #include <unordered_map>
 #include <memory>
 #include <iostream>
-#include <utility>
 
-#include "IAnyLoader.h"
-#include "ResourceLoaderWrapper.h"
-#include "NewResource.h"
-#include "IResourceLoader.h"
-#include "FileDescriptor.h"
 #include "ResourceId.h"
+#include "Resource.h"
+
+#include "IResourceLoaderBase.h"
+#include "IResourceLoader.h"
+
+#include "FileDescriptor.h"
+
 #include "Types.h"
-#include "TypeTag.h"
+#include "TypeId.h"
+
+#include "Entity.h"
+#include "FrameClock.h"
+
+#include "IStorage.h"
+#include "ResourceStorage.h"
+#include "LoaderKey.h"
+
 
 namespace engine {
     namespace resource {
-
+        
         class ResourceManager {
         public:
-
             static ResourceManager& instance() {
                 static ResourceManager resMan;
                 return resMan;
             }
+            
+            ~ResourceManager() {
+            }
 
-            template<typename Loader>
-            void registerLoader(std::unique_ptr<Loader> loader) {
-                using Desc = typename Loader::DescriptorType;
-                using Res = typename Loader::ResourceType;
-
-                registerLoader<Desc, Res>(std::move(loader));
+            inline void setFrameClock(core::FrameClock* frameClock) {
+                this->frameClock = frameClock;
             }
 
             template<typename Desc, typename Res>
             void registerLoader(std::unique_ptr<loader::IResourceLoader<Desc, Res>> loader) {
-                using engine::core::TypeTag;
-                std::type_index resourceType = core::TypeTag<Res>::index();
-                auto& vec = loaders[resourceType];
-                vec.emplace_back(std::make_unique<loader::ResourceLoaderWrapper<Desc, Res>>(std::move(loader)));
+                auto& storage = getStorage<Res>();
+                storage.registerLoader<Desc>(std::move(loader));
+            }
+
+            template <typename Res>
+            resource::ResourceStorage<Res>& getStorage() {
+                static resource::ResourceStorage<Res> storage{ *frameClock, instance() };
+                static bool once = [] {
+                    auto& self = instance();
+                    const core::TypeId resourceType = core::typeId<Res>();
+                    self.storages[resourceType] = &storage;
+                    return true;
+                    }();
+                return storage;
             }
 
             template <typename Desc, typename Res>
             core::ResourceId<Res> load(const Desc& descriptor, std::string_view name = "") {
-                using engine::core::TypeTag;
+                const auto resourceType = core::typeId<Res>();
+                const auto descriptorType = core::typeId<Desc>();
 
-                std::type_index resourceType = core::TypeTag<Res>::index();
                 Hash cacheKey = MakeHashKey(descriptor);
 
-                auto it = hashToID.find(cacheKey);
-                if (it != hashToID.end() && it->second.second == resourceType) {
-                    return core::ResourceId<Res>(it->second.first);
-                }
+                auto it = hashToId.find(cacheKey);
+                if (it != hashToId.end() && it->second.typeId == resourceType) {
+                    return core::ResourceId<Res>(it->second);
+                };
+
+                engine::core::ResourceId<Res> id{ nextID++ };
+                resource::ResourceStorage<Res>& storage = getStorage<Res>();
+                storage.load(id, descriptor, name);
+
+                hashToId.emplace(cacheKey, id);
+                idToHash.emplace(id, cacheKey);
                 
-                std::type_index descriptorType = core::TypeTag<Desc>::index();
-
-                auto loaderIt = loaders.find(resourceType);
-                if (loaderIt == loaders.end()) {
-                    std::cerr << "No loaders registered for resource type: " << resourceType.name() << "\n";
-                    return core::ResourceId<Res>{0};
-                }
-
-                std::unique_ptr<Resource> resource = nullptr;
-                for (const auto& loader : loaderIt->second) {
-                    if (loader->canLoad(descriptorType, resourceType) && loader->canLoad(&descriptor)) {
-                        resource = std::move(loader->load(&descriptor, resourceType));
-                        break;
-                    }
-                }
-
-                if (!resource) {
-                    std::cerr << "No loader found for: " << descriptor << "\n";
-                    return core::ResourceId<Res>{0};
-                }
-
-                engine::core::ResourceId<Res> id{nextID++};
-                hashToID.emplace(cacheKey, std::make_pair( id , resourceType));
-                if (!name.empty()) {
-                    nameToID[resourceType][std::string(name)] = id;
-                }
-                idToType.emplace(id, resourceType);
-
-
-                typedResources[resourceType][id] = std::move(resource);
-
                 return id;
             }
 
@@ -103,92 +96,158 @@ namespace engine {
 
             template <typename Res>
             core::ResourceId<Res> add(std::unique_ptr<Res> resource, std::string_view name = "") {
-                using engine::core::TypeTag;
-                std::type_index resourceType = core::TypeTag<Res>::index();
+                const core::TypeId resourceType = core::typeId<Res>();
                 engine::core::ResourceId<Res> id{nextID++};
 
-                if (!name.empty()) {
-                    nameToID[resourceType][std::string(name)] = id;
-                }
-                idToType.emplace(id, resourceType);
+                resource::ResourceStorage<Res>& storage = getStorage<Res>();
+                storage.add(id, std::move(resource), name);
 
-
-                typedResources[resourceType][id] = std::move(resource);
                 return id;
             }
 
             template <typename T>
             T* get(engine::core::ResourceId<T> id) {
-                auto typeIt = idToType.find(id);
-                if (typeIt == idToType.end()) return nullptr;
-
-                std::type_index actualType = typeIt->second;
-
-                auto tableIt = typedResources.find(actualType);
-                if (tableIt == typedResources.end()) return nullptr;
-
-                auto& table = tableIt->second;
-                auto resIt = table.find(id);
-                if (resIt == table.end()) return nullptr;
-
-                return static_cast<T*>(resIt->second.get());
+                ResourceStorage<T>& storage = getStorage<T>();
+                return storage.get(id);
             }
 
             template <typename T>
             T* get(std::string_view name) {
-                engine::core::ResourceId<T> id = getId<T>(name);
-                if (!id) return nullptr; // only works if you add `operator bool()` or check `id != 0`
-                return get<T>(id);
-            }
-
-            template<typename T>
-            engine::core::ResourceId<T> getId(std::string_view name) {
-                using engine::core::TypeTag;
-                std::type_index resourceType = core::TypeTag<T>::index();
-                auto nameIt = nameToID.find(resourceType);
-                if (nameIt == nameToID.end()) return engine::core::ResourceId<T>{0};
-
-                auto& nameTable = nameIt->second;
-                auto resIt = nameTable.find(name);
-                if (resIt == nameTable.end()) return engine::core::ResourceId<T>{0};
-                return engine::core::ResourceId<T>{resIt->second};
+                ResourceStorage<T>& storage = getStorage<T>();
+                return storage.get(name);
             }
 
             template <typename T>
-            void unload(engine::core::ResourceId<T> id) {
-                auto it = idToType.find(id);
-                if (it != idToType.end()) {
-                    auto& table = typedResources[it->second];
-                    auto resIt = table.find(id);
-                    if (resIt != table.end()) {
-                        resIt->second->unload();
-                        table.erase(resIt);
-                    }
-                    idToType.erase(it);
+            void uploadIfDirty(core::ResourceId<T> id) {
+                resource::ResourceStorage<T>& storage = getStorage<T>();
+                storage.uploadIfDirty(id);
+            }
+
+            void uploadAllDirty() {
+                for (auto& [_, storage] : storages) {
+                    storage->uploadAllDirty();
                 }
             }
 
             void unloadAll() {
-                for (auto& [type, table] : typedResources) {
-                    for (auto& [id, res] : table) {
-                        res->unload();
-                    }
-                    table.clear();
+                for (auto& [_, storage] : storages) {
+                    storage->unloadAll();
                 }
-                typedResources.clear();
-                hashToID.clear();
-                idToType.clear();
+
+                hashToId.clear();
+                idToHash.clear();
+            }
+
+            void unloadUnused() {
+                for (auto&& [_, storage] : storages) {
+                    std::vector<core::ResourceIdBase> ids = std::move(storage->unloadUnused());
+                    for (auto& id : ids) {
+                        unregisterResource(id);
+                    }
+                }
+            }
+
+            template <typename T>
+            void unload(engine::core::ResourceId<T> id) {
+                resource::ResourceStorage<T>& storage = getStorage<T>();
+                storage.unloadResource(id);
+                unregisterResource(id);
+            }
+
+            void unregisterResource(core::ResourceIdBase id) {
+                auto it = idToHash.find(id);
+                if (it != idToHash.end()) {
+                    Hash hash = it->second;
+                    hashToId.erase(hash);
+                    idToHash.erase(it);
+                }
+            }
+
+            IStorage* getStorageByResourceId(core::ResourceIdBase id) {
+                auto storageIt = storages.find(id.typeId);
+                if (storageIt == storages.end()) return nullptr;
+
+                return storageIt->second;
+            }
+
+            void markDirty(core::ResourceIdBase id) {
+                if (auto* storage = getStorageByResourceId(id)) {
+                    storage->markDirty(id);
+                }
+            }
+
+            bool isDirty(core::ResourceIdBase id) {
+                if (auto* storage = getStorageByResourceId(id)) {
+                    return storage->isDirty(id);
+                }
+                return false;
+            }
+
+            void clearDirty(core::ResourceIdBase id) {
+                if (auto* storage = getStorageByResourceId(id)) {
+                    storage->clearDirty(id);
+                }
+            }
+
+            void addReference(core::ResourceIdBase id) {
+                if (auto* storage = getStorageByResourceId(id)) {
+                    storage->addReference(id);
+                }
+            }
+
+            void removeReference(core::ResourceIdBase id) {
+                if (auto* storage = getStorageByResourceId(id)) {
+                    storage->removeReference(id);
+                }
+            }
+
+            void setLastSeenFrame(core::ResourceIdBase id) {
+                if (frameClock) {
+                    auto* storage = getStorageByResourceId(id);
+                    if (storage) {
+                        storage->setLastSeenFrame(id);
+                    }
+                }
+            }
+
+            void trackDependency(entity::Entity entity, core::ResourceIdBase id) {
+
+            }
+
+            void removeDependency(core::ResourceIdBase id) {
+
+            }
+
+            size_t estimateMemoryUsage() {
+                size_t total = 0;
+                for (auto& [_, storage] : storages) {
+                    total += storage->estimateMemoryUsage();
+                }
+                return total;
+            }
+
+            size_t estimateGPUMemoryUsage() {
+                size_t total = 0;
+                for (auto& [_, storage] : storages) {
+                    total += storage->estimateGPUMemoryUsage();
+                }
+                return total;
+            }
+
+            void shutdown() {
+                unloadAll();
             }
 
         private:
-            std::unordered_map<std::type_index, std::vector<std::unique_ptr<loader::IAnyloader>>> loaders;
+            core::FrameClock* frameClock;
+            uint64_t unusedTreshold = 4000;
 
             uint32_t nextID = 1;
-            std::unordered_map<Hash, std::pair<engine::core::ResourceIdBase, std::type_index>> hashToID;
-            std::unordered_map<engine::core::ResourceIdBase, std::type_index> idToType;
+            std::unordered_map<Hash, engine::core::ResourceIdBase> hashToId;
+            std::unordered_map<engine::core::ResourceIdBase, Hash> idToHash;
 
-            std::unordered_map<std::type_index, std::unordered_map<std::string, engine::core::ResourceIdBase>> nameToID;
-            std::unordered_map<std::type_index, std::unordered_map<engine::core::ResourceIdBase, std::unique_ptr<Resource>>> typedResources;
+            std::unordered_map<core::TypeId, resource::IStorage*> storages;
+            std::unordered_map<loader::LoaderKey, std::unique_ptr<loader::IResourceLoaderbase>, loader::LoaderKeyHasher> loadersMap;
         };
     }
 }

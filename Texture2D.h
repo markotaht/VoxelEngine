@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <string>
 
 #include <SDL.h>
 
@@ -7,7 +8,13 @@
 
 #include "ITexture.h"
 
+
+
 namespace engine {
+	namespace loader {
+		class TextureLoader;
+	}
+
 	namespace asset {
 		class Texture2D : public ITexture{
 
@@ -15,10 +22,11 @@ namespace engine {
 			using SurfacePtr = std::unique_ptr<SDL_Surface, void(*)(SDL_Surface*)>;
 
 			Texture2D() = default;
-			Texture2D(GLuint textureId, SurfacePtr loadedTexture)
-				:textureID{ textureId }, loadedTexture(std::move(loadedTexture))
+			Texture2D(GLuint textureId, SurfacePtr loadedTexture, std::string sourcePath)
+				:textureID{ textureId }, loadedTexture(std::move(loadedTexture)), sourcePath(sourcePath)
 			{
 			}
+			Texture2D(SurfacePtr loadedTexture, std::string sourcePath):loadedTexture(std::move(loadedTexture)), textureID(0), sourcePath(sourcePath) {}
 
 
 			void bind(GLuint slot) const override;
@@ -33,10 +41,16 @@ namespace engine {
 			[[nodiscard]] GLuint getID() const override { return textureID; }
 
 			void unload();
+			size_t estimateMemoryUsage() const;
+			size_t estimateGpuMemoryUsage() const;
+
+			std::string toString();
+			friend class loader::TextureLoader;
 
 		private:
 			GLuint textureID;
 			SurfacePtr loadedTexture;
+			std::string sourcePath;
 		};
 	}
 }

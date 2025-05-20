@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 #include "ResourceId.h"
-#include "NewTextMaterial.h"
+#include "TextMaterial.h"
 #include "ResourceManager.h"
 
 namespace engine::render {

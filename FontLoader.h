@@ -13,6 +13,7 @@ namespace engine::loader {
 
         bool canLoad(const descriptor::FileDescriptor& descriptor) const;
         std::unique_ptr<asset::Font> load(const descriptor::FileDescriptor& descriptor) const;
+        bool uploadGPU(asset::Font& font) const;
 
     };
 }

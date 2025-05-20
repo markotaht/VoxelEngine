@@ -1,4 +1,4 @@
-#include "NewMesh.h"
+#include "Mesh.h"
 #include <vector>
 #include <utility>
 #include <glm/glm.hpp>
@@ -75,6 +75,18 @@ namespace engine {
 		
 		}
 
+		size_t Mesh::estimateMemoryUsage() const
+		{
+			size_t total = 0;
+			total += vertices.size() * sizeof(glm::vec3);
+			total += normals.size() * sizeof(glm::vec3);
+			total += colors.size() * sizeof(glm::vec3);
+			total += uvs2D.size() * sizeof(glm::vec2);
+			total += uvs3D.size() * sizeof(glm::vec3);
+			total += indices.size() * sizeof(uint32_t);
+			return total;
+		}
+
 		void Mesh::upload(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec3> colors, std::vector<glm::vec3> uv3D, std::vector<uint32_t> indices)
 		{
 			this->vertices = std::move(vertices);
@@ -83,7 +95,6 @@ namespace engine {
 			this->uvs3D = std::move(uv3D);
 			this->indices = std::move(indices);
 			uvType = UVType::Vec3;
-
 		}
 
 		void Mesh::unload()

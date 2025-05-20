@@ -88,6 +88,9 @@
     <Filter Include="Header Files\engine\scene">
       <UniqueIdentifier>{64df17e8-1b67-4d2c-9fe3-c99387b883f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\engine\util">
+      <UniqueIdentifier>{98a0821e-2d5b-4ac6-bcec-388ab44a0db7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -236,7 +239,7 @@
     <ClInclude Include="ResourceManager.h">
       <Filter>Header Files\engine\resource</Filter>
     </ClInclude>
-    <ClInclude Include="NewResource.h">
+    <ClInclude Include="Resource.h">
       <Filter>Header Files\engine\resource</Filter>
     </ClInclude>
     <ClInclude Include="TextureLoader.h">
@@ -257,7 +260,7 @@
     <ClInclude Include="Texture2D.h">
       <Filter>Header Files\engine\asset</Filter>
     </ClInclude>
-    <ClInclude Include="NewShaderProgram.h">
+    <ClInclude Include="ShaderProgram.h">
       <Filter>Header Files\engine\asset</Filter>
     </ClInclude>
     <ClInclude Include="FileDescriptor.h">
@@ -275,20 +278,17 @@
     <ClInclude Include="MaterialLoader.h">
       <Filter>Header Files\engine\loaders</Filter>
     </ClInclude>
-    <ClInclude Include="NewMaterial.h">
+    <ClInclude Include="Material.h">
       <Filter>Header Files\engine\asset</Filter>
     </ClInclude>
-    <ClInclude Include="NewMeshRenderer.h">
+    <ClInclude Include="MeshRenderer.h">
       <Filter>Header Files\engine\render</Filter>
     </ClInclude>
     <ClInclude Include="ResourceId.h">
       <Filter>Header Files\engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="NewMesh.h">
+    <ClInclude Include="Mesh.h">
       <Filter>Header Files\engine\asset</Filter>
-    </ClInclude>
-    <ClInclude Include="TypeTag.h">
-      <Filter>Header Files\engine\core</Filter>
     </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>Header Files\engine\entity</Filter>
@@ -317,13 +317,13 @@
     <ClInclude Include="FontLoader.h">
       <Filter>Header Files\engine\loaders</Filter>
     </ClInclude>
-    <ClInclude Include="NewTextMaterial.h">
+    <ClInclude Include="TextMaterial.h">
       <Filter>Header Files\engine\asset</Filter>
     </ClInclude>
     <ClInclude Include="stb_rect_pack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NewTextRenderer.h">
+    <ClInclude Include="TextRenderer.h">
       <Filter>Header Files\engine\render</Filter>
     </ClInclude>
     <ClInclude Include="TextMaterialDescriptor.h">
@@ -441,6 +441,39 @@
       <Filter>Header Files\engine\system</Filter>
     </ClInclude>
     <ClInclude Include="AutoLoaderRegistrar.h">
+      <Filter>Header Files\engine\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceReflection.h">
+      <Filter>Header Files\engine\util</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeUtils.h">
+      <Filter>Header Files\engine\util</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameClock.h">
+      <Filter>Header Files\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="IStorage.h">
+      <Filter>Header Files\engine\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceStorage.h">
+      <Filter>Header Files\engine\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceMetadata.h">
+      <Filter>Header Files\engine\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeId.h">
+      <Filter>Header Files\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="LoaderKey.h">
+      <Filter>Header Files\engine\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="IResourceLoaderBase.h">
+      <Filter>Header Files\engine\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="IGpuUploaderBase.h">
+      <Filter>Header Files\engine\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="IGpuUploader.h">
       <Filter>Header Files\engine\loaders</Filter>
     </ClInclude>
   </ItemGroup>

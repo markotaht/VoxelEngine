@@ -3,7 +3,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "NewMesh.h"
+#include "Mesh.h"
 #include "NewChunk.h"
 
 

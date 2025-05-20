@@ -1,5 +1,5 @@
 #include "ShaderLoader.h"
-#include "NewShaderProgram.h"
+#include "ShaderProgram.h"
 #include "StringUtils.h"
 
 #include <gl/glew.h>
@@ -29,40 +29,59 @@ namespace engine {
 			std::string vertSource = loadFile(descriptor.vertexPath);
 			std::string fragSource = loadFile(descriptor.fragmentPath);
 
-			GLuint vertShader = compileShader(vertSource.c_str(), GL_VERTEX_SHADER);
-			GLuint fragShader = compileShader(fragSource.c_str(), GL_FRAGMENT_SHADER);
+			return std::make_unique<asset::ShaderProgram>(
+				std::move(vertSource),
+				std::move(fragSource),
+				descriptor.vertexPath,
+				descriptor.fragmentPath);
+		}
 
-			if (vertShader == 0 || fragShader == 0) {
-				glDeleteShader(vertShader);
-				glDeleteShader(fragShader);
-				return nullptr;
+		bool ShaderLoader::uploadGPU(asset::ShaderProgram& shaderProgram) const
+		{
+			if (shaderProgram.programId != 0) {
+				glDeleteProgram(shaderProgram.programId);
+				shaderProgram.programId = 0;
 			}
 
-			GLuint programId = glCreateProgram();
-			glAttachShader(programId, vertShader);
-			glAttachShader(programId, fragShader);
-			glLinkProgram(programId);
+			shaderProgram.programId = glCreateProgram();
+
+			GLuint vertShader = compileShader(shaderProgram.vertexSource.c_str(), GL_VERTEX_SHADER);
+			GLuint fragShader = compileShader(shaderProgram.fragmentSource.c_str(), GL_FRAGMENT_SHADER);
+
+			if (vertShader == 0 || fragShader == 0) {
+				if (vertShader != 0) glDeleteShader(vertShader);
+				if (fragShader != 0) glDeleteShader(fragShader);
+				glDeleteProgram(shaderProgram.programId);
+				shaderProgram.programId = 0;
+				return false;
+			}
+
+			glAttachShader(shaderProgram.programId, vertShader);
+			glAttachShader(shaderProgram.programId, fragShader);
+			glLinkProgram(shaderProgram.programId);
 
 			GLint programSuccess = GL_TRUE;
-			glGetProgramiv(programId, GL_LINK_STATUS, &programSuccess);
+			glGetProgramiv(shaderProgram.programId, GL_LINK_STATUS, &programSuccess);
 			if (programSuccess != GL_TRUE) {
-				printf("Error linking program: %d vertexFile: %s  fragmentFile: %s!\n", programId, descriptor.vertexPath.c_str(), descriptor.fragmentPath.c_str());
-				printProgramLog(programId);
+				printf("Error linking program: %d vertexFile: %s  fragmentFile: %s!\n", shaderProgram.programId, shaderProgram.vertexPath.c_str(), shaderProgram.fragmentPath.c_str());
+				printProgramLog(shaderProgram.programId);
 				glDeleteShader(vertShader);
 				glDeleteShader(fragShader);
-				glDeleteProgram(programId);
-				programId = 0;
-				return nullptr;
+				glDeleteProgram(shaderProgram.programId);
+				shaderProgram.programId = 0;
+				return false;
 			}
 
 			glDeleteShader(vertShader);
 			glDeleteShader(fragShader);
 
-			std::unordered_map<std::string, GLint> attributesMap = reflectAttributes(programId);
-			std::unordered_map<std::string, GLint> uniformsMap = reflectUniforms(programId);
+			std::unordered_map<std::string, GLint> attributesMap = reflectAttributes(shaderProgram.programId);
+			std::unordered_map<std::string, GLint> uniformsMap = reflectUniforms(shaderProgram.programId);
 
-			std::unique_ptr<asset::ShaderProgram> programPrt = std::make_unique<asset::ShaderProgram>(programId, std::move(attributesMap), std::move(uniformsMap));
-			return programPrt;
+			shaderProgram.attributeMap = std::move(attributesMap);
+			shaderProgram.uniformMap = std::move(uniformsMap);
+
+			return true;
 		}
 
 		std::string ShaderLoader::loadFile(const std::string& path) const

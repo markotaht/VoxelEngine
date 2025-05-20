@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 #include <memory>
 #include <SDL.h>
 #include <string>
@@ -55,45 +56,50 @@ namespace engine::loader {
     }
     std::unique_ptr<asset::Texture2DArray> Texture2DArrayLoader::load(const descriptor::Texture2DArrayDescriptor& desc) const
     {
-        std::vector < std::pair<std::string, asset::Texture2DArray::SurfacePtr>> textureMap = std::move(loadImages(desc));
-        if (textureMap.empty()) {
+        std::vector<asset::TextureLayer> textureLayers = std::move(loadImages(desc));
+        if (textureLayers.empty()) {
             std::cerr << "Failed to load any textures for Texture2DArray\n";
             return nullptr;
         }
 
-        GLuint textureArray;
-        glGenTextures(1, &textureArray);
-        glBindTexture(GL_TEXTURE_2D_ARRAY, textureArray);
+        return std::make_unique<asset::Texture2DArray>(std::move(textureLayers), desc.width, desc.height);
+    }
 
-        int width = desc.width;
-        int height = desc.height;
-        int layers = textureMap.size();
+    bool Texture2DArrayLoader::uploadGPU(asset::Texture2DArray& tex) const
+    {
+        if (tex.textureId == 0) {
+            glGenTextures(1, &tex.textureId);
+        }
+        glBindTexture(GL_TEXTURE_2D_ARRAY, tex.textureId);
+
+        int width = tex.width;
+        int height = tex.height;
+        int layers = tex.layers.size();
 
         glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, width, height, layers, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
-        int index = 0;
-        for (auto& [id, surfacePtr] : textureMap) {
+        for (size_t i = 0; i < tex.layers.size(); ++i) {
+            auto& surfaceLayer = tex.layers[i];
             glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                 0,             // mip level
-                0, 0, index,       // x, y, z offset
+                0, 0, i,       // x, y, z offset
                 width, height, 1,  // width, height, depth (1 layer)
                 GL_RGBA,
                 GL_UNSIGNED_BYTE,
-                surfacePtr->pixels);
-            ++index;
+                surfaceLayer.surface->pixels);
         }
 
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-        return std::make_unique<asset::Texture2DArray>(textureArray, std::move(textureMap));
+        return true;
     }
 
-    std::vector < std::pair<std::string, asset::Texture2DArray::SurfacePtr>> Texture2DArrayLoader::loadImages(const descriptor::Texture2DArrayDescriptor& desc) const
+    std::vector<asset::TextureLayer> Texture2DArrayLoader::loadImages(const descriptor::Texture2DArrayDescriptor& desc) const
     {
-        std::vector < std::pair<std::string, asset::Texture2DArray::SurfacePtr>> textureVector;
+        std::vector<asset::TextureLayer> layers;
+        uint32_t index = 0;
         for (auto& [id, fileDescriptor] : desc.textures) {
             SDL_Surface* loadedSurface = IMG_Load(fileDescriptor.filePath.c_str());
             if (loadedSurface == NULL) {
@@ -108,8 +114,8 @@ namespace engine::loader {
                 return {};
             }
 
-            textureVector.emplace_back(id, std::unique_ptr<SDL_Surface, void(*)(SDL_Surface*)>(converted, SDL_FreeSurface));
+            layers.emplace_back(asset::TextureLayer{asset::SurfacePtr(converted, SDL_FreeSurface), id, fileDescriptor.filePath});
         }
-        return textureVector;
+        return layers;
     }
 }

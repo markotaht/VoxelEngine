@@ -1,9 +1,12 @@
-#include "NewMaterial.h"
+#include "Material.h"
 #include "ITexture.h"
-#include "NewShaderProgram.h"
+#include "ShaderProgram.h"
 #include "ResourceManager.h"
 
 #include <gl/glew.h>
+
+template<typename>
+inline constexpr bool always_false = false;
 
 namespace engine {
 	namespace asset {

@@ -1,5 +1,5 @@
 #include "ChunkRenderer.h"
-#include "NewMaterial.h"
+#include "Material.h"
 
 #include <iostream>
 

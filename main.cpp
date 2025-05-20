@@ -7,6 +7,7 @@
 #include <gl/GLU.h>
 #include <iostream>
 #include <glm/gtx/string_cast.hpp>
+#include <functional>
 
 #include "InputHandler.h"
 #include "PerlinNoise.h"
@@ -19,10 +20,13 @@
 #include "ResourceManager.h"
 #include "Texture2D.h"
 #include "Texture2DArray.h"
-#include "NewMeshRenderer.h"
-#include "NewMesh.h"
-#include "NewMaterial.h"
+#include "Mesh.h"
+#include "Material.h"
+#include "TextMaterial.h"
 #include <memory>
+#include <string>
+#include <sstream>
+#include <iomanip>
 
 #include <glm/glm.hpp>
 
@@ -30,7 +34,7 @@
 #include "CameraComponent.h"
 #include "TransformComponent.h"
 #include "MeshRendererComponent.h"
-#include "NewTextRenderer.h"
+#include "TextRenderer.h"
 #include "TagPlayerControlled.h"
 #include "PitchYawRotation.h"
 
@@ -49,11 +53,15 @@
 
 #include "ThreadPool.h"
 #include "MainThreadDispatcher.h"
+#include "Font.h"
+#include "ResourceReflection.h"
+#include "FrameClock.h"
 
 Window window;
 bool quit = false;
 SDL_Event e;
 InputHandler& inputHandler = InputHandler::getInstance();
+engine::core::FrameClock frameClock;
 
 engine::resource::ResourceManager& resMan = engine::resource::ResourceManager::instance();
 engine::system::SystemRegistry& sysReg = engine::system::SystemRegistry::instance();
@@ -70,7 +78,36 @@ engine::entity::Entity camera;
 engine::core::ThreadPool threadPool {5};
 engine::core::MainThreadDispatcher mainThreadDispatcher;
 
+template<typename T>
+void trackResourcesIfPresent(
+	const T& component,
+	engine::entity::Entity e,
+	engine::resource::ResourceManager& resMan)
+{
+	if constexpr (engine::util::HasGetResourceIds<T>) {
+		engine::util::forEachResourceId(component, [&](auto id) {
+			resMan.addReference(id);
+			resMan.trackDependency(e, id);
+			});
+	}
+}
+
+template<typename... Components>
+engine::entity::Entity createEntityWithTracking(
+	engine::scene::Scene& scene,
+	engine::resource::ResourceManager& resMan,
+	Components&&... components)
+{
+	engine::entity::Entity e = scene.createEntityWith(std::forward<Components>(components)...);
+
+	// Call tracking on each component
+	(trackResourcesIfPresent(components, e, resMan), ...);
+
+	return e;
+}
+
 bool loadMedia() {
+	resMan.setFrameClock(&frameClock);
 	engine::core::ResourceId<engine::asset::Texture2D> texId = resMan.load<engine::asset::Texture2D>("D:/Visual studio/GameEngine/Debug/UV.png", "UV_Texture");
 	engine::core::ResourceId<engine::asset::Texture2DArray> arrayTexId = resMan.load<engine::descriptor::Texture2DArrayDescriptor, engine::asset::Texture2DArray>(
 		{
@@ -120,8 +157,6 @@ bool loadMedia() {
 		}, "TextMaterial");
 
 	textRenderer = std::move(std::make_unique<engine::render::TextRenderer>(textMatId));
-
-	//physicsSystem.setTerrainCollision(terrain.get());
 
 	terrainSystem = globalScene.addSubsystem<engine::world::TerrainSystem>();
 	terrainSystem->setBackend(std::make_unique<engine::world::voxel::VoxelTerrainBackend>(resMan, arrayMatId, threadPool, mainThreadDispatcher));
@@ -174,8 +209,8 @@ bool loadMedia() {
 	cameraTransform.position.z = 10;
 	cameraTransform.position.y = 70;
 
-	camera = globalScene.createEntity();
-	globalScene.addEntity(camera, cameraTransform, cameraComponent, pirtchYaw, tagPlayerControllerd, camCollider);
+	camera = createEntityWithTracking(globalScene, resMan,
+		cameraTransform, cameraComponent, pirtchYaw, tagPlayerControllerd, camCollider);
 
 	terrainSystem->streamChunksAround(cameraTransform.position);
 
@@ -197,12 +232,38 @@ engine::core::CameraData getActiveCameraData(engine::scene::Scene& scene, engine
 	};
 }
 
+std::string formatMemorySize(size_t bytes) {
+	std::ostringstream oss;
+	constexpr size_t KB = 1024;
+	constexpr size_t MB = 1024 * KB;
+	constexpr size_t GB = 1024 * MB;
+
+	oss << std::fixed << std::setprecision(2);
+
+	if (bytes >= GB) {
+		oss << (double)bytes / GB << " GB";
+	}
+	else if (bytes >= MB) {
+		oss << (double)bytes / MB << " MB";
+	}
+	else if (bytes >= KB) {
+		oss << (double)bytes / KB << " KB";
+	}
+	else {
+		oss << bytes << " B";
+	}
+
+	return oss.str();
+}
+
 void printDebugData(engine::render::TextRenderer* textRenderer, engine::component::TransformComponent* camTransform, engine::core::FrameTimer& timer) {
 	textRenderer->addMessage("DeltaTime: " + std::to_string(timer.getDeltaTime()));
 	textRenderer->addMessage(std::to_string(static_cast<int>(timer.getSmoothedFPS())) + "FPS");
 	textRenderer->addMessage("Camera position: " + glm::to_string(camTransform->position));
 	textRenderer->addMessage("Chunk: " + glm::to_string(glm::floor(camTransform->position / engine::world::voxel::Chunk::chunkSize)));
 	textRenderer->addMessage("ChunkRaw: " + glm::to_string(camTransform->position / engine::world::voxel::Chunk::chunkSize));
+	textRenderer->addMessage("estimated RAM usage:" + formatMemorySize(resMan.estimateMemoryUsage()));
+	textRenderer->addMessage("estimated VRAM usage:" + formatMemorySize(resMan.estimateGPUMemoryUsage()));
 }
 
 int main(int argc, char* args[])
@@ -216,14 +277,15 @@ int main(int argc, char* args[])
 		std::cerr << "Failed to load media\n";
 		return -1;
 	}
-
 	engine::system::SceneSystemRunner systemsRunner {sysReg, resMan, globalScene};
 	std::vector<engine::scene::Scene*> loadedScenes = { &localScene };
 
 	engine::core::FrameTimer timer;
 
 	while (!quit) {
+		frameClock.nextFrame();
 		timer.update();
+		resMan.uploadAllDirty();
 
 		engine::core::CameraData camData = getActiveCameraData(globalScene, camera);
 		if (!camData.camera || !camData.transform) {
@@ -257,6 +319,7 @@ int main(int argc, char* args[])
 		window.update();
 	}
 
+	resMan.shutdown();
 	close();
 	return 0;
 }

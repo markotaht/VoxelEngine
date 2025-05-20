@@ -2,14 +2,18 @@
 #include<string>
 #include <memory>
 
+#include "IGpuUploader.h"
+
 namespace engine {
     namespace loader {
         template <typename Desc, typename Res>
-        class IResourceLoader {
+        class IResourceLoader : public IGpuUploader<Res>{
         public:
 
             using DescriptorType = Desc;
             using ResourceType = Res;
+
+            core::TypeId getDescriptorType() const { return core::typeId<Desc>(); };
             virtual ~IResourceLoader() = default;
 
             // Can this loader handle this path?

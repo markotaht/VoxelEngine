@@ -5,7 +5,7 @@
 
 #include "IResourceLoader.h"
 #include "ShaderDescriptor.h"
-#include "NewShaderProgram.h"
+#include "ShaderProgram.h"
 
 namespace engine {
 	namespace loader {
@@ -14,6 +14,7 @@ namespace engine {
 		public:
 			bool canLoad(const descriptor::ShaderDescriptor& descriptor) const;
 			std::unique_ptr<asset::ShaderProgram> load(const descriptor::ShaderDescriptor& descriptor) const;
+			bool uploadGPU(asset::ShaderProgram& shaderProgram) const;
 		private:
 			std::string loadFile(const std::string& path) const;
 			GLuint compileShader(const char* source, GLenum shaderType) const;

@@ -1,5 +1,5 @@
-#include "NewTextMaterial.h"
-#include "NewShaderProgram.h"
+#include "TextMaterial.h"
+#include "ShaderProgram.h"
 #include "ResourceManager.h"
 #include "Font.h"
 

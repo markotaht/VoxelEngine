@@ -3,7 +3,7 @@
 #include <string>
 #include <typeindex>
 
-#include "NewResource.h"
+#include "Resource.h"
 
 namespace engine {
     namespace loader {
@@ -16,7 +16,7 @@ namespace engine {
 
             // Return type-erased unique_ptr<Resource>
             virtual std::unique_ptr<resource::Resource> load(const void* descriptor, std::type_index type) const = 0;
-
+            virtual bool uploadGPU(resource::Resource& res) const = 0;
         };
     }
 }

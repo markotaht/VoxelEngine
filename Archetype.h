@@ -62,7 +62,7 @@ namespace engine::entity {
 
 		template<typename... Components>
 		bool hasComponents() const {
-			return (... && (componentData.find(getComponentTypeId<Components>()) != componentData.end()));
+			return (... && (componentData.contains(getComponentTypeId<Components>())));
 		}
 
 		inline std::size_t size() const {

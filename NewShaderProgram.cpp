@@ -1,4 +1,4 @@
-#include "NewShaderProgram.h"
+#include "ShaderProgram.h"
 #include <string>
 #include <gl/glew.h>
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "NewResource.h"
+#include "Resource.h"
 #include <gl/glew.h>
 
 namespace engine::asset {

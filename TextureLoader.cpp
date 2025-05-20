@@ -35,28 +35,38 @@ namespace engine {
                 printf("Unable to load image %s! SDL_image Error: %s\n", desc.filePath.c_str(), IMG_GetError());
                 return nullptr;
             }
+            return std::make_unique<asset::Texture2D>(asset::Texture2D::SurfacePtr(loadedSurface, SDL_FreeSurface), desc.filePath);
+        }
 
-            GLuint GLtexture = 0;
-            glGenTextures(1, &GLtexture);
-            glBindTexture(GL_TEXTURE_2D, GLtexture);
+        bool TextureLoader::uploadGPU(asset::Texture2D& tex) const {
+            if (!tex.loadedTexture) {
+                printf("No surface data to upload.\n");
+                return false;
+            }
+
+            if (tex.textureID == 0) {
+                glGenTextures(1, &tex.textureID);
+            }
+ 
+            glBindTexture(GL_TEXTURE_2D, tex.textureID);
 
             GLint internalFormat = GL_RGB8;
             GLenum format = GL_RGB;
 
-            if (loadedSurface->format->BytesPerPixel == 4) {
+            if (tex.loadedTexture->format->BytesPerPixel == 4) {
                 internalFormat = GL_RGBA8;
                 format = GL_RGBA;
             }
 
             glTexImage2D(GL_TEXTURE_2D, 0, internalFormat,
-                loadedSurface->w, loadedSurface->h, 0,
-                format, GL_UNSIGNED_BYTE, loadedSurface->pixels);
+                tex.loadedTexture->w, tex.loadedTexture->h, 0,
+                format, GL_UNSIGNED_BYTE, tex.loadedTexture->pixels);
 
             if (glGetError() != GL_NO_ERROR) {
-                printf("OpenGL error during texture upload for: %s\n", desc.filePath.c_str());
-                glDeleteTextures(1, &GLtexture);
-                SDL_FreeSurface(loadedSurface);
-                return nullptr;
+                printf("OpenGL error during texture upload for: %s\n", tex.sourcePath.c_str());
+                glDeleteTextures(1, &tex.textureID);
+                tex.textureID = 0;
+                return false;
             }
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -64,9 +74,8 @@ namespace engine {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-            asset::Texture2D::SurfacePtr surface(loadedSurface, SDL_FreeSurface);
             glBindTexture(GL_TEXTURE_2D, 0);
-            return std::make_unique<asset::Texture2D>(GLtexture, std::move(surface));
+            return true;
         }
     }
 }

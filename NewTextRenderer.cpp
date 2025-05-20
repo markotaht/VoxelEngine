@@ -1,5 +1,5 @@
-#include "NewTextRenderer.h"
-#include "NewTextMaterial.h"
+#include "TextRenderer.h"
+#include "TextMaterial.h"
 #include "Window.h"
 #include "Font.h"
 
@@ -11,8 +11,8 @@ void engine::render::TextRenderer::render(resource::ResourceManager& resourceMan
     asset::Font* font = resourceManager.get<asset::Font>(textMaterial->getFontId());
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(Window::SCREEN_WIDTH), 0.0f, static_cast<float>(Window::SCREEN_HEIGHT));
 	textMaterial->bind(glm::vec3(1.f, 1.f, 1.f), projection, resourceManager);
-    for (int i = 0; i < messages.size(); i++) {
-		_render(messages[i], 0, 24 * i, 0.5f, font);
+    for (size_t i = 0; i < messages.size(); i++) {
+		_render(messages[i], 0, 24.0f * i, 0.5f, font);
 	}
 	textMaterial->unbind(resourceManager);
     messages.clear();

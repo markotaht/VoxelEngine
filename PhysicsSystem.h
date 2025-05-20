@@ -27,7 +27,7 @@ namespace engine::system {
 
         void resolveCollision(TransformComponent& a, RigidBodyComponent& rbA, TransformComponent& b, RigidBodyComponent& rbB, const CollisionInfo& collision);
 
-        CollisionInfo PhysicsSystem::checkSphereToAABB(
+        CollisionInfo checkSphereToAABB(
             const TransformComponent& sphere, const ColliderComponent& csphere,
             const TransformComponent& aabb, const ColliderComponent& caabb);
 

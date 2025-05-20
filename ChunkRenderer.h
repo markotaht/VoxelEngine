@@ -3,7 +3,7 @@
 
 #include "NewChunk.h"
 #include "ResourceManager.h"
-#include "NewMaterial.h"
+#include "Material.h"
 #include "ResourceId.h"
 
 namespace engine::world::voxel {

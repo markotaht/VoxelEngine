@@ -6,25 +6,52 @@
 #include <memory>
 #include <vector>
 
-namespace engine::asset {
-	class Texture2DArray : public ITexture {
-	public:
+namespace engine{
+	namespace loader {
+		class Texture2DArrayLoader;
+	}
+
+	namespace asset {
 		using SurfacePtr = std::unique_ptr<SDL_Surface, void(*)(SDL_Surface*)>;
+		struct TextureLayer {
+			SurfacePtr surface;
+			std::string name;
+			std::string filePath;
+		};
 
-		Texture2DArray(GLuint textureId, std::vector<std::pair<std::string, SurfacePtr>>&& surfaces): textureId(textureId), surfaces(std::move(surfaces)){}
+		class Texture2DArray : public ITexture {
+		public:
 
-		void bind(GLuint slot) const override;
+			Texture2DArray(GLuint textureId, std::vector<asset::TextureLayer>&& layers, int width, int height)
+				:textureId(textureId), layers(std::move(layers)), width(width), height(height) {}
 
-		GLuint getID() const override { return textureId; }
+			Texture2DArray(std::vector<asset::TextureLayer>&& layers, int width, int height)
+				:layers(std::move(layers)), width(width), height(height), textureId(0) {}
 
-		void unload();
+			void bind(GLuint slot) const override;
 
-		~Texture2DArray() {
-			unload();
-		}
+			GLuint getID() const override { return textureId; }
 
-	private:
-		GLuint textureId;
-		std::vector<std::pair<std::string, SurfacePtr>> surfaces;
-	};
+			void unload();
+
+			~Texture2DArray() {
+				unload();
+			}
+
+			int getWidth() const { return width; }
+			int getHeight() const { return height; }
+
+			size_t estimateMemoryUsage() const;
+			size_t estimateGpuMemoryUsage() const;
+			std::string toString() { return ""; }
+
+			friend class loader::Texture2DArrayLoader;
+
+		private:
+			GLuint textureId;
+			int width;
+			int height;
+			std::vector<asset::TextureLayer> layers;
+		};
+	}
 }

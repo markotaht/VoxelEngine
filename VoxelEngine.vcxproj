@@ -58,8 +58,8 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
@@ -76,9 +76,9 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
+      <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\GLM\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <Optimization>MaxSpeed</Optimization>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
@@ -147,17 +147,23 @@
     <ClInclude Include="FileDescriptor.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontLoader.h" />
+    <ClInclude Include="FrameClock.h" />
     <ClInclude Include="FrameTimer.h" />
     <ClInclude Include="GeometricPrimitives.h" />
     <ClInclude Include="IAnyLoader.h" />
     <ClInclude Include="ICollidableTerrain.h" />
     <ClInclude Include="IComponentArray.h" />
+    <ClInclude Include="IGpuUploader.h" />
+    <ClInclude Include="IGpuUploaderBase.h" />
     <ClInclude Include="IResourceLoader.h" />
+    <ClInclude Include="IResourceLoaderBase.h" />
     <ClInclude Include="ISceneSubsystem.h" />
+    <ClInclude Include="IStorage.h" />
     <ClInclude Include="ITerrain.h" />
     <ClInclude Include="ITerrainBackend.h" />
     <ClInclude Include="ITerrainCollision.h" />
     <ClInclude Include="ITexture.h" />
+    <ClInclude Include="LoaderKey.h" />
     <ClInclude Include="LookSystem.h" />
     <ClInclude Include="MainThreadDispatcher.h" />
     <ClInclude Include="MaterialDescriptor.h" />
@@ -165,14 +171,17 @@
     <ClInclude Include="MeshRendererComponent.h" />
     <ClInclude Include="MoveSystem.h" />
     <ClInclude Include="NewChunk.h" />
-    <ClInclude Include="NewMaterial.h" />
-    <ClInclude Include="NewMesh.h" />
-    <ClInclude Include="NewMeshRenderer.h" />
-    <ClInclude Include="NewResource.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshRenderer.h" />
+    <ClInclude Include="ResourceMetadata.h" />
+    <ClInclude Include="ResourceReflection.h" />
+    <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="NewShaderProgram.h" />
-    <ClInclude Include="NewTextMaterial.h" />
-    <ClInclude Include="NewTextRenderer.h" />
+    <ClInclude Include="ResourceStorage.h" />
+    <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="TextMaterial.h" />
+    <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="PitchYawRotation.h" />
     <ClInclude Include="RigidBodyComponent.h" />
@@ -207,8 +216,9 @@
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="TransformComponent.h" />
+    <ClInclude Include="TypeId.h" />
     <ClInclude Include="Types.h" />
-    <ClInclude Include="TypeTag.h" />
+    <ClInclude Include="TypeUtils.h" />
     <ClInclude Include="VoxelTerrainBackend.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>

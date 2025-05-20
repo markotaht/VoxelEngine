@@ -5,8 +5,8 @@
 #include "Entity.h"
 #include "Registry.h"
 
-#include "NewMesh.h"
-#include "NewMaterial.h"
+#include "Mesh.h"
+#include "Material.h"
 #include "AutoSystemRegistrar.h"
 
 namespace engine::system {

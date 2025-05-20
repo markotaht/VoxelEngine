@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "NewMesh.h"
+#include "Mesh.h"
 
 namespace engine::world::voxel {
 	enum class VoxelType : uint8_t {
