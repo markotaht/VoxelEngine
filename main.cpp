@@ -57,6 +57,12 @@
 #include "ResourceReflection.h"
 #include "FrameClock.h"
 
+#include "ConsoleOut.h"
+
+#include "imgui.h"
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_opengl3.h"
+
 Window window;
 bool quit = false;
 SDL_Event e;
@@ -77,6 +83,8 @@ engine::entity::Entity camera;
 
 engine::core::ThreadPool threadPool {5};
 engine::core::MainThreadDispatcher mainThreadDispatcher;
+
+engine::core::ConsoleOut cout;
 
 template<typename T>
 void trackResourcesIfPresent(
@@ -217,14 +225,6 @@ bool loadMedia() {
 	return true;
 }
 
-void close() {
-
-	window.~Window();
-
-	IMG_Quit();
-	SDL_Quit();
-}
-
 engine::core::CameraData getActiveCameraData(engine::scene::Scene& scene, engine::entity::Entity camEntity) {
 	return {
 		scene.tryGetComponent<engine::component::TransformComponent>(camEntity),
@@ -282,6 +282,8 @@ int main(int argc, char* args[])
 
 	engine::core::FrameTimer timer;
 
+	resMan.debugPrint(cout);
+
 	while (!quit) {
 		frameClock.nextFrame();
 		timer.update();
@@ -302,8 +304,25 @@ int main(int argc, char* args[])
 			inputHandler.handleEvent(e);
 		}
 
+		if (inputHandler.isPressed(SDL_SCANCODE_ESCAPE)) {
+			window.toggleMouseMode();
+		}
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplSDL2_NewFrame();
+		ImGui::NewFrame();
+
+		// UI code
+		ImGui::SetNextWindowPos(ImVec2(0, 0));
+		ImGui::Begin("Hello");
+		ImGui::Text("ImGui + SDL2 + OpenGL works!");
+		ImGui::End();
+
+		ImGui::Render();
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		terrainSystem->streamChunksAroundThrottled(camData.transform->position);
 		mainThreadDispatcher.runMainThreadTasks();
@@ -320,6 +339,5 @@ int main(int argc, char* args[])
 	}
 
 	resMan.shutdown();
-	close();
 	return 0;
 }

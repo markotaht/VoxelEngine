@@ -1,5 +1,9 @@
 #include "Window.h"
 
+#include "imgui.h"
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_opengl3.h"
+
 void GLAPIENTRY GLDebugMessageCallback(GLenum source, GLenum type, GLuint id,
 	GLenum severity, GLsizei length,
 	const GLchar* msg, const void* data)
@@ -99,62 +103,66 @@ void GLAPIENTRY GLDebugMessageCallback(GLenum source, GLenum type, GLuint id,
 }
 
 bool Window::init() {
-	bool success = true;
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+		return false;
 	}
-	else
+
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+	//Create window
+	SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
+	SDL_Window* createdWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	if (createdWindow == NULL)
 	{
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 4);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-
-		//Create window
-		SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
-		SDL_Window* createdWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-		if (createdWindow == NULL)
-		{
-			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-			success = false;
-		}
-		else
-		{
-			SDL_SetRelativeMouseMode(SDL_TRUE);
-			window = std::move(WindowPtr(createdWindow, SDL_DestroyWindow));
-			gContext = SDL_GL_CreateContext(window.get());
-			if (gContext == NULL)
-			{
-				printf("OpenGL context could not be created! SDL Error: %s\n", SDL_GetError());
-				success = false;
-			}
-			else
-			{
-				//Initialize GLEW
-				glewExperimental = GL_TRUE;
-				GLenum glewError = glewInit();
-				if (glewError != GLEW_OK)
-				{
-					printf("Error initializing GLEW! %s\n", glewGetErrorString(glewError));
-				}
-				glEnable(GL_DEBUG_OUTPUT);
-				glDebugMessageCallback(GLDebugMessageCallback, 0);
-				//Use Vsync
-				if (SDL_GL_SetSwapInterval(1) < 0)
-				{
-					printf("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
-				}
-
-
-				int imgFlags = IMG_INIT_PNG;
-				if (!(IMG_Init(imgFlags) & imgFlags)) {
-					printf("SDL image could not be initilaized! SDL_image Error: %s\n", IMG_GetError());
-					success = false;
-				}
-			}
-		}
+		printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+		return false;
 	}
-	return success;
+
+	SDL_SetRelativeMouseMode(SDL_TRUE);
+	window = std::move(WindowPtr(createdWindow, SDL_DestroyWindow));
+	gContext = SDL_GL_CreateContext(window.get());
+	if (gContext == NULL)
+	{
+		printf("OpenGL context could not be created! SDL Error: %s\n", SDL_GetError());
+		return false;
+	}
+	
+	//Initialize GLEW
+	glewExperimental = GL_TRUE;
+	GLenum glewError = glewInit();
+	if (glewError != GLEW_OK)
+	{
+		printf("Error initializing GLEW! %s\n", glewGetErrorString(glewError));
+		return false;
+	}
+	glEnable(GL_DEBUG_OUTPUT);
+	glDebugMessageCallback(GLDebugMessageCallback, 0);
+	//Use Vsync
+	if (SDL_GL_SetSwapInterval(1) < 0)
+	{
+		printf("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+	}
+
+
+	int imgFlags = IMG_INIT_PNG;
+	if (!(IMG_Init(imgFlags) & imgFlags)) {
+		printf("SDL image could not be initilaized! SDL_image Error: %s\n", IMG_GetError());
+		return false;
+	}
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplSDL2_InitForOpenGL(window.get(), gContext);
+	ImGui_ImplOpenGL3_Init("#version 440");
+	return true;
 }
 
 void Window::update() {
@@ -163,14 +171,19 @@ void Window::update() {
 }
 
 Window::~Window() {
+	SDL_GL_MakeCurrent(window.get(), gContext);
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
+
 	SDL_SetRelativeMouseMode(SDL_FALSE);
 	SDL_GL_DeleteContext(gContext);
 	for (auto it : threadContexts) {
 		SDL_GL_DeleteContext(it);
 	}
-//	SDL_DestroyWindow(window);
-//	window = NULL;
-//	renderer = NULL;
+	IMG_Quit();
+	SDL_Quit();
 }
 
 SDL_GLContext Window::getThreadContext(int i)
@@ -180,4 +193,9 @@ SDL_GLContext Window::getThreadContext(int i)
 		SDL_GL_MakeCurrent(window.get(), gContext);
 	}
 	return threadContexts[i];
+}
+
+void Window::toggleMouseMode()
+{
+	SDL_SetRelativeMouseMode(static_cast<SDL_bool>(!SDL_GetRelativeMouseMode()));
 }

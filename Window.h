@@ -23,6 +23,7 @@ public:
 
 	SDL_GLContext getThreadContext(int i);
 	inline SDL_Window* getWindow() const { return window.get(); }
+	void toggleMouseMode();
 
 	static const int SCREEN_WIDTH = 640;
 	static const int SCREEN_HEIGHT = 480;

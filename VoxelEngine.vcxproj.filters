@@ -91,6 +91,21 @@
     <Filter Include="Header Files\engine\util">
       <UniqueIdentifier>{98a0821e-2d5b-4ac6-bcec-388ab44a0db7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\engine\resource">
+      <UniqueIdentifier>{09f3c6f5-becd-4f70-8798-07322ca84c8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\imgui">
+      <UniqueIdentifier>{303212e1-ae40-41a5-8488-534c9d0826d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\imgui">
+      <UniqueIdentifier>{5587e267-aff2-48bc-9a53-e23b779d419d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\imgui\backend">
+      <UniqueIdentifier>{ce52f2b9-94bf-4133-96b7-5a3bff535d43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\imgui\backend">
+      <UniqueIdentifier>{28b82ae7-e2d8-4e92-a490-ff6621d58431}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -203,6 +218,27 @@
     </ClCompile>
     <ClCompile Include="MainThreadDispatcher.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Source Files\engine\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_opengl3.cpp">
+      <Filter>Source Files\imgui\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_sdl2.cpp">
+      <Filter>Source Files\imgui\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_draw.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_tables.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_widgets.cpp">
+      <Filter>Source Files\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -475,6 +511,39 @@
     </ClInclude>
     <ClInclude Include="IGpuUploader.h">
       <Filter>Header Files\engine\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="OutStream.h">
+      <Filter>Header Files\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleOut.h">
+      <Filter>Header Files\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_opengl3.h">
+      <Filter>Header Files\imgui\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_sdl2.h">
+      <Filter>Header Files\imgui\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imconfig.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_internal.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_rectpack.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_textedit.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_truetype.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_opengl3_loader.h">
+      <Filter>Header Files\imgui\backend</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

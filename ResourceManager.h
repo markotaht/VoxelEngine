@@ -26,6 +26,8 @@
 #include "ResourceStorage.h"
 #include "LoaderKey.h"
 
+#include "OutStream.h"
+
 
 namespace engine {
     namespace resource {
@@ -40,6 +42,25 @@ namespace engine {
             ~ResourceManager() {
             }
 
+            void uploadAllDirty();
+            void tickResource(uint64_t frameIndex);
+            void unloadAll();
+            void unloadUnused();
+            void unregisterResource(core::ResourceIdBase id);
+            IStorage* getStorageByResourceId(core::ResourceIdBase id);
+            void markDirty(core::ResourceIdBase id);
+            bool isDirty(core::ResourceIdBase id);
+            void clearDirty(core::ResourceIdBase id);
+            void addReference(core::ResourceIdBase id);
+            void removeReference(core::ResourceIdBase id);
+            void setLastSeenFrame(core::ResourceIdBase id);
+            void trackDependency(entity::Entity entity, core::ResourceIdBase id);
+            void removeDependency(core::ResourceIdBase id);
+            size_t estimateMemoryUsage();
+            size_t estimateGPUMemoryUsage();
+            void debugPrint(core::OutStream& out) const;
+            void shutdown();
+
             inline void setFrameClock(core::FrameClock* frameClock) {
                 this->frameClock = frameClock;
             }
@@ -52,7 +73,7 @@ namespace engine {
 
             template <typename Res>
             resource::ResourceStorage<Res>& getStorage() {
-                static resource::ResourceStorage<Res> storage{ *frameClock, instance() };
+                static resource::ResourceStorage<Res> storage{ instance() };
                 static bool once = [] {
                     auto& self = instance();
                     const core::TypeId resourceType = core::typeId<Res>();
@@ -108,43 +129,19 @@ namespace engine {
             template <typename T>
             T* get(engine::core::ResourceId<T> id) {
                 ResourceStorage<T>& storage = getStorage<T>();
-                return storage.get(id);
+                return storage.get(id, frameClock->getFrame());
             }
 
             template <typename T>
             T* get(std::string_view name) {
                 ResourceStorage<T>& storage = getStorage<T>();
-                return storage.get(name);
+                return storage.get(name, frameClock->getFrame());
             }
 
             template <typename T>
             void uploadIfDirty(core::ResourceId<T> id) {
                 resource::ResourceStorage<T>& storage = getStorage<T>();
                 storage.uploadIfDirty(id);
-            }
-
-            void uploadAllDirty() {
-                for (auto& [_, storage] : storages) {
-                    storage->uploadAllDirty();
-                }
-            }
-
-            void unloadAll() {
-                for (auto& [_, storage] : storages) {
-                    storage->unloadAll();
-                }
-
-                hashToId.clear();
-                idToHash.clear();
-            }
-
-            void unloadUnused() {
-                for (auto&& [_, storage] : storages) {
-                    std::vector<core::ResourceIdBase> ids = std::move(storage->unloadUnused());
-                    for (auto& id : ids) {
-                        unregisterResource(id);
-                    }
-                }
             }
 
             template <typename T>
@@ -154,89 +151,7 @@ namespace engine {
                 unregisterResource(id);
             }
 
-            void unregisterResource(core::ResourceIdBase id) {
-                auto it = idToHash.find(id);
-                if (it != idToHash.end()) {
-                    Hash hash = it->second;
-                    hashToId.erase(hash);
-                    idToHash.erase(it);
-                }
-            }
 
-            IStorage* getStorageByResourceId(core::ResourceIdBase id) {
-                auto storageIt = storages.find(id.typeId);
-                if (storageIt == storages.end()) return nullptr;
-
-                return storageIt->second;
-            }
-
-            void markDirty(core::ResourceIdBase id) {
-                if (auto* storage = getStorageByResourceId(id)) {
-                    storage->markDirty(id);
-                }
-            }
-
-            bool isDirty(core::ResourceIdBase id) {
-                if (auto* storage = getStorageByResourceId(id)) {
-                    return storage->isDirty(id);
-                }
-                return false;
-            }
-
-            void clearDirty(core::ResourceIdBase id) {
-                if (auto* storage = getStorageByResourceId(id)) {
-                    storage->clearDirty(id);
-                }
-            }
-
-            void addReference(core::ResourceIdBase id) {
-                if (auto* storage = getStorageByResourceId(id)) {
-                    storage->addReference(id);
-                }
-            }
-
-            void removeReference(core::ResourceIdBase id) {
-                if (auto* storage = getStorageByResourceId(id)) {
-                    storage->removeReference(id);
-                }
-            }
-
-            void setLastSeenFrame(core::ResourceIdBase id) {
-                if (frameClock) {
-                    auto* storage = getStorageByResourceId(id);
-                    if (storage) {
-                        storage->setLastSeenFrame(id);
-                    }
-                }
-            }
-
-            void trackDependency(entity::Entity entity, core::ResourceIdBase id) {
-
-            }
-
-            void removeDependency(core::ResourceIdBase id) {
-
-            }
-
-            size_t estimateMemoryUsage() {
-                size_t total = 0;
-                for (auto& [_, storage] : storages) {
-                    total += storage->estimateMemoryUsage();
-                }
-                return total;
-            }
-
-            size_t estimateGPUMemoryUsage() {
-                size_t total = 0;
-                for (auto& [_, storage] : storages) {
-                    total += storage->estimateGPUMemoryUsage();
-                }
-                return total;
-            }
-
-            void shutdown() {
-                unloadAll();
-            }
 
         private:
             core::FrameClock* frameClock;

@@ -1,5 +1,6 @@
 #pragma once
 #include "ResourceId.h"
+#include "OutStream.h"
 
 namespace engine::resource {
 	class IStorage {
@@ -16,6 +17,8 @@ namespace engine::resource {
 		virtual void clearDirty(core::ResourceIdBase id) = 0;
 		virtual void addReference(core::ResourceIdBase id) = 0;
 		virtual void removeReference(core::ResourceIdBase id) = 0;
-		virtual void setLastSeenFrame(core::ResourceIdBase id) = 0;
+		virtual void tick(uint64_t frameIndex) = 0;
+		virtual void debugPrint(core::OutStream& out) const = 0;
+		virtual void setLastSeenFrame(core::ResourceIdBase id, uint64_t frameIndex) = 0;
 	};
 }

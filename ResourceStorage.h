@@ -1,8 +1,10 @@
 #pragma once
 #include <unordered_map>
+#include <vector>
 #include <memory>
 #include <string>
 #include <string_view>
+#include <cstdint>
 
 #include "Resource.h"
 #include "IStorage.h"
@@ -14,6 +16,7 @@
 #include "IResourceLoader.h"
 #include "IGpuUploader.h"
 #include "IGpuUploaderBase.h"
+#include "OutStream.h"
 
 namespace engine::resource {
 	template<typename T>
@@ -39,7 +42,7 @@ namespace engine::resource {
 	public:
 
 		using ResourceMap = std::unordered_map<core::ResourceId<Res>, ResourceEntry>;
-		ResourceStorage(core::FrameClock& frameClock, ResourceManager& resMan):frameClock(frameClock),resMan(resMan){}
+		ResourceStorage(ResourceManager& resMan):resMan(resMan){}
 
 		template<typename Desc>
 		void registerLoader(std::unique_ptr<loader::IResourceLoader<Desc, Res>> loader) {
@@ -69,16 +72,17 @@ namespace engine::resource {
 			return nullptr;
 		}
 
-		Res* get(core::ResourceId<Res> id) {
+		Res* get(core::ResourceId<Res> id, uint64_t frameIndex) {
 			auto it = resources.find(id);
 			if (it == resources.end()) return nullptr;
+			it->second.metadata.lastUsedFrame = frameIndex;
 			return it->second.instance.get();
 		}
 
-		Res* get(std::string_view name) {
+		Res* get(std::string_view name, uint64_t frameIndex) {
 			auto it = nameToId.find(name);
 			if (it == nameToId.end()) return nullptr;
-			return get(it->second);
+			return get(it->second, frameIndex);
 		}
 
 		template<typename Desc>
@@ -152,17 +156,10 @@ namespace engine::resource {
 
 		std::vector<core::ResourceIdBase> unloadUnused() override{
 			std::vector<core::ResourceIdBase> removedIds;
-			for (auto it = resources.begin(); it != resources.end();) {
-				ResourceMetadata<Res> meta = it->second.metadata;
-				if (meta.refCount == 0 &&
-					(frameClock.getFrame() - meta.lastUsedFrame) > unusedTreshold){
-					removedIds.push_back(it->first);
-					unloadResource(it->second);
-					unregisterResource(it->first);
-					it = resources.erase(it);
-					continue;
-				}
-				it++;
+			for (auto id : unloadQueue) {
+				unloadResource(id);
+				unregisterResource(id);
+				removedIds.push_back(id);
 			}
 			return removedIds;
 		}
@@ -175,7 +172,6 @@ namespace engine::resource {
 			nameToId.clear();
 			idToName.clear();
 		};
-
 
 		void reloadAll() override {};
 
@@ -263,21 +259,38 @@ namespace engine::resource {
 			}
 		}
 
-		void setLastSeenFrame(core::ResourceIdBase id) {
+		void setLastSeenFrame(core::ResourceIdBase id, uint64_t frameIndex) {
 			if (ResourceMetadata<Res>* meta = getMetadata(id)) {
-				meta->lastUsedFrame = frameClock.getFrame();
+				meta->lastUsedFrame = frameIndex;
+			}
+		}
+
+		void tick(uint64_t frameIndex) {
+			unloadQueue.clear();
+			for(auto& [id, entry]: resources){
+				ResourceMetadata<Res>& meta = entry.metadata;
+				if (meta.refCount == 0 && frameIndex >= meta.lastUsedFrame &&
+					(frameIndex - meta.lastUsedFrame) > unusedTreshold) {
+					unloadQueue.push_back(id);
+				}
+			}
+		}
+
+		void debugPrint(core::OutStream& out) const {
+			for (auto& [id, entry] : resources) {
+				out << id << entry.metadata.formatMetadata() << "\n";
 			}
 		}
 
 	private:
 		ResourceMap resources;
-		core::FrameClock& frameClock;
 		ResourceManager& resMan;
 		uint64_t unusedTreshold = 4000;
 
 		std::unordered_map<loader::LoaderKey, std::unique_ptr<loader::IGpuUploaderBase>, loader::LoaderKeyHasher> loadersMap;
 		std::unordered_map<std::string, core::ResourceId<Res>> nameToId;
 		std::unordered_map<core::ResourceId<Res>, std::string> idToName;
+		std::vector<core::ResourceId<Res>> unloadQueue;
 
 
 		void unloadResource(ResourceEntry& entry) {

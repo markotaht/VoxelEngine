@@ -31,7 +31,7 @@ namespace engine::resource {
 			, estimatesMemoryUsage(estimatesCpuMemoryUsage), estimatedGpuMemoryUsage(estimatedGpuMemoryUsage) {
 		}
 
-		std::string formatMetadata() {
+		std::string formatMetadata() const{
 			return std::format(
 				"ResourceMetadata<{}>{{ descriptorType: {}, dirty: {}, refCount: {}, lastUsedFrame: {}, "
 				"estimatesMemoryUsage: {}, estimatedGpuMemoryUsage: {} }}",
